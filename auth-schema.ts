@@ -1,38 +1,15 @@
 import { relations } from "drizzle-orm";
 import {
-  boolean,
-  index,
-  pgTableCreator,
+  pgTable,
   text,
   timestamp,
+  boolean,
   integer,
+  index,
   uniqueIndex,
 } from "drizzle-orm/pg-core";
 
-export const createTable = pgTableCreator((name) => `${name}`);
-
-export const posts = createTable(
-  "post",
-  (d) => ({
-    id: d.integer().primaryKey().generatedByDefaultAsIdentity(),
-    name: d.varchar({ length: 256 }),
-    createdById: d
-      .varchar({ length: 255 })
-      .notNull()
-      .references(() => user.id),
-    createdAt: d
-      .timestamp({ withTimezone: true })
-      .$defaultFn(() => new Date())
-      .notNull(),
-    updatedAt: d.timestamp({ withTimezone: true }).$onUpdate(() => new Date()),
-  }),
-  (t) => [
-    index("created_by_idx").on(t.createdById),
-    index("name_idx").on(t.name),
-  ],
-);
-
-export const user = createTable("user", {
+export const user = pgTable("user", {
   id: text("id").primaryKey(),
   name: text("name").notNull(),
   email: text("email").notNull().unique(),
@@ -46,7 +23,7 @@ export const user = createTable("user", {
   stripeCustomerId: text("stripe_customer_id"),
 });
 
-export const session = createTable(
+export const session = pgTable(
   "session",
   {
     id: text("id").primaryKey(),
@@ -66,7 +43,7 @@ export const session = createTable(
   (table) => [index("session_userId_idx").on(table.userId)],
 );
 
-export const account = createTable(
+export const account = pgTable(
   "account",
   {
     id: text("id").primaryKey(),
@@ -90,7 +67,7 @@ export const account = createTable(
   (table) => [index("account_userId_idx").on(table.userId)],
 );
 
-export const verification = createTable(
+export const verification = pgTable(
   "verification",
   {
     id: text("id").primaryKey(),
@@ -106,7 +83,7 @@ export const verification = createTable(
   (table) => [index("verification_identifier_idx").on(table.identifier)],
 );
 
-export const organization = createTable(
+export const organization = pgTable(
   "organization",
   {
     id: text("id").primaryKey(),
@@ -119,7 +96,7 @@ export const organization = createTable(
   (table) => [uniqueIndex("organization_slug_uidx").on(table.slug)],
 );
 
-export const member = createTable(
+export const member = pgTable(
   "member",
   {
     id: text("id").primaryKey(),
@@ -138,7 +115,7 @@ export const member = createTable(
   ],
 );
 
-export const invitation = createTable(
+export const invitation = pgTable(
   "invitation",
   {
     id: text("id").primaryKey(),
@@ -160,7 +137,7 @@ export const invitation = createTable(
   ],
 );
 
-export const subscription = createTable("subscription", {
+export const subscription = pgTable("subscription", {
   id: text("id").primaryKey(),
   plan: text("plan").notNull(),
   referenceId: text("reference_id").notNull(),

@@ -10,7 +10,6 @@ import { Controller, useForm } from "react-hook-form";
 import {
   Button,
   Card,
-  Chip,
   FieldError,
   Form,
   Input,
@@ -19,7 +18,7 @@ import {
   TextField,
   toast,
 } from "@heroui/react";
-import { ArrowRightToSquare, PersonFill } from "@gravity-ui/icons";
+import { ArrowRightToSquare } from "@gravity-ui/icons";
 
 const SignUser = () => {
   const router = useRouter();
@@ -32,40 +31,42 @@ const SignUser = () => {
     },
   });
 
-  const {
-    handleSubmit,
-    control,
-    reset,
-    formState: { errors },
-  } = form;
+  const { handleSubmit, control, reset } = form;
+
+  const loginAction = async (values: SignInSchemaType) => {
+    await new Promise((res) => setTimeout(res, 5000));
+
+    const parsedInput = SignInSchema.safeParse(values);
+    if (!parsedInput.success) {
+      throw new Error("Invalid Data");
+    }
+
+    const res = await authClient.signIn.email({
+      email: parsedInput.data.email,
+      password: parsedInput.data.password,
+    });
+
+    if (res.error) {
+      throw new Error(res.error.message || "User Not Found");
+    }
+    return res.data;
+  };
 
   const onSubmit = async (values: SignInSchemaType) => {
     setIsSubmitting(true);
-    try {
-      const parsedInput = SignInSchema.safeParse(values);
-      if (!parsedInput.success) {
-        throw new Error("Invalid Data");
-      }
-      const res = await authClient.signIn.email({
-        email: parsedInput.data.email,
-        password: parsedInput.data.password,
-      });
-      if (!res.data) {
-        throw new Error("User Not Found");
-      }
-      console.log(res);
-      reset();
-      router.push("/");
-    } catch (error) {
-      if (error instanceof Error) {
-        toast.danger(error.message);
-        return;
-      }
-      toast.danger("Unable to login");
-      console.log(error);
-    } finally {
-      setIsSubmitting(false);
-    }
+    toast.promise(loginAction(values), {
+      loading: "Authenticating...",
+      success: (data) => {
+        router.push("/");
+        setIsSubmitting(false);
+        reset();
+        return `Welcome back! ${data.user.name}`;
+      },
+      error: (err) => {
+        setIsSubmitting(false);
+        return err.message;
+      },
+    });
   };
 
   return (
@@ -124,7 +125,7 @@ const SignUser = () => {
         </Card.Content>
 
         <Card.Footer className="flex flex-col justify-center gap-3 sm:flex-row">
-          Dont have an account?
+          Don't have an account?
           <Link href="/sign-up" className="w-full sm:w-auto">
             <Button
               variant={"ghost"}

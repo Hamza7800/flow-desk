@@ -39,39 +39,76 @@ const SignUpUser = () => {
 
   const { handleSubmit, control, reset } = form;
 
-  const onSubmit = async (values: SignUpSchemaType) => {
-    setIsSubmitting(true);
-    try {
-      const parsedInput = SignUpSchema.safeParse(values);
-      if (!parsedInput.success) {
-        throw new Error("Invalid Data");
-      }
-      const res = await authClient.signUp.email({
-        email: values.email,
-        password: values.password,
-        name: values.name,
-      });
+  const sigUpAction = async (values: SignUpSchemaType) => {
+    await new Promise((res) => setTimeout(res, 5000));
 
-      if (!res.data) {
-        throw new Error("Unable to create account");
-      }
-      reset();
-      toast.success("Sign In Success");
-      router.push("/");
-    } catch (error) {
-      if (error instanceof Error) {
-        toast.danger(error.message);
-        return;
-      }
-      toast.danger("Unable to create account");
-      console.log(error);
-    } finally {
-      setIsSubmitting(false);
+    const parsedInput = SignUpSchema.safeParse(values);
+    if (!parsedInput.success) {
+      throw new Error("Invalid Data");
     }
+
+    const res = await authClient.signUp.email({
+      name: parsedInput.data.name,
+      email: parsedInput.data.email,
+      password: parsedInput.data.password,
+    });
+
+    if (res.error) {
+      throw new Error(res.error.message || "Unable to create account");
+    }
+    return res.data;
   };
 
+  const onSubmit = async (values: SignUpSchemaType) => {
+    setIsSubmitting(true);
+    toast.promise(sigUpAction(values), {
+      loading: "Creating Account...",
+      success: (data) => {
+        router.push("/");
+        setIsSubmitting(false);
+        reset();
+        return `Welcome! ${data.user.name}`;
+      },
+      error: (err) => {
+        setIsSubmitting(false);
+        return err.message;
+      },
+    });
+  };
+
+  // const onSubmit = async (values: SignUpSchemaType) => {
+  //   setIsSubmitting(true);
+  //   try {
+  //     const parsedInput = SignUpSchema.safeParse(values);
+  //     if (!parsedInput.success) {
+  //       throw new Error("Invalid Data");
+  //     }
+  //     const res = await authClient.signUp.email({
+  //       email: values.email,
+  //       password: values.password,
+  //       name: values.name,
+  //     });
+
+  //     if (!res.data) {
+  //       throw new Error("Unable to create account");
+  //     }
+  //     reset();
+  //     toast.success("Sign In Success");
+  //     router.push("/");
+  //   } catch (error) {
+  //     if (error instanceof Error) {
+  //       toast.danger(error.message);
+  //       return;
+  //     }
+  //     toast.danger("Unable to create account");
+  //     console.log(error);
+  //   } finally {
+  //     setIsSubmitting(false);
+  //   }
+  // };
+
   const password = form.watch("password");
-  const strength = calculatePasswordStrength(password || "");
+  // const strength = calculatePasswordStrength(password || "");
 
   return (
     <div className="flex min-h-screen items-center justify-center p-6">
@@ -91,7 +128,7 @@ const SignUpUser = () => {
               render={({ field, fieldState }) => (
                 <TextField {...field} isInvalid={fieldState.invalid}>
                   <Label>Name</Label>
-                  <Input variant="secondary" placeholder="password" />
+                  <Input variant="secondary" placeholder="Wick" />
                   <FieldError>{fieldState.error?.message}</FieldError>
                 </TextField>
               )}
