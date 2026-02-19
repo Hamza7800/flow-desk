@@ -27,7 +27,7 @@ import { ArrowRightToSquare } from "@gravity-ui/icons";
 
 const SignUpUser = () => {
   const router = useRouter();
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  // const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const form = useForm<SignUpSchemaType>({
     resolver: zodResolver(SignUpSchema),
     defaultValues: {
@@ -37,10 +37,15 @@ const SignUpUser = () => {
     },
   });
 
-  const { handleSubmit, control, reset } = form;
+  const {
+    handleSubmit,
+    control,
+    reset,
+    formState: { isSubmitting },
+  } = form;
 
   const sigUpAction = async (values: SignUpSchemaType) => {
-    await new Promise((res) => setTimeout(res, 5000));
+    // await new Promise((res) => setTimeout(res, 5000));
 
     const parsedInput = SignUpSchema.safeParse(values);
     if (!parsedInput.success) {
@@ -60,17 +65,17 @@ const SignUpUser = () => {
   };
 
   const onSubmit = async (values: SignUpSchemaType) => {
-    setIsSubmitting(true);
+    // setIsSubmitting(true);
     toast.promise(sigUpAction(values), {
       loading: "Creating Account...",
       success: (data) => {
-        router.push("/");
-        setIsSubmitting(false);
+        // setIsSubmitting(false);
         reset();
+        router.push("/onboarding");
         return `Welcome! ${data.user.name}`;
       },
       error: (err) => {
-        setIsSubmitting(false);
+        // setIsSubmitting(false);
         return err.message;
       },
     });

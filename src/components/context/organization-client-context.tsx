@@ -1,0 +1,92 @@
+"use client";
+
+import { useOrganization } from "@/hooks/use-organizations";
+import type { OrgType } from "@/server-actions/organization";
+import { Card, Spinner } from "@heroui/react";
+import { useRouter } from "next/navigation";
+import {
+  createContext,
+  useContext,
+  useMemo,
+  useState,
+  type ReactNode,
+} from "react";
+import { LinkButton } from "../link-button";
+
+const OrganizationContext = createContext<{
+  org: OrgType["organization"] | undefined;
+  // setOrg: (o: Organization) => void;
+  switchOrg: (slug: string) => Promise<void>;
+} | null>(null);
+
+const OrganizationProvider = ({
+  initialOrg,
+  children,
+  slug,
+}: {
+  slug: string;
+  initialOrg: OrgType["organization"];
+  children: ReactNode;
+}) => {
+  const router = useRouter();
+  const {
+    data: org,
+    isPending,
+    isError,
+    error,
+  } = useOrganization(slug, initialOrg);
+  // const [org, setOrg] = useState<Org | null>(initialOrg ?? null);
+
+  const value = useMemo(
+    () => ({
+      org,
+      // setOrg,
+      switchOrg: async (slug: string) => {
+        router.push(`/org/${slug}`);
+      },
+    }),
+    [org, router],
+  );
+
+  if (isPending) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <Spinner />
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <div className="flex h-screen items-center justify-center">
+        <Card className="mx-auto flex w-lg items-center justify-center">
+          <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-red-100 text-red-600">
+            !
+          </div>
+
+          <h2 className="text-xl font-semibold">No Found</h2>
+
+          <p className="text-muted-foreground mt-2 text-sm">{error?.message}</p>
+
+          <div className="mt-6 flex items-center justify-center gap-3">
+            <LinkButton href="/">Home</LinkButton>
+          </div>
+        </Card>
+      </div>
+    );
+  }
+
+  return (
+    <OrganizationContext.Provider value={value}>
+      {children}
+    </OrganizationContext.Provider>
+  );
+};
+
+export default OrganizationProvider;
+
+// export const useOrganization = () => {
+//   const ctx = useContext(OrganizationContext);
+//   if (!ctx) throw new Error("useOrganization must be used within provider");
+//   return ctx;
+// };

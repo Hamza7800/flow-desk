@@ -26,7 +26,6 @@ import { OrganizationSwitcher } from "./organization-switcher";
 
 // This is sample data.
 const data = {
-  versions: ["1.0.1", "1.1.0-alpha", "2.0.0-beta1"],
   navMain: [
     {
       title: "Getting Started",
@@ -95,7 +94,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
     <Sidebar {...props}>
       <SidebarHeader>
         {/* <Button fullWidth>Switch Organization</Button> */}
-        <OrganizationSwitcher versions={data.versions} />
+        <OrganizationSwitcher />
         {/* <SearchForm /> */}
       </SidebarHeader>
       <SidebarContent className="scrollbar-hide gap-0">

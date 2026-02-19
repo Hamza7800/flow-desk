@@ -33,7 +33,7 @@ const SignUser = () => {
   const { handleSubmit, control, reset } = form;
 
   const loginAction = async (values: SignInSchemaType) => {
-    await new Promise((res) => setTimeout(res, 5000));
+    // await new Promise((res) => setTimeout(res, 5000));
 
     const parsedInput = SignInSchema.safeParse(values);
     if (!parsedInput.success) {

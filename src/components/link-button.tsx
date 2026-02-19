@@ -4,7 +4,6 @@ import type { VariantProps } from "tailwind-variants";
 
 import { Button, buttonVariants } from "@heroui/react";
 import { tv } from "tailwind-variants";
-import type { ReactNode } from "react";
 import { useRouter } from "next/navigation";
 
 const myButtonVariants = tv({
