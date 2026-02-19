@@ -1,10 +1,19 @@
 @import "tailwindcss";
+@import "tailwind-scrollbar-hide/v4";
+@import "tw-animate-css";
+@import "shadcn/tailwind.css";
 @import "@heroui/styles";
+
+@custom-variant dark (&:is(.dark *));
 
 @theme {
   --font-sans:
     var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif,
     "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+}
+
+@theme inline {
+  --color-ring: var(--ring);
 }
 
 :root,
@@ -87,4 +96,13 @@
   --surface-tertiary-foreground: oklch(99.11% 0 27.99);
   --warning: oklch(0.8239 0.153 74.6);
   --warning-foreground: oklch(15% 0.0459 74.6);
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
 }

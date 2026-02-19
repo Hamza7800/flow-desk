@@ -107,7 +107,7 @@ const SignUpUser = () => {
   //   }
   // };
 
-  const password = form.watch("password");
+  // const password = form.watch("password");
   // const strength = calculatePasswordStrength(password || "");
 
   return (
@@ -178,20 +178,21 @@ const SignUpUser = () => {
 
         <Card.Footer className="flex flex-col justify-center gap-3 sm:flex-row">
           Already have an account?
-          <Link href="/sign-in" className="w-full sm:w-auto">
-            <Button
-              variant={"ghost"}
-              className="w-full cursor-pointer sm:w-auto"
-            >
-              <ArrowRightToSquare className="mr-2 h-4 w-4" /> Sign in
-            </Button>
-          </Link>
-          {/* <Link href="/" className="w-full sm:w-auto">
-            <Button variant="ghost" className="w-full sm:w-auto">
-              Continue as guest
-            </Button>
-          </Link> */}
+          <Button
+            variant={"ghost"}
+            onPress={() => router.push("/sign-in")}
+            className="w-full cursor-pointer sm:w-auto"
+          >
+            <ArrowRightToSquare className="mr-2 h-4 w-4" /> Sign in
+          </Button>
         </Card.Footer>
+        <Button
+          onPress={() => router.push("/")}
+          variant="ghost"
+          className="w-full text-center"
+        >
+          Back Home
+        </Button>
       </Card>
     </div>
   );

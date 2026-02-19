@@ -3,7 +3,6 @@
 import { SignInSchema, type SignInSchemaType } from "@/zod-schema/auth-schema";
 import { authClient } from "@/server/better-auth/client";
 import { zodResolver } from "@hookform/resolvers/zod";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -126,20 +125,21 @@ const SignUser = () => {
 
         <Card.Footer className="flex flex-col justify-center gap-3 sm:flex-row">
           Don't have an account?
-          <Link href="/sign-up" className="w-full sm:w-auto">
-            <Button
-              variant={"ghost"}
-              className="w-full cursor-pointer sm:w-auto"
-            >
-              <ArrowRightToSquare className="mr-2 h-4 w-4" /> Sign up
-            </Button>
-          </Link>
-          {/* <Link href="/" className="w-full sm:w-auto">
-            <Button variant="ghost" className="w-full sm:w-auto">
-              Continue as guest
-            </Button>
-          </Link> */}
+          <Button
+            variant={"ghost"}
+            onPress={() => router.push("/sign-up")}
+            className="w-full cursor-pointer sm:w-auto"
+          >
+            <ArrowRightToSquare className="mr-2 h-4 w-4" /> Sign up
+          </Button>
         </Card.Footer>
+        <Button
+          onPress={() => router.push("/")}
+          variant="ghost"
+          className="w-full text-center"
+        >
+          Back Home
+        </Button>
       </Card>
     </div>
   );
