@@ -7,7 +7,7 @@ import {
   type OrganizationSchemaType,
 } from "@/zod-schema/organization-schema";
 import { headers } from "next/headers";
-import z, { success } from "zod";
+import z from "zod";
 
 export const checkSlug = async (slug: string) => {
   const data = await auth.api.checkOrganizationSlug({
@@ -174,6 +174,101 @@ export const setActiveOrganization = async (orgId: string, slug: string) => {
         error instanceof Error
           ? error.message
           : "Failed to set organization active",
+    };
+  }
+};
+
+export const deleteOrganization = async (slug: string) => {
+  try {
+    await getUser();
+    const result = await getOrganization(slug);
+
+    if (!result.success || !result.organization) return result;
+
+    const data = await auth.api.deleteOrganization({
+      body: {
+        organizationId: result.organization.id,
+      },
+      headers: await headers(),
+    });
+
+    if (!data) {
+      return {
+        success: false,
+        message: "Unable to delete organization",
+      };
+    }
+    return {
+      success: true,
+      message: `${data.name} deleted`,
+      data,
+    };
+  } catch (error) {
+    console.error("Error delete  organization:", error);
+
+    return {
+      success: false,
+      error:
+        error instanceof Error
+          ? error.message
+          : "Failed to delete organization ",
+    };
+  }
+};
+
+export const updateOrganization = async (
+  orgId: string,
+  values: OrganizationSchemaType,
+) => {
+  try {
+    await getUser();
+    const validatedData = organizationSchema.parse(values);
+
+    // const isSlugAvailable = await checkSlug(validatedData.slug);
+
+    // if (!isSlugAvailable) {
+    //   return {
+    //     success: false,
+    //     message: "Slug is already in use",
+    //   };
+    // }
+
+    const data = await auth.api.updateOrganization({
+      body: {
+        data: {
+          name: validatedData.name,
+          slug: validatedData.slug,
+        },
+        organizationId: orgId,
+      },
+      headers: await headers(),
+    });
+
+    if (!data) {
+      return {
+        success: false,
+        message: "Unable to update organization",
+      };
+    }
+    return {
+      success: true,
+      message: "Organization updated success",
+      data,
+    };
+  } catch (error: any) {
+    console.error("Error updating  organization:", error);
+
+    let errorMessage = "Failed to update organization";
+
+    if (error?.body?.message) {
+      errorMessage = error.body.message;
+    } else if (error instanceof Error) {
+      errorMessage = error.message;
+    }
+
+    return {
+      success: false,
+      message: errorMessage,
     };
   }
 };

@@ -1,8 +1,10 @@
 import {
   createOrganization,
+  deleteOrganization,
   getOrganization,
   getUserListOrganizations,
   setActiveOrganization,
+  updateOrganization,
   type OrgType,
 } from "@/server-actions/organization";
 import { authClient } from "@/server/better-auth/client";
@@ -41,9 +43,23 @@ export const useCreateOrganization = () => {
       if (!result.success) {
         throw new Error(result.error || "Failed to create organization");
       }
+
+      const { error } = await authClient.organization.setActive({
+        organizationId: result.data?.id,
+        organizationSlug: result.data?.slug,
+      });
+
+      if (error) {
+        throw new Error(error.message || "Failed to set organization active");
+      }
+
       return result;
     },
     onSuccess: (data) => {
+      // queryClient.setQueryData(queryKeys.organizations.all, (old: any) => {
+      //   return old ? [...old, data.data] : [data.data];
+      // });
+
       queryClient.invalidateQueries({
         queryKey: queryKeys.organizations.all,
       });
@@ -119,6 +135,64 @@ export const useSetOrgActive = () => {
     },
 
     onError: (error: Error) => {
+      toast.danger(error.message);
+    },
+  });
+};
+
+export const useOrganizationDelete = () => {
+  const router = useRouter();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (slug: string) => {
+      const result = await deleteOrganization(slug);
+      if (!result.success) {
+        throw new Error(result.message);
+      }
+      return result;
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.organizations.all,
+      });
+
+      toast.success(data.message);
+      router.replace("/organizations");
+    },
+    onError: (error: Error) => {
+      toast.danger(error.message);
+    },
+  });
+};
+
+export const useUpdateOrganization = () => {
+  const router = useRouter();
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({
+      id,
+      values,
+    }: {
+      id: string;
+      values: OrganizationSchemaType;
+    }) => {
+      const result = await updateOrganization(id, values);
+      if (!result.success) {
+        throw new Error(result.message);
+      }
+      return result;
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.organizations.all,
+      });
+      toast.success(data.message);
+      router.replace(`/${data?.data?.slug}/settings/workspace`);
+    },
+    onError: (error) => {
+      console.log(error);
       toast.danger(error.message);
     },
   });
