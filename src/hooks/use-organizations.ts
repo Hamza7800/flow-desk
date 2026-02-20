@@ -5,6 +5,7 @@ import {
   setActiveOrganization,
   type OrgType,
 } from "@/server-actions/organization";
+import { authClient } from "@/server/better-auth/client";
 import type { OrganizationSchemaType } from "@/zod-schema/organization-schema";
 import { toast } from "@heroui/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -96,19 +97,24 @@ export const useSetOrgActive = () => {
 
   return useMutation({
     mutationFn: async ({ id, slug }: { id: string; slug: string }) => {
-      const result = await setActiveOrganization(id, slug);
-      if (!result.success) {
-        throw new Error(result.message);
+      const { data, error } = await authClient.organization.setActive({
+        organizationId: id,
+        organizationSlug: slug,
+      });
+      // const result = await setActiveOrganization(id, slug);
+      if (!data) {
+        throw new Error(error.message);
       }
-      return result;
+      return data;
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({
         queryKey: queryKeys.organizations.all,
       });
 
-      toast.success(data.message);
-      router.push(`/${data.data?.slug}`);
+      toast.success(`${data.name} org set active`);
+      router.replace(`/${data?.slug}`);
+      // router.refresh();
       // window.location.href = `/${data.data?.slug}`;
     },
 

@@ -1,4 +1,3 @@
-import * as React from "react";
 import { ChevronDown, ChevronRight } from "lucide-react";
 
 // import { SearchForm } from "@/components/search-form"
@@ -23,6 +22,8 @@ import {
 import { Accordion, Button } from "@heroui/react";
 import Link from "next/link";
 import { OrganizationSwitcher } from "./organization-switcher";
+import { LinkButton } from "./link-button";
+import type { ComponentProps } from "react";
 
 // This is sample data.
 const data = {
@@ -89,9 +90,9 @@ const data = {
   ],
 };
 
-export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
+export function AppSidebar({ slug, ...props }: ComponentProps<typeof Sidebar>) {
   return (
-    <Sidebar {...props}>
+    <Sidebar className="bg-[#161616]" {...props}>
       <SidebarHeader>
         {/* <Button fullWidth>Switch Organization</Button> */}
         <OrganizationSwitcher />
@@ -114,21 +115,33 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                   </Accordion.Indicator>
                 </Accordion.Trigger>
               </Accordion.Heading>
-              <Accordion.Panel className={"space-y-2 px-2 py-1"}>
+              <Accordion.Panel className={""}>
                 {item.items.map((item) => (
-                  <Button
-                    className={"block text-left"}
+                  <LinkButton
+                    className={"justify-start text-left shadow-none"}
                     fullWidth
                     variant="ghost"
                     key={item.title}
+                    href={item.url}
                   >
-                    <Link href={item.url}>{item.title}</Link>
-                  </Button>
+                    {item.title}
+                  </LinkButton>
                 ))}
               </Accordion.Panel>
             </Accordion.Item>
           </Accordion>
         ))}
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <LinkButton
+              className={"justify-start text-left shadow-none"}
+              fullWidth
+              href={`/${slug}/settings/account/profile`}
+            >
+              Settings
+            </LinkButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
       </SidebarContent>
       <SidebarRail />
     </Sidebar>
