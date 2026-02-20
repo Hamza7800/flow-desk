@@ -1,18 +1,18 @@
-import { AppSidebar } from "@/app/(protected)/[slug]/(dashboard)/_components/app-sidebar";
-import { Separator } from "@/components/ui/separator";
 import {
   SidebarInset,
   SidebarProvider,
   SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { type ReactNode } from "react";
+import type { ReactNode } from "react";
+import { AppSidebar } from "./_components/app-sidebar";
+import { Separator } from "@/components/ui/separator";
 
 type Props = {
   children: ReactNode;
   params: Promise<{ slug: string }>;
 };
 
-export default async function SlugLayout({ children, params }: Props) {
+const SettingsLayout = async ({ children, params }: Props) => {
   const { slug } = await params;
 
   return (
@@ -27,4 +27,6 @@ export default async function SlugLayout({ children, params }: Props) {
       </SidebarInset>
     </SidebarProvider>
   );
-}
+};
+
+export default SettingsLayout;

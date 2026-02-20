@@ -21,8 +21,8 @@ import {
 } from "@/components/ui/sidebar";
 import { Accordion, Button } from "@heroui/react";
 import Link from "next/link";
-import { OrganizationSwitcher } from "./organization-switcher";
-import { LinkButton } from "./link-button";
+import { OrganizationSwitcher } from "@/components/organization-switcher";
+import { LinkButton } from "@/components/link-button";
 import type { ComponentProps } from "react";
 
 // This is sample data.
@@ -134,7 +134,8 @@ export function AppSidebar({ slug, ...props }: ComponentProps<typeof Sidebar>) {
         <SidebarMenu>
           <SidebarMenuItem>
             <LinkButton
-              className={"justify-start text-left shadow-none"}
+              variant="ghost"
+              className={"justify-start pl-4.5 text-left shadow-none"}
               fullWidth
               href={`/${slug}/settings/account/profile`}
             >
