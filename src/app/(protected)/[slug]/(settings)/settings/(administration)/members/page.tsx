@@ -23,6 +23,13 @@ export default function MembersPage() {
     );
   }
 
+  const currentMember = organization?.members.find(
+    (member) => member.userId === data?.user.id,
+  );
+  const currentRole = currentMember?.role;
+
+  const canManageInvites = currentRole === "admin" || currentRole === "owner";
+
   return (
     <div className="min-h-screen">
       <main className="flex-1">
@@ -83,38 +90,46 @@ export default function MembersPage() {
             </Card.Description>
           </Card.Header>
           <Card.Content>
-            {organization.invitations.map((invite) => (
-              <Surface
-                variant="secondary"
-                key={invite.id}
-                className="flex items-center justify-between p-4"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-600 font-semibold text-white">
-                    {invite?.email?.[0]?.toUpperCase() || "U"}
-                  </div>
-                  <div>
-                    <p className="font-medium text-white">{invite?.email}</p>
-                    {/* <p className="text-sm text-slate-400">
+            {organization.invitations.map((invite) => {
+              const showCancel =
+                canManageInvites && invite.status === "pending";
+              // TODO: ADD RESEND BUTTON
+              const showResend =
+                canManageInvites && invite.status === "rejected";
+
+              return (
+                <Surface
+                  variant="secondary"
+                  key={invite.id}
+                  className="flex items-center justify-between p-4"
+                >
+                  <div className="flex items-center gap-3">
+                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-600 font-semibold text-white">
+                      {invite?.email?.[0]?.toUpperCase() || "U"}
+                    </div>
+                    <div>
+                      <p className="font-medium text-white">{invite?.email}</p>
+                      {/* <p className="text-sm text-slate-400">
                       {invite?.user.email}
                     </p> */}
+                    </div>
                   </div>
-                </div>
-                <div className="space-x-2 text-right">
-                  <Chip variant="secondary" color="warning">
-                    {invite.role}
-                  </Chip>
-                  <Chip variant="secondary" color="success">
-                    {invite.status}
-                  </Chip>
-                </div>
-                <div className="space-x-2">
-                  {data?.user.id === invite.inviterId ? (
-                    <CancelInvitation slug={slug} inviteId={invite.id} />
-                  ) : null}
-                </div>
-              </Surface>
-            ))}
+                  <div className="space-x-2 text-right">
+                    <Chip variant="secondary" color="warning">
+                      {invite.role}
+                    </Chip>
+                    <Chip variant="secondary" color="success">
+                      {invite.status}
+                    </Chip>
+                  </div>
+                  <div className="space-x-2">
+                    {showCancel && (
+                      <CancelInvitation slug={slug} inviteId={invite.id} />
+                    )}
+                  </div>
+                </Surface>
+              );
+            })}
           </Card.Content>
         </Card>
       </main>

@@ -73,6 +73,8 @@ export const createOrganization = async (values: OrganizationSchemaType) => {
   }
 };
 
+// TODO: Maybe I should
+// FIXME: This get full organization, we need only org details not full org
 export const getOrganization = async (slug: string) => {
   try {
     await getUser();

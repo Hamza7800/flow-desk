@@ -1,6 +1,4 @@
 import DeleteWorkspaceCard from "@/app/(protected)/[slug]/(settings)/settings/_components/delete-workspace-card";
-import OrganizationForm from "@/components/forms/organization-form";
-import { getOrganization } from "@/server-actions/organization";
 import Form from "./_components/form";
 
 type Props = {

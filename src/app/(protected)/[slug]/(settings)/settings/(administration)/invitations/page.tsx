@@ -4,9 +4,8 @@ import { Card, Chip, Surface } from "@heroui/react";
 import { Loader2 } from "lucide-react";
 import { useParams } from "next/navigation";
 import AcceptInvitation from "@/app/(protected)/[slug]/(settings)/_components/accept-invitation";
-import CancelInvitation from "@/app/(protected)/[slug]/(settings)/_components/cancel-invitation";
 import { authClient } from "@/server/better-auth/client";
-import RejectInvitation from "../../../_components/reject-invitation";
+import RejectInvitation from "@/app/(protected)/[slug]/(settings)/_components/reject-invitation";
 
 const Page = () => {
   const params = useParams();
@@ -74,12 +73,8 @@ const Page = () => {
                   </Chip>
                 </div>
                 <div className="space-x-2">
-                  {data?.user.id === invite.inviterId ? null : (
-                    <RejectInvitation slug={slug} inviteId={invite.id} />
-                  )}
-                  {data?.user.email === invite.email ? (
-                    <AcceptInvitation slug={slug} inviteId={invite.id} />
-                  ) : null}
+                  <RejectInvitation slug={slug} inviteId={invite.id} />
+                  <AcceptInvitation slug={slug} inviteId={invite.id} />
                 </div>
               </Surface>
             ))}
