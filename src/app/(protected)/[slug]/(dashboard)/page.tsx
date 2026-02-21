@@ -4,6 +4,7 @@ import { getOrganization } from "@/server-actions/organization";
 import { Button, Card, Surface } from "@heroui/react";
 import { BarChart3, Plus, Users } from "lucide-react";
 import type { ReactNode } from "react";
+import InviteMembers from "../(settings)/_components/invite-members";
 
 type Props = {
   children: ReactNode;
@@ -76,9 +77,13 @@ export default async function Page({ params }: Props) {
                   </Card.Title>
                 </Card.Header>
                 <Card.Content>
-                  <div className="text-3xl font-bold text-white">1</div>
+                  <div className="text-3xl font-bold text-white">
+                    {organization.members.length}
+                  </div>
                   <p className="mt-1 text-xs text-slate-400">
-                    You are the only member
+                    {organization.members.length > 1
+                      ? "Members"
+                      : "You are the only member"}
                   </p>
                 </Card.Content>
               </Card>
@@ -120,18 +125,19 @@ export default async function Page({ params }: Props) {
                     <Button className="mt-4 w-full">Create Project</Button>
                   </Surface>
 
-                  <Surface variant="secondary" className="rounded-lg p-4">
+                  <Surface variant="secondary" className="p-4">
                     <h3 className="mb-2 flex items-center gap-2 font-semibold text-white">
                       <Users className="h-4 w-4 text-purple-400" />
                       Invite Team Members
                     </h3>
-                    <p className="text-sm text-slate-400">
+                    <p className="mb-4 text-sm text-slate-400">
                       Add team members to collaborate on projects and tasks. and
                       solve issues
                     </p>
-                    <Button className="mt-4 w-full text-white">
-                      Invite Members
-                    </Button>
+                    <InviteMembers
+                      orgId={organization.id}
+                      slug={organization.slug}
+                    />
                   </Surface>
                 </div>
               </Card.Content>

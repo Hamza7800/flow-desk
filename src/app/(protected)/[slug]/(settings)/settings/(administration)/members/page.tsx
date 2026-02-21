@@ -41,7 +41,9 @@ export default function MembersPage() {
               Manage your team members and their roles
             </p>
           </div>
-          <InviteMembers slug={slug} orgId={organization.id} />
+          <div className="max-w-xs">
+            <InviteMembers slug={slug} orgId={organization.id} />
+          </div>
         </div>
 
         {/* Members List */}

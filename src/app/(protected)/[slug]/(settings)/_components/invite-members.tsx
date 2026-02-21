@@ -41,7 +41,7 @@ const InviteMembers = ({ orgId, slug }: { slug: string; orgId: string }) => {
 
   return (
     <Modal isOpen={state.isOpen} onOpenChange={state.setOpen}>
-      <Button onPress={() => state.open()} variant="primary">
+      <Button fullWidth onPress={() => state.open()} variant="primary">
         Invite Members
       </Button>
       <Modal.Backdrop>
