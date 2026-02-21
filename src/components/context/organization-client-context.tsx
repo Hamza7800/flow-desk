@@ -85,8 +85,9 @@ const OrganizationProvider = ({
 
 export default OrganizationProvider;
 
-// export const useOrganization = () => {
-//   const ctx = useContext(OrganizationContext);
-//   if (!ctx) throw new Error("useOrganization must be used within provider");
-//   return ctx;
-// };
+export const useOrganizationContext = () => {
+  const ctx = useContext(OrganizationContext);
+  if (!ctx)
+    throw new Error("useOrganizationContext must be used within provider");
+  return ctx;
+};

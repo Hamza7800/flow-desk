@@ -15,6 +15,13 @@
       "when": 1771701776761,
       "tag": "0001_cloudy_raza",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1771703849330,
+      "tag": "0002_lucky_blindfold",
+      "breakpoints": true
     }
   ]
 }

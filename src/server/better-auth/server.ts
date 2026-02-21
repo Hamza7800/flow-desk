@@ -14,5 +14,6 @@ export const getUser = async () => {
   if (!session?.user || !session?.user.id) {
     throw new Error("Unauthorized: You must be logged in");
   }
+
   return session.user;
 };

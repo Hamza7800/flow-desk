@@ -1,89 +1,35 @@
-import { ChevronDown, ChevronRight } from "lucide-react";
-
-// import { SearchForm } from "@/components/search-form"
-// import { VersionSwitcher } from "@/components/version-switcher"
-// import {
-//   Collapsible,
-//   CollapsibleContent,
-//   CollapsibleTrigger,
-// } from "@/components/ui/collapsible"
 import {
   Sidebar,
   SidebarContent,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
-  SidebarMenuButton,
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
 import { Accordion, Button } from "@heroui/react";
-import Link from "next/link";
 import { OrganizationSwitcher } from "@/components/organization-switcher";
 import { LinkButton } from "@/components/link-button";
 import type { ComponentProps } from "react";
+import { ChevronDown } from "@gravity-ui/icons";
+import UserTeams from "./user-teams";
 
 // This is sample data.
 const data = {
   navMain: [
     {
-      title: "Getting Started",
-      url: "#",
+      title: "Workspace",
       items: [
         {
-          title: "Installation",
-          url: "#",
+          title: "Projects",
+          url: "",
         },
         {
-          title: "Project Structure",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Build Your Application",
-      url: "#",
-      items: [
-        {
-          title: "Routing",
-          url: "#",
+          title: "Members",
+          url: "",
         },
         {
-          title: "Data Fetching",
-          url: "#",
-          isActive: true,
-        },
-        {
-          title: "Rendering",
-          url: "#",
-        },
-        {
-          title: "Caching",
-          url: "#",
-        },
-        {
-          title: "Styling",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "API Reference",
-      url: "#",
-      items: [
-        {
-          title: "Components",
-          url: "#",
-        },
-        {
-          title: "File Conventions",
-          url: "#",
-        },
-        {
-          title: "Functions",
-          url: "#",
+          title: "Teams",
+          url: "",
         },
       ],
     },
@@ -99,6 +45,19 @@ export function AppSidebar({ slug, ...props }: ComponentProps<typeof Sidebar>) {
         {/* <SearchForm /> */}
       </SidebarHeader>
       <SidebarContent className="scrollbar-hide gap-0">
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <LinkButton
+              variant="ghost"
+              className={"justify-start pl-4.5 text-left shadow-none"}
+              fullWidth
+              href={`/${slug}/settings/account/profile`}
+            >
+              My Issues
+            </LinkButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
+
         {data.navMain.map((item) => (
           <Accordion
             key={item.title}
@@ -131,6 +90,9 @@ export function AppSidebar({ slug, ...props }: ComponentProps<typeof Sidebar>) {
             </Accordion.Item>
           </Accordion>
         ))}
+
+        <UserTeams />
+
         <SidebarMenu>
           <SidebarMenuItem>
             <LinkButton

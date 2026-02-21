@@ -19,7 +19,14 @@ export const auth = betterAuth({
     enabled: true,
   },
   plugins: [
-    organization(),
+    organization({
+      teams: {
+        enabled: true,
+        maximumTeams: 2,
+        maximumMembersPerTeam: 10,
+        allowRemovingAllTeams: false,
+      },
+    }),
     stripe({
       stripeClient,
       stripeWebhookSecret: env.STRIPE_WEBHOOK_SECRET,

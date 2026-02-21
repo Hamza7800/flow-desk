@@ -1,3 +1,4 @@
+import { queryKeys } from "@/lib/query-keys";
 import {
   createOrganization,
   deleteOrganization,
@@ -12,26 +13,6 @@ import type { OrganizationSchemaType } from "@/zod-schema/organization-schema";
 import { toast } from "@heroui/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-
-export const queryKeys = {
-  organizations: {
-    all: ["organizations"] as const,
-    list: () => [...queryKeys.organizations.all, "list"] as const,
-    detail: (slug: string) =>
-      [...queryKeys.organizations.all, "detail", slug] as const,
-  },
-
-  projects: {
-    all: ["projects"] as const,
-    list: (orgId: string) =>
-      [...queryKeys.projects.all, "list", orgId] as const,
-  },
-
-  issues: {
-    all: ["issues"] as const,
-    list: (orgId: string) => [...queryKeys.issues.all, "list", orgId] as const,
-  },
-};
 
 export const useCreateOrganization = () => {
   const queryClient = useQueryClient();

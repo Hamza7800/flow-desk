@@ -11,6 +11,7 @@ import {
 } from "@/components/ui/sidebar";
 import { LinkButton } from "@/components/link-button";
 import type { ComponentProps } from "react";
+import SideBarTeams from "./side-bar-teams";
 
 const data = {
   navMain: [
@@ -49,28 +50,6 @@ const data = {
         },
       ],
     },
-    {
-      title: "Issues",
-      items: [
-        {
-          title: "Components",
-          url: "#",
-        },
-      ],
-    },
-    {
-      title: "Projects",
-      items: [
-        {
-          title: "Accessibility",
-          url: "#",
-        },
-        {
-          title: "Fast Refresh",
-          url: "#",
-        },
-      ],
-    },
   ],
 };
 
@@ -104,6 +83,7 @@ export function AppSidebar({ slug, ...props }: ComponentProps<typeof Sidebar>) {
             </SidebarGroupContent>
           </SidebarGroup>
         ))}
+        <SideBarTeams slug={slug} />
       </SidebarContent>
       <SidebarRail />
     </Sidebar>

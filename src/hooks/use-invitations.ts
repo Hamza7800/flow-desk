@@ -1,3 +1,4 @@
+import { queryKeys } from "@/lib/query-keys";
 import {
   acceptInvitation,
   cancelInvitation,
@@ -8,13 +9,6 @@ import {
 import type { InviteType } from "@/zod-schema/invite-schema";
 import { toast } from "@heroui/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { queryKeys } from "./use-organizations";
-
-export const invitationKeys = {
-  all: ["invitations"] as const,
-  org: (orgId: string) => ["invitations", orgId] as const,
-  list: (orgId: string) => ["invitations", orgId, "list"] as const,
-};
 
 export const useSendInvitation = (orgId: string, slug: string) => {
   const queryClient = useQueryClient();
@@ -29,7 +23,7 @@ export const useSendInvitation = (orgId: string, slug: string) => {
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({
-        queryKey: invitationKeys.org(orgId),
+        queryKey: queryKeys.invitations.org(orgId),
       });
 
       queryClient.invalidateQueries({
@@ -57,7 +51,7 @@ export const useAcceptInvitation = (slug: string) => {
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({
-        queryKey: invitationKeys.org(slug),
+        queryKey: queryKeys.invitations.org(slug),
       });
       queryClient.invalidateQueries({
         queryKey: queryKeys.organizations.detail(slug),
@@ -83,7 +77,7 @@ export const useCancelInvitation = (slug: string) => {
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({
-        queryKey: invitationKeys.org(slug),
+        queryKey: queryKeys.invitations.org(slug),
       });
 
       queryClient.invalidateQueries({
@@ -108,7 +102,7 @@ export const useCancelInvitation = (slug: string) => {
 
 export const useUserInvitations = (orgId: string) => {
   return useQuery({
-    queryKey: invitationKeys.list(orgId),
+    queryKey: queryKeys.invitations.list(orgId),
     queryFn: async () => {
       const result = await getUserInvites();
       if (!result.success) {
@@ -133,7 +127,7 @@ export const useRejectInvitation = (slug: string) => {
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({
-        queryKey: invitationKeys.org(slug),
+        queryKey: queryKeys.invitations.org(slug),
       });
 
       queryClient.invalidateQueries({

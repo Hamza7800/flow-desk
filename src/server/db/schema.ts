@@ -16,26 +16,6 @@ import {
 export const createTable = pgTableCreator((name) => `${name}`);
 
 // BETTER AUTH SCHEMA
-export const posts = createTable(
-  "post",
-  (d) => ({
-    id: d.integer().primaryKey().generatedByDefaultAsIdentity(),
-    name: d.varchar({ length: 256 }),
-    createdById: d
-      .varchar({ length: 255 })
-      .notNull()
-      .references(() => user.id),
-    createdAt: d
-      .timestamp({ withTimezone: true })
-      .$defaultFn(() => new Date())
-      .notNull(),
-    updatedAt: d.timestamp({ withTimezone: true }).$onUpdate(() => new Date()),
-  }),
-  (t) => [
-    index("created_by_idx").on(t.createdById),
-    index("name_idx").on(t.name),
-  ],
-);
 
 export const user = createTable("user", {
   id: text("id").primaryKey(),
@@ -67,6 +47,7 @@ export const session = createTable(
       .notNull()
       .references(() => user.id, { onDelete: "cascade" }),
     activeOrganizationId: text("active_organization_id"),
+    activeTeamId: text("active_team_id"),
   },
   (table) => [index("session_userId_idx").on(table.userId)],
 );
@@ -124,6 +105,40 @@ export const organization = createTable(
   (table) => [uniqueIndex("organization_slug_uidx").on(table.slug)],
 );
 
+export const team = createTable(
+  "team",
+  {
+    id: text("id").primaryKey(),
+    name: text("name").notNull(),
+    organizationId: text("organization_id")
+      .notNull()
+      .references(() => organization.id, { onDelete: "cascade" }),
+    createdAt: timestamp("created_at").notNull(),
+    updatedAt: timestamp("updated_at").$onUpdate(
+      () => /* @__PURE__ */ new Date(),
+    ),
+  },
+  (table) => [index("team_organizationId_idx").on(table.organizationId)],
+);
+
+export const teamMember = createTable(
+  "team_member",
+  {
+    id: text("id").primaryKey(),
+    teamId: text("team_id")
+      .notNull()
+      .references(() => team.id, { onDelete: "cascade" }),
+    userId: text("user_id")
+      .notNull()
+      .references(() => user.id, { onDelete: "cascade" }),
+    createdAt: timestamp("created_at"),
+  },
+  (table) => [
+    index("teamMember_teamId_idx").on(table.teamId),
+    index("teamMember_userId_idx").on(table.userId),
+  ],
+);
+
 export const member = createTable(
   "member",
   {
@@ -152,6 +167,7 @@ export const invitation = createTable(
       .references(() => organization.id, { onDelete: "cascade" }),
     email: text("email").notNull(),
     role: text("role"),
+    teamId: text("team_id"),
     status: text("status").default("pending").notNull(),
     expiresAt: timestamp("expires_at").notNull(),
     createdAt: timestamp("created_at").defaultNow().notNull(),
@@ -186,6 +202,7 @@ export const subscription = createTable("subscription", {
 export const userRelations = relations(user, ({ many }) => ({
   sessions: many(session),
   accounts: many(account),
+  teamMembers: many(teamMember),
   members: many(member),
   invitations: many(invitation),
 }));
@@ -205,8 +222,28 @@ export const accountRelations = relations(account, ({ one }) => ({
 }));
 
 export const organizationRelations = relations(organization, ({ many }) => ({
+  teams: many(team),
   members: many(member),
   invitations: many(invitation),
+}));
+
+export const teamRelations = relations(team, ({ one, many }) => ({
+  organization: one(organization, {
+    fields: [team.organizationId],
+    references: [organization.id],
+  }),
+  teamMembers: many(teamMember),
+}));
+
+export const teamMemberRelations = relations(teamMember, ({ one }) => ({
+  team: one(team, {
+    fields: [teamMember.teamId],
+    references: [team.id],
+  }),
+  user: one(user, {
+    fields: [teamMember.userId],
+    references: [user.id],
+  }),
 }));
 
 export const memberRelations = relations(member, ({ one }) => ({
@@ -464,6 +501,7 @@ export const issueRelations = relations(issue, ({ one, many }) => ({
 
 export const labelRelations = relations(label, ({ many }) => ({
   issues: many(issueLabel),
+  projects: many(projectLabel),
 }));
 
 export const issueLabelRelations = relations(issueLabel, ({ one }) => ({
@@ -509,4 +547,53 @@ export const projectMemberRelations = relations(projectMember, ({ one }) => ({
     references: [project.id],
   }),
   user: one(user, { fields: [projectMember.userId], references: [user.id] }),
+}));
+
+export const commentRelations = relations(comment, ({ one }) => ({
+  issue: one(issue, {
+    fields: [comment.issueId],
+    references: [issue.id],
+  }),
+  author: one(user, {
+    fields: [comment.authorId],
+    references: [user.id],
+  }),
+}));
+
+export const projectLabelRelations = relations(projectLabel, ({ one }) => ({
+  project: one(project, {
+    fields: [projectLabel.projectId],
+    references: [project.id],
+  }),
+  label: one(label, { fields: [projectLabel.labelId], references: [label.id] }),
+}));
+
+export const issueActivityRelations = relations(issueActivity, ({ one }) => ({
+  issue: one(issue, {
+    fields: [issueActivity.issueId],
+    references: [issue.id],
+  }),
+  actor: one(user, { fields: [issueActivity.actorId], references: [user.id] }),
+}));
+
+export const issueLinkRelations = relations(issueLink, ({ one }) => ({
+  issue: one(issue, {
+    fields: [issueLink.issueId],
+    references: [issue.id],
+    relationName: "source_issue",
+  }),
+  targetIssue: one(issue, {
+    fields: [issueLink.targetIssueId],
+    references: [issue.id],
+    relationName: "target_issue",
+  }),
+}));
+
+export const notificationRelations = relations(notification, ({ one }) => ({
+  user: one(user, { fields: [notification.userId], references: [user.id] }),
+  organization: one(organization, {
+    fields: [notification.organizationId],
+    references: [organization.id],
+  }),
+  issue: one(issue, { fields: [notification.issueId], references: [issue.id] }),
 }));
