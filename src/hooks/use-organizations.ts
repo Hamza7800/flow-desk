@@ -192,7 +192,6 @@ export const useUpdateOrganization = () => {
       router.replace(`/${data?.data?.slug}/settings/workspace`);
     },
     onError: (error) => {
-      console.log(error);
       toast.danger(error.message);
     },
   });

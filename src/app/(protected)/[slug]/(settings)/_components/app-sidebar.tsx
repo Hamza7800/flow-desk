@@ -36,12 +36,12 @@ const data = {
         },
 
         {
-          title: "Billing",
-          url: "billing",
-        },
-        {
           title: "Invitations",
           url: "invitations",
+        },
+        {
+          title: "Billing",
+          url: "billing",
         },
         {
           title: "Workspace",
