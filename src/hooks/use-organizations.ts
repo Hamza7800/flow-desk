@@ -22,7 +22,7 @@ export const useCreateOrganization = () => {
     mutationFn: async (values: OrganizationSchemaType) => {
       const result = await createOrganization(values);
       if (!result.success) {
-        throw new Error(result.error || "Failed to create organization");
+        throw new Error(result.message || "Failed to create organization");
       }
 
       const { error } = await authClient.organization.setActive({
@@ -56,7 +56,7 @@ export const useCreateOrganization = () => {
 
 export const useOrganization = (
   slug: string | undefined,
-  org?: OrgType["organization"],
+  org?: OrgType["data"],
 ) => {
   return useQuery({
     queryKey: queryKeys.organizations.detail(slug || "no-slug"),
@@ -68,7 +68,7 @@ export const useOrganization = (
       if (!result.success) {
         throw new Error(result.message);
       }
-      return result.organization;
+      return result.data;
     },
     enabled: !!slug,
     initialData: org,

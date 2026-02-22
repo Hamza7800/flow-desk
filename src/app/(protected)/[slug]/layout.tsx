@@ -15,16 +15,16 @@ const WorkspaceMainLayout = async ({ children, params }: Props) => {
     const result = await getOrganization(slug);
 
     if (!result.success) {
-      throw Error(result.error);
+      throw Error(result.message);
     }
 
-    if (!result.organization) {
+    if (!result.data) {
       throw new Error("Organization not found");
     }
 
     return (
       <Suspense fallback={<h2>Loading....</h2>}>
-        <OrganizationProvider slug={slug} initialOrg={result.organization}>
+        <OrganizationProvider slug={slug} initialOrg={result.data}>
           {children}
         </OrganizationProvider>
       </Suspense>

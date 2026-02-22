@@ -22,6 +22,20 @@
       "when": 1771703849330,
       "tag": "0002_lucky_blindfold",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1771718502892,
+      "tag": "0003_known_wrecker",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1771722019565,
+      "tag": "0004_skinny_guardsmen",
+      "breakpoints": true
     }
   ]
 }

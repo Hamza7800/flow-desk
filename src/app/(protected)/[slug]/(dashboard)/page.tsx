@@ -17,14 +17,14 @@ export default async function Page({ params }: Props) {
     const result = await getOrganization(slug);
 
     if (!result.success) {
-      throw Error(result.error);
+      throw Error(result.message);
     }
 
-    if (!result.organization) {
+    if (!result.data) {
       throw new Error("Organization not found");
     }
 
-    const { organization } = result;
+    const { data: organization } = result;
 
     return (
       <div className="min-h-screen">

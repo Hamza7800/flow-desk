@@ -19,7 +19,7 @@ export default async function SlugLayout({ children, params }: Props) {
     <SidebarProvider>
       <AppSidebar slug={slug} />
       <SidebarInset>
-        <header className="sticky top-0 z-[100] flex h-16 w-full shrink-0 items-center gap-2 border-b bg-[#161616] px-4">
+        <header className="sticky top-0 z-[10] flex h-16 w-full shrink-0 items-center gap-2 border-b bg-[#161616] px-4">
           <SidebarTrigger className="-ml-1" />
           <Separator orientation="vertical" className="mr-2 h-4" />
         </header>

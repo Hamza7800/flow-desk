@@ -1,10 +1,10 @@
 "use server";
 
+import { returnError } from "@/lib/utils";
 import { auth } from "@/server/better-auth";
 import { getUser } from "@/server/better-auth/server";
 import { teamSchema, type TeamSchemaType } from "@/zod-schema/teams-schema";
 import { headers } from "next/headers";
-import z from "zod";
 
 export const checkPermission = async (
   permission: "create" | "update" | "delete",
@@ -17,26 +17,6 @@ export const checkPermission = async (
     },
     headers: await headers(),
   });
-};
-
-const returnError = (error: any, message: string) => {
-  console.error(message, error);
-
-  let errorMessage = message;
-
-  if (error?.body?.message) {
-    errorMessage = error.body.message;
-  } else if (error instanceof Error) {
-    errorMessage = error.message;
-  } else if (error instanceof z.ZodError) {
-    errorMessage = error.message;
-  }
-
-  return {
-    success: false,
-    message: errorMessage,
-    data: null,
-  };
 };
 
 export const createTeam = async (orgId: string, values: TeamSchemaType) => {

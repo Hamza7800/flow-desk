@@ -27,7 +27,7 @@ import { ArrowRightToSquare } from "@gravity-ui/icons";
 
 const SignUpUser = () => {
   const router = useRouter();
-  // const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
   const form = useForm<SignUpSchemaType>({
     resolver: zodResolver(SignUpSchema),
     defaultValues: {
@@ -41,12 +41,10 @@ const SignUpUser = () => {
     handleSubmit,
     control,
     reset,
-    formState: { isSubmitting },
+    // formState: {  },
   } = form;
 
   const sigUpAction = async (values: SignUpSchemaType) => {
-    // await new Promise((res) => setTimeout(res, 5000));
-
     const parsedInput = SignUpSchema.safeParse(values);
     if (!parsedInput.success) {
       throw new Error("Invalid Data");
@@ -65,20 +63,31 @@ const SignUpUser = () => {
   };
 
   const onSubmit = async (values: SignUpSchemaType) => {
+    setIsSubmitting(true);
+    try {
+      await sigUpAction(values);
+
+      toast.success("Account created");
+      setIsSubmitting(false);
+      router.push("/onboarding");
+    } catch (error: any) {
+      setIsSubmitting(false);
+      toast.danger(error.message);
+    }
     // setIsSubmitting(true);
-    toast.promise(sigUpAction(values), {
-      loading: "Creating Account...",
-      success: (data) => {
-        // setIsSubmitting(false);
-        reset();
-        router.push("/onboarding");
-        return `Welcome! ${data.user.name}`;
-      },
-      error: (err) => {
-        // setIsSubmitting(false);
-        return err.message;
-      },
-    });
+    // toast.promise(sigUpAction(values), {
+    //   loading: "Creating Account...",
+    //   success: (data) => {
+    //     // setIsSubmitting(false);
+    //     reset();
+    //     router.push("/onboarding");
+    //     return `Welcome! ${data.user.name}`;
+    //   },
+    //   error: (err) => {
+    //     // setIsSubmitting(false);
+    //     return err.message;
+    //   },
+    // });
   };
 
   // const onSubmit = async (values: SignUpSchemaType) => {

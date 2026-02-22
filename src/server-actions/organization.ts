@@ -1,5 +1,6 @@
 "use server";
 
+import { returnError } from "@/lib/utils";
 import { auth } from "@/server/better-auth";
 import { getUser } from "@/server/better-auth/server";
 import {
@@ -55,21 +56,22 @@ export const createOrganization = async (values: OrganizationSchemaType) => {
       data: data,
     };
   } catch (error) {
-    console.error("Error creating organization:", error);
-    if (error instanceof z.ZodError) {
-      return {
-        success: false,
-        error: "Validation failed",
-        details: error.message,
-      };
-    }
-    return {
-      success: false,
-      error:
-        error instanceof Error
-          ? error.message
-          : "Failed to create organization",
-    };
+    return returnError(error, "Error creating organization");
+    // console.error("Error creating organization:", error);
+    // if (error instanceof z.ZodError) {
+    //   return {
+    //     success: false,
+    //     error: "Validation failed",
+    //     details: error.message,
+    //   };
+    // }
+    // return {
+    //   success: false,
+    //   error:
+    //     error instanceof Error
+    //       ? error.message
+    //       : "Failed to create organization",
+    // };
   }
 };
 
@@ -94,18 +96,19 @@ export const getOrganization = async (slug: string) => {
     }
     return {
       success: true,
-      organization,
+      data: organization,
     };
   } catch (error) {
-    console.error("Error fetching organization:", error);
+    return returnError(error, "Error fetching organization");
+    // console.error("Error fetching organization:", error);
 
-    return {
-      success: false,
-      error:
-        error instanceof Error
-          ? error.message
-          : "Failed to fetching organization",
-    };
+    // return {
+    //   success: false,
+    //   error:
+    //     error instanceof Error
+    //       ? error.message
+    //       : "Failed to fetching organization",
+    // };
   }
 };
 
@@ -131,15 +134,16 @@ export const getUserListOrganizations = async () => {
       data,
     };
   } catch (error) {
-    console.error("Error fetch organizations:", error);
+    return returnError(error, "Unable to get organizations");
+    // console.error("Error fetch organizations:", error);
 
-    return {
-      success: false,
-      error:
-        error instanceof Error
-          ? error.message
-          : "Failed to fetch organizations",
-    };
+    // return {
+    //   success: false,
+    //   error:
+    //     error instanceof Error
+    //       ? error.message
+    //       : "Failed to fetch organizations",
+    // };
   }
 };
 
@@ -168,15 +172,16 @@ export const setActiveOrganization = async (orgId: string, slug: string) => {
       data,
     };
   } catch (error) {
-    console.error("Error setting active organization:", error);
+    return returnError(error, "Unable to set organization active");
+    // console.error("Error setting active organization:", error);
 
-    return {
-      success: false,
-      error:
-        error instanceof Error
-          ? error.message
-          : "Failed to set organization active",
-    };
+    // return {
+    //   success: false,
+    //   error:
+    //     error instanceof Error
+    //       ? error.message
+    //       : "Failed to set organization active",
+    // };
   }
 };
 
@@ -185,11 +190,11 @@ export const deleteOrganization = async (slug: string) => {
     await getUser();
     const result = await getOrganization(slug);
 
-    if (!result.success || !result.organization) return result;
+    if (!result.success || !result.data) return result;
 
     const data = await auth.api.deleteOrganization({
       body: {
-        organizationId: result.organization.id,
+        organizationId: result.data.id,
       },
       headers: await headers(),
     });
@@ -206,15 +211,16 @@ export const deleteOrganization = async (slug: string) => {
       data,
     };
   } catch (error) {
-    console.error("Error delete  organization:", error);
+    return returnError(error, "Unable to delete organization");
+    // console.error("Error delete  organization:", error);
 
-    return {
-      success: false,
-      error:
-        error instanceof Error
-          ? error.message
-          : "Failed to delete organization ",
-    };
+    // return {
+    //   success: false,
+    //   error:
+    //     error instanceof Error
+    //       ? error.message
+    //       : "Failed to delete organization ",
+    // };
   }
 };
 
@@ -258,19 +264,20 @@ export const updateOrganization = async (
       data,
     };
   } catch (error: any) {
-    console.error("Error updating  organization:", error);
+    return returnError(error, "Unable to update organization");
+    // console.error("Error updating  organization:", error);
 
-    let errorMessage = "Failed to update organization";
+    // let errorMessage = "Failed to update organization";
 
-    if (error?.body?.message) {
-      errorMessage = error.body.message;
-    } else if (error instanceof Error) {
-      errorMessage = error.message;
-    }
+    // if (error?.body?.message) {
+    //   errorMessage = error.body.message;
+    // } else if (error instanceof Error) {
+    //   errorMessage = error.message;
+    // }
 
-    return {
-      success: false,
-      message: errorMessage,
-    };
+    // return {
+    //   success: false,
+    //   message: errorMessage,
+    // };
   }
 };

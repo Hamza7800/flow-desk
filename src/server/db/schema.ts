@@ -225,6 +225,8 @@ export const organizationRelations = relations(organization, ({ many }) => ({
   teams: many(team),
   members: many(member),
   invitations: many(invitation),
+  projects: many(project),
+  issues: many(issue),
 }));
 
 export const teamRelations = relations(team, ({ one, many }) => ({
@@ -233,6 +235,8 @@ export const teamRelations = relations(team, ({ one, many }) => ({
     references: [organization.id],
   }),
   teamMembers: many(teamMember),
+  projects: many(project),
+  issues: many(issue),
 }));
 
 export const teamMemberRelations = relations(teamMember, ({ one }) => ({
@@ -300,6 +304,7 @@ export const project = createTable("project", {
   organizationId: text("organization_id")
     .references(() => organization.id, { onDelete: "cascade" })
     .notNull(),
+  teamId: text("team_id").references(() => team.id, { onDelete: "set null" }),
   name: varchar("name", { length: 200 }).notNull(),
   summary: text("summary"),
   description: text("description"),
@@ -371,9 +376,10 @@ export const issue = createTable("issue", {
   organizationId: text("organization_id")
     .references(() => organization.id, { onDelete: "cascade" })
     .notNull(),
-  projectId: uuid("project_id")
-    .references(() => project.id, { onDelete: "set null" })
-    .notNull(),
+  teamId: text("team_id").references(() => team.id, { onDelete: "set null" }),
+  projectId: uuid("project_id").references(() => project.id, {
+    onDelete: "set null",
+  }),
 
   title: varchar("title", { length: 200 }).notNull(),
   description: text("description"),
@@ -385,7 +391,6 @@ export const issue = createTable("issue", {
   // members: text("members"),
   dueDate: timestamp("due_date"),
   // labels: text("labels"),
-  creatorId: text("creator_id").references(() => user.id),
 });
 
 export const issueAssignee = createTable(
@@ -491,6 +496,10 @@ export const issueRelations = relations(issue, ({ one, many }) => ({
     fields: [issue.organizationId],
     references: [organization.id],
   }),
+  team: one(team, {
+    fields: [issue.teamId],
+    references: [team.id],
+  }),
   comments: many(comment),
   activities: many(issueActivity),
   labels: many(issueLabel),
@@ -526,6 +535,10 @@ export const projectRelations = relations(project, ({ one, many }) => ({
   organization: one(organization, {
     fields: [project.organizationId],
     references: [organization.id],
+  }),
+  team: one(team, {
+    fields: [project.teamId],
+    references: [team.id],
   }),
   issues: many(issue),
   members: many(projectMember),

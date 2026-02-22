@@ -5,6 +5,7 @@ import { inviteSchema, type InviteType } from "@/zod-schema/invite-schema";
 import { auth } from "@/server/better-auth";
 import { headers } from "next/headers";
 import z from "zod";
+import { returnError } from "@/lib/utils";
 
 const checkInvitePermission = async (
   id: string,
@@ -60,19 +61,20 @@ export const inviteUserToWorkspace = async (
       data: inviteResult,
     };
   } catch (error) {
-    console.error("Invite failed", error);
+    return returnError(error, "Invite failed");
+    // console.error("Invite failed", error);
 
-    if (error instanceof z.ZodError) {
-      return {
-        success: false,
-        error: "Validation failed",
-        details: error.message,
-      };
-    }
-    return {
-      success: false,
-      error: error instanceof Error ? error.message : "Invite failed",
-    };
+    // if (error instanceof z.ZodError) {
+    //   return {
+    //     success: false,
+    //     error: "Validation failed",
+    //     details: error.message,
+    //   };
+    // }
+    // return {
+    //   success: false,
+    //   error: error instanceof Error ? error.message : "Invite failed",
+    // };
   }
 };
 
@@ -100,20 +102,21 @@ export const acceptInvitation = async (inviteId: string) => {
       data,
     };
   } catch (error: any) {
-    console.error("Invite accept failed", error);
+    return returnError(error, "Unable to accept invite");
+    //   console.error("Invite accept failed", error);
 
-    let errorMessage = "Invite accept failed";
+    //   let errorMessage = "Invite accept failed";
 
-    if (error?.body?.message) {
-      errorMessage = error.body.message;
-    } else if (error instanceof Error) {
-      errorMessage = error.message;
-    }
+    //   if (error?.body?.message) {
+    //     errorMessage = error.body.message;
+    //   } else if (error instanceof Error) {
+    //     errorMessage = error.message;
+    //   }
 
-    return {
-      success: false,
-      message: errorMessage,
-    };
+    //   return {
+    //     success: false,
+    //     message: errorMessage,
+    //   };
   }
 };
 
@@ -141,20 +144,21 @@ export const cancelInvitation = async (inviteId: string) => {
       data,
     };
   } catch (error: any) {
-    console.error("Invite cancel failed", error);
+    return returnError(error, "Unable to cancel invite");
+    //   console.error("Invite cancel failed", error);
 
-    let errorMessage = "Invite cancel failed";
+    //   let errorMessage = "Invite cancel failed";
 
-    if (error?.body?.message) {
-      errorMessage = error.body.message;
-    } else if (error instanceof Error) {
-      errorMessage = error.message;
-    }
+    //   if (error?.body?.message) {
+    //     errorMessage = error.body.message;
+    //   } else if (error instanceof Error) {
+    //     errorMessage = error.message;
+    //   }
 
-    return {
-      success: false,
-      message: errorMessage,
-    };
+    //   return {
+    //     success: false,
+    //     message: errorMessage,
+    //   };
   }
 };
 
@@ -182,20 +186,21 @@ export const rejectInvitation = async (inviteId: string) => {
       data,
     };
   } catch (error: any) {
-    console.error("Invitation reject", error);
+    return returnError(error, "Unable to reject invite");
+    // console.error("Invitation reject", error);
 
-    let errorMessage = "Failed to reject invitation";
+    // let errorMessage = "Failed to reject invitation";
 
-    if (error?.body?.message) {
-      errorMessage = error.body.message;
-    } else if (error instanceof Error) {
-      errorMessage = error.message;
-    }
+    // if (error?.body?.message) {
+    //   errorMessage = error.body.message;
+    // } else if (error instanceof Error) {
+    //   errorMessage = error.message;
+    // }
 
-    return {
-      success: false,
-      message: errorMessage,
-    };
+    // return {
+    //   success: false,
+    //   message: errorMessage,
+    // };
   }
 };
 
@@ -215,19 +220,20 @@ export const getUserInvites = async () => {
       data: invitations,
     };
   } catch (error: any) {
-    console.error("User Invitation failed", error);
+    return returnError(error, "Unable to get user invites");
+    // console.error("User Invitation failed", error);
 
-    let errorMessage = "Failed to get user invitations";
+    // let errorMessage = "Failed to get user invitations";
 
-    if (error?.body?.message) {
-      errorMessage = error.body.message;
-    } else if (error instanceof Error) {
-      errorMessage = error.message;
-    }
+    // if (error?.body?.message) {
+    //   errorMessage = error.body.message;
+    // } else if (error instanceof Error) {
+    //   errorMessage = error.message;
+    // }
 
-    return {
-      success: false,
-      message: errorMessage,
-    };
+    // return {
+    //   success: false,
+    //   message: errorMessage,
+    // };
   }
 };

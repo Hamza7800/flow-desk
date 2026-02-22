@@ -14,7 +14,7 @@ import {
 import { LinkButton } from "../link-button";
 
 const OrganizationContext = createContext<{
-  org: OrgType["organization"] | undefined;
+  org: OrgType["data"] | undefined;
   // setOrg: (o: Organization) => void;
   switchOrg: (slug: string) => Promise<void>;
 } | null>(null);
@@ -25,7 +25,7 @@ const OrganizationProvider = ({
   slug,
 }: {
   slug: string;
-  initialOrg: OrgType["organization"];
+  initialOrg: OrgType["data"];
   children: ReactNode;
 }) => {
   const router = useRouter();
