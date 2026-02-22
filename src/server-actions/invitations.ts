@@ -4,29 +4,29 @@ import { getUser } from "@/server/better-auth/server";
 import { inviteSchema, type InviteType } from "@/zod-schema/invite-schema";
 import { auth } from "@/server/better-auth";
 import { headers } from "next/headers";
-import z from "zod";
 import { returnError } from "@/lib/utils";
+// import { checkPermission } from "@/lib/permissions-checks";
 
-const checkInvitePermission = async (
-  id: string,
-  permission: "create" | "cancel",
-) => {
-  const result = await auth.api.hasPermission({
-    headers: await headers(),
-    body: {
-      organizationId: id,
-      permissions: {
-        invitation: [permission],
-      },
-    },
-  });
+// const checkInvitePermission = async (
+//   id: string,
+//   permission: "create" | "cancel",
+// ) => {
+//   const result = await auth.api.hasPermission({
+//     headers: await headers(),
+//     body: {
+//       organizationId: id,
+//       permissions: {
+//         invitation: [permission],
+//       },
+//     },
+//   });
 
-  if (result.error) {
-    throw new Error(result.error);
-  }
+//   if (result.error) {
+//     throw new Error(result.error);
+//   }
 
-  return result;
-};
+//   return result;
+// };
 
 export const inviteUserToWorkspace = async (
   orgId: string,
@@ -34,7 +34,8 @@ export const inviteUserToWorkspace = async (
 ) => {
   try {
     await getUser();
-    await checkInvitePermission(orgId, "create");
+    // await checkInvitePermission(orgId, "create");
+    // await checkPermission('invitation', 'create')
 
     const validatedData = inviteSchema.parse(values);
 

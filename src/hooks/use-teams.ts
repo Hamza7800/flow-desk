@@ -1,8 +1,11 @@
 import { queryKeys } from "@/lib/query-keys";
 import {
+  addMemberToTeam,
   createTeam,
   getOrgTeams,
   getUserTeams,
+  getUserTeamsCurrentOrg,
+  removeMemberFromTeam,
   removeTeam,
   setActiveTeam,
   updateTeam,
@@ -13,7 +16,7 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
 export const useOrgTeams = (orgId: string) => {
   return useQuery({
-    queryKey: queryKeys.teams.orgList(orgId || "no-org"),
+    queryKey: queryKeys.teams.orgList(orgId),
     queryFn: async () => {
       if (!orgId) throw new Error("No organization ID provided");
 
@@ -28,10 +31,10 @@ export const useOrgTeams = (orgId: string) => {
 
 export const useUserTeams = (orgId: string) => {
   return useQuery({
-    queryKey: queryKeys.teams.userList(),
+    queryKey: queryKeys.teams.userList(orgId),
     queryFn: async () => {
       if (!orgId) throw new Error("No organization ID provided");
-      const result = await getUserTeams(orgId);
+      const result = await getUserTeamsCurrentOrg(orgId);
       if (!result.success) throw new Error(result.message);
       return result;
     },
@@ -53,7 +56,9 @@ export const useCreateTeam = (orgId: string) => {
       queryClient.invalidateQueries({
         queryKey: queryKeys.teams.orgList(orgId),
       });
-      queryClient.invalidateQueries({ queryKey: queryKeys.teams.userList() });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.teams.userList(orgId),
+      });
       toast.success(data.message);
     },
     onError: (error: Error) => {
@@ -82,7 +87,9 @@ export const useUpdateTeam = (orgId: string) => {
       queryClient.invalidateQueries({
         queryKey: queryKeys.teams.orgList(orgId),
       });
-      queryClient.invalidateQueries({ queryKey: queryKeys.teams.userList() });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.teams.userList(orgId),
+      });
       toast.success(data.message);
     },
     onError: (error: Error) => {
@@ -105,7 +112,9 @@ export const useRemoveTeam = (orgId: string) => {
       queryClient.invalidateQueries({
         queryKey: queryKeys.teams.orgList(orgId),
       });
-      queryClient.invalidateQueries({ queryKey: queryKeys.teams.userList() });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.teams.userList(orgId),
+      });
       toast.success(data.message);
     },
     onError: (error: Error) => {
@@ -126,6 +135,56 @@ export const useSetActiveTeam = () => {
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.teams.all });
+      toast.success(data.message);
+    },
+    onError: (error: Error) => {
+      toast.danger(error.message);
+    },
+  });
+};
+
+export const useAddMemberToTeam = (orgId: string) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (teamId: string) => {
+      const result = await addMemberToTeam(teamId);
+      if (!result.success)
+        throw new Error(result.message || "Failed to join team");
+      return result;
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.teams.orgList(orgId),
+      });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.teams.userList(orgId),
+      });
+      toast.success(data.message);
+    },
+    onError: (error: Error) => {
+      toast.danger(error.message);
+    },
+  });
+};
+
+export const useRemoveMemberFromTeam = (orgId: string) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (teamId: string) => {
+      const result = await removeMemberFromTeam(teamId);
+      if (!result.success)
+        throw new Error(result.message || "Failed to leave team");
+      return result;
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.teams.orgList(orgId),
+      });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.teams.userList(orgId),
+      });
       toast.success(data.message);
     },
     onError: (error: Error) => {

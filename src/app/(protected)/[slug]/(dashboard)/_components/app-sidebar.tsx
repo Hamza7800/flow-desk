@@ -21,15 +21,15 @@ const data = {
       items: [
         {
           title: "Projects",
-          url: "",
+          url: "/projects",
         },
         {
           title: "Members",
-          url: "",
+          url: "/members",
         },
         {
           title: "Teams",
-          url: "",
+          url: "/teams",
         },
       ],
     },
@@ -81,7 +81,7 @@ export function AppSidebar({ slug, ...props }: ComponentProps<typeof Sidebar>) {
                     fullWidth
                     variant="ghost"
                     key={item.title}
-                    href={item.url}
+                    href={`/${slug}/${item.url}`}
                   >
                     {item.title}
                   </LinkButton>

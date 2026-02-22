@@ -26,6 +26,7 @@ export const queryKeys = {
   teams: {
     all: ["teams"] as const,
     orgList: (orgId: string) => [...queryKeys.teams.all, "org", orgId] as const,
-    userList: () => [...queryKeys.teams.all, "user"] as const,
+    userList: (orgId: string) =>
+      [...queryKeys.teams.all, "user", orgId] as const,
   },
 };

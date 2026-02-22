@@ -6,6 +6,7 @@ import { db } from "@/server/db";
 import Stripe from "stripe";
 import { nextCookies } from "better-auth/next-js";
 import { organization } from "better-auth/plugins";
+import { ac, memberRole, adminRole, ownerRole } from "@/lib/permissions";
 
 const stripeClient = new Stripe(env.STRIPE_SECRET_KEY, {
   apiVersion: "2026-01-28.clover",
@@ -20,6 +21,12 @@ export const auth = betterAuth({
   },
   plugins: [
     organization({
+      ac,
+      roles: {
+        member: memberRole,
+        admin: adminRole,
+        owner: ownerRole,
+      },
       teams: {
         enabled: true,
         maximumTeams: 2,

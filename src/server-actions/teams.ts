@@ -1,32 +1,35 @@
 "use server";
 
+import { checkPermission } from "@/lib/permissions-checks";
 import { returnError } from "@/lib/utils";
 import { auth } from "@/server/better-auth";
 import { getUser } from "@/server/better-auth/server";
+import { db } from "@/server/db";
+import { team, teamMember } from "@/server/db/schema";
 import { teamSchema, type TeamSchemaType } from "@/zod-schema/teams-schema";
+import { and, eq } from "drizzle-orm";
 import { headers } from "next/headers";
 
-export const checkPermission = async (
-  permission: "create" | "update" | "delete",
-) => {
-  return await auth.api.hasPermission({
-    body: {
-      permissions: {
-        team: [permission],
-      },
-    },
-    headers: await headers(),
-  });
-};
+// export const checkPermission = async (
+//   permission: "create" | "update" | "delete",
+// ) => {
+//   return await auth.api.hasPermission({
+//     body: {
+//       permissions: {
+//         team: [permission],
+//       },
+//     },
+//     headers: await headers(),
+//   });
+// };
 
 export const createTeam = async (orgId: string, values: TeamSchemaType) => {
   try {
-    await getUser();
+    const user = await getUser();
     const validatedValues = teamSchema.parse(values);
 
-    const hasPermission = await checkPermission("create");
+    const hasPermission = await checkPermission("team", "create");
 
-    console.log(hasPermission);
     if (!hasPermission.success) {
       return {
         success: false,
@@ -47,6 +50,15 @@ export const createTeam = async (orgId: string, values: TeamSchemaType) => {
         message: "Unable to create team",
       };
     }
+
+    await auth.api.addTeamMember({
+      body: {
+        teamId: data.id,
+        userId: user.id,
+      },
+      headers: await headers(),
+    });
+
     return {
       success: true,
       message: "Team Created",
@@ -59,7 +71,7 @@ export const createTeam = async (orgId: string, values: TeamSchemaType) => {
 export const updateTeam = async (teamId: string, values: TeamSchemaType) => {
   try {
     await getUser();
-    const hasPermission = await checkPermission("update");
+    const hasPermission = await checkPermission("team", "update");
 
     if (!hasPermission.success) {
       return {
@@ -100,7 +112,7 @@ export const removeTeam = async (teamId: string, organizationId: string) => {
   try {
     await getUser();
 
-    const hasPermission = await checkPermission("delete");
+    const hasPermission = await checkPermission("team", "delete");
 
     if (!hasPermission.success) {
       return {
@@ -195,5 +207,77 @@ export const getUserTeams = async (orgId: string) => {
     };
   } catch (error) {
     return returnError(error, "Unable to get user teams");
+  }
+};
+
+export const getUserTeamsCurrentOrg = async (orgId: string) => {
+  try {
+    const user = await getUser();
+    const data = await db
+      .select({
+        id: team.id,
+        name: team.name,
+        organizationId: team.organizationId,
+        createdAt: team.createdAt,
+      })
+      .from(team)
+      .innerJoin(teamMember, eq(team.id, teamMember.teamId))
+      .where(
+        and(eq(team.organizationId, orgId), eq(teamMember.userId, user.id)),
+      );
+
+    return {
+      success: true,
+      message: "User Teams",
+      data,
+    };
+  } catch (error) {
+    return returnError(error, "Unable to get user teams");
+  }
+};
+
+// TODO: WHEN INVITE YOU CAN ALSO SPECIFY A TEAM BY DEFAULT
+
+export const addMemberToTeam = async (teamId: string) => {
+  try {
+    const user = await getUser();
+
+    const data = await auth.api.addTeamMember({
+      body: {
+        teamId,
+        userId: user.id,
+      },
+      headers: await headers(),
+    });
+
+    return {
+      success: true,
+      message: "Team Joined",
+      data,
+    };
+  } catch (error) {
+    return returnError(error, "Unable to join team");
+  }
+};
+
+export const removeMemberFromTeam = async (teamId: string) => {
+  try {
+    const user = await getUser();
+
+    const data = await auth.api.removeTeamMember({
+      body: {
+        teamId,
+        userId: user.id,
+      },
+      headers: await headers(),
+    });
+
+    return {
+      success: true,
+      message: "Team Left",
+      data,
+    };
+  } catch (error) {
+    return returnError(error, "Unable to leave team");
   }
 };

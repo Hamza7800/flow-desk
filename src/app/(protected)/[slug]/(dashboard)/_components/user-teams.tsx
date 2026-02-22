@@ -2,7 +2,7 @@
 
 import { useOrganizationContext } from "@/components/context/organization-client-context";
 import { LinkButton } from "@/components/link-button";
-import { useOrgTeams } from "@/hooks/use-teams";
+import { useOrgTeams, useUserTeams } from "@/hooks/use-teams";
 import { ChevronDown } from "@gravity-ui/icons";
 import { Accordion, Spinner } from "@heroui/react";
 
@@ -14,7 +14,7 @@ const items = [
 const UserTeams = () => {
   const { org } = useOrganizationContext();
 
-  const { data: teams, isPending, isError } = useOrgTeams(org?.id ?? "");
+  const { data: teams, isPending, isError } = useUserTeams(org?.id ?? "");
 
   if (!org) return null;
 
