@@ -62,10 +62,9 @@ export function AppSidebar({ slug, ...props }: ComponentProps<typeof Sidebar>) {
           <Accordion
             key={item.title}
             className={"py-0"}
-            // title={item.title}
-            // defaultOpen
+            defaultExpandedKeys={["workspace"]}
           >
-            <Accordion.Item>
+            <Accordion.Item id={"workspace"}>
               <Accordion.Heading>
                 <Accordion.Trigger>
                   {item.title}

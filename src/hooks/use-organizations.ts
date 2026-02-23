@@ -7,6 +7,7 @@ import {
   setActiveOrganization,
   updateOrganization,
   type OrgType,
+  type UserOrgType,
 } from "@/server-actions/organization";
 import { authClient } from "@/server/better-auth/client";
 import type { OrganizationSchemaType } from "@/zod-schema/organization-schema";
@@ -75,7 +76,7 @@ export const useOrganization = (
   });
 };
 
-export const useOrganizationsList = () => {
+export const useOrganizationsList = (initialData?: UserOrgType["data"]) => {
   return useQuery({
     queryKey: queryKeys.organizations.list(),
     queryFn: async () => {
@@ -85,6 +86,7 @@ export const useOrganizationsList = () => {
       }
       return result.data;
     },
+    initialData,
   });
 };
 
@@ -94,23 +96,45 @@ export const useSetOrgActive = () => {
 
   return useMutation({
     mutationFn: async ({ id, slug }: { id: string; slug: string }) => {
-      const { data, error } = await authClient.organization.setActive({
+      await authClient.organization.setActive({
         organizationId: id,
         organizationSlug: slug,
       });
-      // const result = await setActiveOrganization(id, slug);
-      if (!data) {
-        throw new Error(error.message);
+      const result = await setActiveOrganization(id, slug);
+      if (!result.success) {
+        throw new Error(result.message);
       }
-      return data;
+      return result.data;
     },
     onSuccess: (data) => {
-      queryClient.invalidateQueries({
-        queryKey: queryKeys.organizations.all,
+      // queryClient.clear();
+
+      queryClient.removeQueries({
+        queryKey: queryKeys.teams.all,
       });
 
-      toast.success(`${data.name} org set active`);
+      queryClient.removeQueries({
+        queryKey: queryKeys.invitations.all,
+      });
+      queryClient.removeQueries({
+        queryKey: queryKeys.projects.all,
+      });
+
+      queryClient.removeQueries({
+        queryKey: queryKeys.issues.all,
+      });
+
+      queryClient.removeQueries({
+        queryKey: queryKeys.members.all,
+      });
+
+      queryClient.removeQueries({
+        queryKey: queryKeys.comments.all,
+      });
+
+      toast.success(`${data?.name} org set active`);
       router.replace(`/${data?.slug}`);
+
       // router.refresh();
       // window.location.href = `/${data.data?.slug}`;
     },

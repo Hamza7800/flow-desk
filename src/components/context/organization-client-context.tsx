@@ -1,7 +1,7 @@
 "use client";
 
 import { useOrganization } from "@/hooks/use-organizations";
-import type { OrgType } from "@/server-actions/organization";
+import type { OrgType, UserOrgType } from "@/server-actions/organization";
 import { Card, Spinner } from "@heroui/react";
 import { useRouter } from "next/navigation";
 import {
@@ -12,20 +12,29 @@ import {
   type ReactNode,
 } from "react";
 import { LinkButton } from "../link-button";
+import type { TeamsType } from "@/server-actions/teams";
 
 const OrganizationContext = createContext<{
   org: OrgType["data"] | undefined;
   // setOrg: (o: Organization) => void;
+  userOrgs: UserOrgType["data"];
+  userTeams: TeamsType["data"];
   switchOrg: (slug: string) => Promise<void>;
 } | null>(null);
 
+type InitialData = {
+  initialOrg: OrgType["data"];
+  initialUserOrgs: UserOrgType["data"];
+  initialTeams: TeamsType["data"];
+};
+
 const OrganizationProvider = ({
-  initialOrg,
+  initialData,
   children,
   slug,
 }: {
   slug: string;
-  initialOrg: OrgType["data"];
+  initialData: InitialData;
   children: ReactNode;
 }) => {
   const router = useRouter();
@@ -34,13 +43,13 @@ const OrganizationProvider = ({
     isPending,
     isError,
     error,
-  } = useOrganization(slug, initialOrg);
-  // const [org, setOrg] = useState<Org | null>(initialOrg ?? null);
+  } = useOrganization(slug, initialData.initialOrg);
 
   const value = useMemo(
     () => ({
       org,
-      // setOrg,
+      userTeams: initialData.initialTeams,
+      userOrgs: initialData.initialUserOrgs,
       switchOrg: async (slug: string) => {
         router.push(`/org/${slug}`);
       },

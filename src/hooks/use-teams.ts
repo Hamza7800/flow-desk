@@ -44,15 +44,16 @@ export const useTeam = (teamId: string) => {
   });
 };
 
-export const useUserTeams = () => {
+export const useUserTeams = (initialData?: TeamsType["data"]) => {
   return useQuery({
     // queryKey: queryKeys.teams.userList(orgId),
     queryKey: queryKeys.teams.userList(),
     queryFn: async () => {
       const result = await getUserTeamsCurrentOrg();
       if (!result.success) throw new Error(result.message);
-      return result;
+      return result.data;
     },
+    initialData,
   });
 };
 

@@ -147,6 +147,8 @@ export const getUserListOrganizations = async () => {
   }
 };
 
+export type UserOrgType = Awaited<ReturnType<typeof getUserListOrganizations>>;
+
 export const setActiveOrganization = async (orgId: string, slug: string) => {
   try {
     await getUser();

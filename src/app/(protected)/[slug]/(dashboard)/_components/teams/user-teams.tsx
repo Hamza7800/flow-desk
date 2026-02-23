@@ -1,5 +1,6 @@
 "use client";
 
+import { useOrganizationContext } from "@/components/context/organization-client-context";
 import { LinkButton } from "@/components/link-button";
 import { useUserTeams } from "@/hooks/use-teams";
 import { ChevronDown } from "@gravity-ui/icons";
@@ -13,7 +14,8 @@ const items = [
 
 const UserTeams = () => {
   const { slug } = useParams<{ slug: string }>();
-  const { data: teams, isPending, isError } = useUserTeams();
+  const { userTeams } = useOrganizationContext();
+  const { data: teams, isPending, isError } = useUserTeams(userTeams);
 
   if (isPending) {
     return (
@@ -30,8 +32,8 @@ const UserTeams = () => {
   }
 
   return (
-    <Accordion className="py-0">
-      <Accordion.Item>
+    <Accordion defaultExpandedKeys={["teams"]} className="py-0">
+      <Accordion.Item id={"teams"}>
         <Accordion.Heading>
           <Accordion.Trigger className="rounded-md px-4 py-2">
             <span className="font-medium">Your Teams</span>
@@ -43,12 +45,16 @@ const UserTeams = () => {
 
         <Accordion.Panel className="mt-2">
           <div className="ml-5 space-y-3 border-l border-white/50 pl-3">
-            {!teams.data?.length ? (
+            {!teams?.length ? (
               <p className="px-4 py-2 text-sm text-slate-500">No teams</p>
             ) : (
-              teams?.data?.map((team) => (
-                <Accordion key={team.id} className="py-0">
-                  <Accordion.Item>
+              teams?.map((team) => (
+                <Accordion
+                  key={team.id}
+                  defaultExpandedKeys={[team.id]}
+                  className="py-0"
+                >
+                  <Accordion.Item id={team.id}>
                     <Accordion.Heading>
                       <Accordion.Trigger className="rounded-md px-2 py-1 text-sm">
                         {team.name}

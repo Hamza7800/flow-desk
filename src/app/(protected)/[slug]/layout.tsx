@@ -1,7 +1,11 @@
 import OrganizationProvider from "@/components/context/organization-client-context";
 import { LinkButton } from "@/components/link-button";
 import WorkspaceLayoutSkeleton from "@/components/skeletons/workspace-layout-skeleton";
-import { getOrganization } from "@/server-actions/organization";
+import {
+  getOrganization,
+  getUserListOrganizations,
+} from "@/server-actions/organization";
+import { getUserTeamsCurrentOrg } from "@/server-actions/teams";
 import { Card } from "@heroui/react";
 import { Suspense, type ReactNode } from "react";
 
@@ -18,18 +22,29 @@ const Content = async ({
   children: ReactNode;
 }) => {
   try {
-    const result = await getOrganization(slug);
+    const [orgRes, userOrgsRes, userTeamsRes] = await Promise.all([
+      getOrganization(slug),
+      getUserListOrganizations(),
+      getUserTeamsCurrentOrg(),
+    ]);
 
-    if (!result.success) {
-      throw Error(result.message);
+    if (!orgRes.success) {
+      throw Error(orgRes.message);
     }
 
-    if (!result.data) {
+    if (!orgRes.data) {
       throw new Error("Organization not found");
     }
 
     return (
-      <OrganizationProvider slug={slug} initialOrg={result.data}>
+      <OrganizationProvider
+        slug={slug}
+        initialData={{
+          initialOrg: orgRes.data,
+          initialUserOrgs: userOrgsRes.data,
+          initialTeams: userTeamsRes.data,
+        }}
+      >
         {children}
       </OrganizationProvider>
     );

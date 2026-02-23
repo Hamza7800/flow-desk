@@ -9,13 +9,19 @@ import {
   useSetOrgActive,
 } from "@/hooks/use-organizations";
 import { authClient } from "@/server/better-auth/client";
+import { useOrganizationContext } from "./context/organization-client-context";
 
 export function OrganizationSwitcher() {
   const action = useSetOrgActive();
-  const { data: organizations, isPending, isError } = useOrganizationsList();
+  const { userOrgs } = useOrganizationContext();
+  const {
+    data: organizations,
+    isPending,
+    isError,
+  } = useOrganizationsList(userOrgs);
   const { data: activeOrganization } = authClient.useActiveOrganization();
 
-  if (isPending || action.isPending) {
+  if (isPending) {
     return <Spinner />;
   }
 
