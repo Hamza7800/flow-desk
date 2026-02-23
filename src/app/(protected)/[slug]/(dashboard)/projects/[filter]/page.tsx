@@ -1,51 +1,21 @@
 "use client";
-import { useParams } from "next/navigation";
-import { CreateProjectModal } from "../../../../_components/create-project";
-import { useOrganizationContext } from "@/components/context/organization-client-context";
-import { useOrgTeams } from "@/hooks/use-teams";
-import { Spinner } from "@heroui/react";
+
 import { format } from "date-fns";
 import { Lock, Archive, Calendar, Layers } from "lucide-react";
-import { useTeamProjects } from "@/hooks/use-projects";
-
-const Page = () => {
-  const { id } = useParams();
-  const { org } = useOrganizationContext();
-  const { data, isPending, error, isError } = useOrgTeams(org?.id ?? "");
-
-  const team = data?.data?.find((t) => t.id === id);
-  if (!team) {
-    return <h2>No team</h2>;
-  }
-
-  if (isPending) {
-    return <Spinner />;
-  }
-
-  if (isError) {
-    return <h2>{error.message}</h2>;
-  }
-
-  return (
-    <div>
-      <TeamProjects teamId={team.id} />
-      <CreateProjectModal teamId={team.id} orgId={org?.id ?? ""} />
-    </div>
-  );
-};
-
-export default Page;
+import { useOrganizationContext } from "@/components/context/organization-client-context";
+import { useOrgProject } from "@/hooks/use-projects";
+import { Spinner } from "@heroui/react";
 
 // TODO: NEED TO PASS DATA AS INITIAL DATA TO REACT QUERY;
 
-const TeamProjects = ({ teamId }: { teamId: string }) => {
+const OrganizationProjects = () => {
   const { org } = useOrganizationContext();
   const {
     data: projects,
     isPending,
     isError,
     error,
-  } = useTeamProjects(org?.id ?? "", teamId);
+  } = useOrgProject(org?.id ?? "");
 
   if (!projects?.length) {
     return <h2>No projects</h2>;
@@ -70,6 +40,7 @@ const TeamProjects = ({ teamId }: { teamId: string }) => {
   );
 };
 
+export default OrganizationProjects;
 function ProjectCard({ project }: { project: any }) {
   const isArchived = !!project.archivedAt;
 

@@ -21,7 +21,7 @@ const data = {
       items: [
         {
           title: "Projects",
-          url: "/projects",
+          url: "/projects/all",
         },
         {
           title: "Members",

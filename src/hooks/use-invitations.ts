@@ -23,7 +23,7 @@ export const useSendInvitation = (orgId: string, slug: string) => {
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({
-        queryKey: queryKeys.invitations.org(orgId),
+        queryKey: queryKeys.invitations.list(orgId),
       });
 
       queryClient.invalidateQueries({
@@ -51,7 +51,7 @@ export const useAcceptInvitation = (slug: string) => {
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({
-        queryKey: queryKeys.invitations.org(slug),
+        queryKey: queryKeys.invitations.list(slug),
       });
       queryClient.invalidateQueries({
         queryKey: queryKeys.organizations.detail(slug),
@@ -77,7 +77,7 @@ export const useCancelInvitation = (slug: string) => {
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({
-        queryKey: queryKeys.invitations.org(slug),
+        queryKey: queryKeys.invitations.list(slug),
       });
 
       queryClient.invalidateQueries({
@@ -127,7 +127,7 @@ export const useRejectInvitation = (slug: string) => {
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({
-        queryKey: queryKeys.invitations.org(slug),
+        queryKey: queryKeys.invitations.list(slug),
       });
 
       queryClient.invalidateQueries({

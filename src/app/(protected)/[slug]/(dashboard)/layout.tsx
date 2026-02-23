@@ -23,7 +23,7 @@ export default async function SlugLayout({ children, params }: Props) {
           <SidebarTrigger className="-ml-1" />
           <Separator orientation="vertical" className="mr-2 h-4" />
         </header>
-        <div className="mx-auto flex max-w-7xl flex-1 flex-col gap-4 p-4">
+        <div className="flex max-w-7xl flex-1 flex-col gap-4 p-4">
           {children}
         </div>
       </SidebarInset>

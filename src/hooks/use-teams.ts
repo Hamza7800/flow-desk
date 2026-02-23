@@ -31,7 +31,8 @@ export const useOrgTeams = (orgId: string) => {
 
 export const useUserTeams = (orgId: string) => {
   return useQuery({
-    queryKey: queryKeys.teams.userList(orgId),
+    // queryKey: queryKeys.teams.userList(orgId),
+    queryKey: queryKeys.teams.userList(),
     queryFn: async () => {
       if (!orgId) throw new Error("No organization ID provided");
       const result = await getUserTeamsCurrentOrg(orgId);
@@ -57,7 +58,8 @@ export const useCreateTeam = (orgId: string) => {
         queryKey: queryKeys.teams.orgList(orgId),
       });
       queryClient.invalidateQueries({
-        queryKey: queryKeys.teams.userList(orgId),
+        // queryKey: queryKeys.teams.userList(orgId),
+        queryKey: queryKeys.teams.userList(),
       });
       toast.success(data.message);
     },
@@ -88,7 +90,8 @@ export const useUpdateTeam = (orgId: string) => {
         queryKey: queryKeys.teams.orgList(orgId),
       });
       queryClient.invalidateQueries({
-        queryKey: queryKeys.teams.userList(orgId),
+        // queryKey: queryKeys.teams.userList(orgId),
+        queryKey: queryKeys.teams.userList(),
       });
       toast.success(data.message);
     },
@@ -113,7 +116,7 @@ export const useRemoveTeam = (orgId: string) => {
         queryKey: queryKeys.teams.orgList(orgId),
       });
       queryClient.invalidateQueries({
-        queryKey: queryKeys.teams.userList(orgId),
+        queryKey: queryKeys.teams.userList(),
       });
       toast.success(data.message);
     },
@@ -158,7 +161,7 @@ export const useAddMemberToTeam = (orgId: string) => {
         queryKey: queryKeys.teams.orgList(orgId),
       });
       queryClient.invalidateQueries({
-        queryKey: queryKeys.teams.userList(orgId),
+        queryKey: queryKeys.teams.userList(),
       });
       toast.success(data.message);
     },
@@ -183,7 +186,7 @@ export const useRemoveMemberFromTeam = (orgId: string) => {
         queryKey: queryKeys.teams.orgList(orgId),
       });
       queryClient.invalidateQueries({
-        queryKey: queryKeys.teams.userList(orgId),
+        queryKey: queryKeys.teams.userList(),
       });
       toast.success(data.message);
     },

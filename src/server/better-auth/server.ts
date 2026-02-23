@@ -17,3 +17,17 @@ export const getUser = async () => {
 
   return session.user;
 };
+
+export const getActiveOrgId = async () => {
+  const session = await auth.api.getSession({
+    headers: await headers(),
+  });
+
+  if (!session?.session.activeOrganizationId)
+    throw new Error("No active organization");
+
+  return {
+    userId: session.user.id,
+    orgId: session.session.activeOrganizationId,
+  };
+};

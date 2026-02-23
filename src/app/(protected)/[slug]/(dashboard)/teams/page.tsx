@@ -4,8 +4,7 @@ import { useOrganizationContext } from "@/components/context/organization-client
 import { LinkButton } from "@/components/link-button";
 import { useOrgTeams } from "@/hooks/use-teams";
 import { Card, Spinner } from "@heroui/react";
-import JoinTeam from "../_components/join-team";
-import LeaveTeam from "../_components/leave-team";
+import { TeamJoinButton } from "@/app/(protected)/[slug]/(dashboard)/_components/team-join-button";
 
 const TeamsPage = () => {
   const { org } = useOrganizationContext();
@@ -28,6 +27,8 @@ const TeamsPage = () => {
       </p>
     );
   }
+
+  // const isMember = org.teams
 
   return (
     <div className="space-y-4 px-6 py-6">
@@ -55,8 +56,11 @@ const TeamsPage = () => {
                 >
                   View
                 </LinkButton>
-                <JoinTeam teamId={team.id} orgId={org.id} />
-                <LeaveTeam teamId={team.id} orgId={org.id} />
+                <TeamJoinButton
+                  teamId={team.id}
+                  orgId={org.id}
+                  isMember={false}
+                />
               </div>
             </Card.Header>
           </Card>
