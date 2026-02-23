@@ -1,5 +1,9 @@
 import { queryKeys } from "@/lib/query-keys";
-import { createProject, getProjects } from "@/server-actions/projects";
+import {
+  createProject,
+  getProjects,
+  type ProjectsType,
+} from "@/server-actions/projects";
 import type { ProjectSchemaType } from "@/zod-schema/project-schema";
 import { toast } from "@heroui/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -30,7 +34,10 @@ export const useCreateProject = (orgId: string, teamId: string) => {
   });
 };
 
-export const useOrgProject = (orgId: string | undefined) => {
+export const useOrgProjects = (
+  orgId: string | undefined,
+  initialData?: ProjectsType["data"],
+) => {
   return useQuery({
     queryKey: queryKeys.projects.orgList(orgId ?? "no-org"),
     queryFn: async () => {
@@ -39,12 +46,14 @@ export const useOrgProject = (orgId: string | undefined) => {
       return result.data;
     },
     enabled: !!orgId,
+    initialData: initialData || [],
   });
 };
 
 export const useTeamProjects = (
   orgId: string | undefined,
   teamId: string | undefined,
+  initialData?: ProjectsType["data"],
 ) => {
   return useQuery({
     queryKey: queryKeys.projects.teamList(
@@ -57,5 +66,6 @@ export const useTeamProjects = (
       return result.data;
     },
     enabled: !!orgId && !!teamId,
+    initialData: initialData || [],
   });
 };

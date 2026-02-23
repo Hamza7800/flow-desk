@@ -3,8 +3,10 @@
 import { ConfirmModal } from "@/components/confirm-modal";
 import { useOrganizationDelete } from "@/hooks/use-organizations";
 import { Button } from "@heroui/react";
+import { useParams } from "next/navigation";
 
-const DeleteWorkspace = ({ slug }: { slug: string }) => {
+const DeleteWorkspace = () => {
+  const { slug } = useParams<{ slug: string }>();
   const { mutate, isPending } = useOrganizationDelete();
   return (
     <ConfirmModal

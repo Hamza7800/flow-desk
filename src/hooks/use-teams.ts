@@ -3,43 +3,56 @@ import {
   addMemberToTeam,
   createTeam,
   getOrgTeams,
+  getTeam,
   getUserTeams,
   getUserTeamsCurrentOrg,
   removeMemberFromTeam,
   removeTeam,
   setActiveTeam,
   updateTeam,
+  type TeamsType,
 } from "@/server-actions/teams";
 import type { TeamSchemaType } from "@/zod-schema/teams-schema";
 import { toast } from "@heroui/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-export const useOrgTeams = (orgId: string) => {
+export const useOrgTeams = (orgId: string, initialData?: TeamsType["data"]) => {
   return useQuery({
     queryKey: queryKeys.teams.orgList(orgId),
     queryFn: async () => {
-      if (!orgId) throw new Error("No organization ID provided");
-
-      const result = await getOrgTeams(orgId);
+      const result = await getOrgTeams();
 
       if (!result.success) throw new Error(result.message);
-      return result;
+      return result.data;
     },
     enabled: !!orgId,
+    initialData: initialData || [],
   });
 };
 
-export const useUserTeams = (orgId: string) => {
+export const useTeam = (teamId: string) => {
+  return useQuery({
+    queryKey: queryKeys.teams.detail(teamId),
+    queryFn: async () => {
+      const result = await getTeam(teamId);
+      if (!result.success) {
+        throw new Error(result.message);
+      }
+      return result.data;
+    },
+    enabled: !!teamId,
+  });
+};
+
+export const useUserTeams = () => {
   return useQuery({
     // queryKey: queryKeys.teams.userList(orgId),
     queryKey: queryKeys.teams.userList(),
     queryFn: async () => {
-      if (!orgId) throw new Error("No organization ID provided");
-      const result = await getUserTeamsCurrentOrg(orgId);
+      const result = await getUserTeamsCurrentOrg();
       if (!result.success) throw new Error(result.message);
       return result;
     },
-    enabled: !!orgId,
   });
 };
 

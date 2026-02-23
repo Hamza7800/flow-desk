@@ -17,6 +17,7 @@ import {
   Dropdown,
   Spinner,
   Header,
+  type Selection,
 } from "@heroui/react";
 import { useState } from "react";
 import PopupModal from "@/components/modal";
@@ -25,7 +26,6 @@ import { useCreateProject } from "@/hooks/use-projects";
 import { format } from "date-fns";
 
 type Props = {
-  orgId: string;
   teamId: string;
 };
 
@@ -45,10 +45,13 @@ const PRIORITY_OPTIONS = [
   { key: "urgent", label: "Urgent" },
 ];
 
-export function CreateProjectModal({ orgId, teamId }: Props) {
-  const [isOpen, setIsOpen] = useState(false);
-  const { mutate, isPending } = useCreateProject(orgId, teamId);
+export function CreateProjectModal({ teamId }: Props) {
   const { org: organization } = useOrganizationContext();
+  const [isOpen, setIsOpen] = useState(false);
+  const { mutate, isPending } = useCreateProject(
+    organization?.id ?? "",
+    teamId,
+  );
   const members = organization?.members;
 
   const {
@@ -135,56 +138,78 @@ export function CreateProjectModal({ orgId, teamId }: Props) {
           <Controller
             control={control}
             name="status"
-            render={({ field }) => (
-              <Dropdown>
-                <Button variant="secondary" className="capitalize">
-                  {field.value?.replace("-", " ")}
-                </Button>
-                <Dropdown.Popover>
-                  <Dropdown.Menu
-                    selectionMode="single"
-                    selectedKeys={new Set([field.value])}
-                    onSelectionChange={(keys) =>
-                      field.onChange(Array.from(keys)[0])
-                    }
-                  >
-                    {STATUS_OPTIONS.map((status) => (
-                      <Dropdown.Item key={status.key} id={status.key}>
-                        {status.label}
-                      </Dropdown.Item>
-                    ))}
-                  </Dropdown.Menu>
-                </Dropdown.Popover>
-              </Dropdown>
-            )}
+            render={({ field }) => {
+              const [selected, setSelected] = useState<Selection>(
+                new Set([field.value]),
+              );
+
+              return (
+                <Dropdown>
+                  <Button variant="secondary">{field.value}</Button>
+
+                  <Dropdown.Popover>
+                    <Dropdown.Menu
+                      selectionMode="single"
+                      selectedKeys={selected}
+                      onSelectionChange={(keys) => {
+                        setSelected(keys);
+                        const value = Array.from(keys)[0] as string;
+                        field.onChange(value);
+                      }}
+                    >
+                      {STATUS_OPTIONS.map((status) => (
+                        <Dropdown.Item
+                          id={status.key}
+                          key={status.key}
+                          className="text-zinc-300"
+                        >
+                          {status.label}
+                        </Dropdown.Item>
+                      ))}
+                    </Dropdown.Menu>
+                  </Dropdown.Popover>
+                </Dropdown>
+              );
+            }}
           />
 
           {/* PRIORITY */}
           <Controller
             control={control}
             name="priority"
-            render={({ field }) => (
-              <Dropdown>
-                <Button variant="secondary" className="capitalize">
-                  {field.value?.replace("-", " ")}
-                </Button>
-                <Dropdown.Popover>
-                  <Dropdown.Menu
-                    selectionMode="single"
-                    selectedKeys={new Set([field.value])}
-                    onSelectionChange={(keys) =>
-                      field.onChange(Array.from(keys)[0])
-                    }
-                  >
-                    {PRIORITY_OPTIONS.map((p) => (
-                      <Dropdown.Item key={p.key} id={p.key}>
-                        {p.label}
-                      </Dropdown.Item>
-                    ))}
-                  </Dropdown.Menu>
-                </Dropdown.Popover>
-              </Dropdown>
-            )}
+            render={({ field }) => {
+              const [selected, setSelected] = useState<Selection>(
+                new Set([field.value]),
+              );
+
+              return (
+                <Dropdown>
+                  <Button variant="secondary">{field.value}</Button>
+
+                  <Dropdown.Popover>
+                    <Dropdown.Menu
+                      selectionMode="single"
+                      selectedKeys={selected}
+                      onSelectionChange={(keys) => {
+                        setSelected(keys);
+                        const value = Array.from(keys)[0] as string;
+                        field.onChange(value);
+                      }}
+                    >
+                      {PRIORITY_OPTIONS.map((priority) => (
+                        <Dropdown.Item
+                          id={priority.key}
+                          key={priority.key}
+                          className="text-zinc-300"
+                        >
+                          {priority.label}
+                        </Dropdown.Item>
+                      ))}
+                    </Dropdown.Menu>
+                  </Dropdown.Popover>
+                </Dropdown>
+              );
+            }}
           />
 
           {/* PROJECT LEAD (Single Member Select) */}

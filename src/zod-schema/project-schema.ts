@@ -36,8 +36,8 @@ export const projectSchema = z.object({
   leadId: z.string().optional().nullable(),
 
   isPrivate: z.boolean(),
-  status: projectStatusEnum.optional(),
-  priority: projectPriorityEnum.optional(),
+  status: projectStatusEnum,
+  priority: projectPriorityEnum,
 
   startDate: z.date().optional().nullable(),
   endDate: z.date().optional().nullable(),

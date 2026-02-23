@@ -1,6 +1,10 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import type { IssueSchemaType } from "@/zod-schema/issue-schema";
-import { createIssue, getIssues } from "@/server-actions/issues";
+import {
+  createIssue,
+  getIssues,
+  type IssuesType,
+} from "@/server-actions/issues";
 import { toast } from "@heroui/react";
 import { queryKeys } from "@/lib/query-keys";
 
@@ -42,7 +46,10 @@ export const useOrgIssues = (orgId: string | undefined) => {
   });
 };
 
-export const useTeamIssues = (orgId: string, teamId: string) => {
+export const useTeamIssues = (
+  teamId: string,
+  initialData?: IssuesType["data"],
+) => {
   return useQuery({
     queryKey: queryKeys.issues.byTeam(teamId),
     queryFn: async () => {
@@ -51,6 +58,7 @@ export const useTeamIssues = (orgId: string, teamId: string) => {
 
       return result.data;
     },
-    enabled: !!orgId && !!teamId,
+    initialData: initialData ?? [],
+    enabled: !!teamId,
   });
 };

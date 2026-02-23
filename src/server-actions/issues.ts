@@ -78,3 +78,5 @@ export const getIssues = async (teamId?: string) => {
     return returnError(error, "Unable to fetch issues");
   }
 };
+
+export type IssuesType = Awaited<ReturnType<typeof getIssues>>;

@@ -51,10 +51,10 @@ const SideBarTeams = ({ slug }: { slug?: string }) => {
       <SidebarGroupLabel>{data.title}</SidebarGroupLabel>
       <SidebarGroupContent>
         <SidebarMenu>
-          {!teams.data?.length ? (
+          {!teams?.length ? (
             <p className="px-4 py-2 text-sm text-slate-500">No teams</p>
           ) : (
-            teams?.data?.map((team) => (
+            teams?.map((team) => (
               <SidebarMenuItem key={team.id}>
                 <LinkButton
                   fullWidth

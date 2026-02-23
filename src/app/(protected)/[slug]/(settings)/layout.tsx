@@ -12,6 +12,7 @@ type Props = {
   params: Promise<{ slug: string }>;
 };
 
+// TODO: WILL FIX SETTINGS LATER
 const SettingsLayout = async ({ children, params }: Props) => {
   const { slug } = await params;
 

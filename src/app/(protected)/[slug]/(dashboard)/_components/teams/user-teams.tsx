@@ -1,10 +1,10 @@
 "use client";
 
-import { useOrganizationContext } from "@/components/context/organization-client-context";
 import { LinkButton } from "@/components/link-button";
-import { useOrgTeams, useUserTeams } from "@/hooks/use-teams";
+import { useUserTeams } from "@/hooks/use-teams";
 import { ChevronDown } from "@gravity-ui/icons";
 import { Accordion, Spinner } from "@heroui/react";
+import { useParams } from "next/navigation";
 
 const items = [
   { title: "Projects", url: "projects" },
@@ -12,11 +12,8 @@ const items = [
 ];
 
 const UserTeams = () => {
-  const { org } = useOrganizationContext();
-
-  const { data: teams, isPending, isError } = useUserTeams(org?.id ?? "");
-
-  if (!org) return null;
+  const { slug } = useParams<{ slug: string }>();
+  const { data: teams, isPending, isError } = useUserTeams();
 
   if (isPending) {
     return (
@@ -66,7 +63,7 @@ const UserTeams = () => {
                         {items.map((item) => (
                           <LinkButton
                             key={item.title}
-                            href={`/${org.slug}/team/${team.id}/${item.title.toLowerCase()}/all`}
+                            href={`/${slug}/team/${team.id}/${item.title.toLowerCase()}/all`}
                             fullWidth
                             variant="ghost"
                             className="justify-start text-left text-sm shadow-none"

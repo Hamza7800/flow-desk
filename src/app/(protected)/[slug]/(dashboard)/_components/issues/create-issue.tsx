@@ -26,7 +26,6 @@ import PopupModal from "@/components/modal";
 import { useOrganizationContext } from "@/components/context/organization-client-context";
 
 type Props = {
-  orgId: string;
   teamId: string;
 };
 
@@ -47,10 +46,10 @@ const PRIORITY_OPTIONS = [
 ];
 
 // TODO: ADD LABELS and PROJECTS
-export function CreateIssueModal({ orgId, teamId }: Props) {
+export function CreateIssueModal({ teamId }: Props) {
   const [isOpen, setIsOpen] = useState(false);
-  const { mutate, isPending } = useCreateIssue(orgId, teamId);
   const { org: organization } = useOrganizationContext();
+  const { mutate, isPending } = useCreateIssue(organization?.id ?? "", teamId);
   const members = organization?.members;
 
   const {

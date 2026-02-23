@@ -1,5 +1,6 @@
 import OrganizationProvider from "@/components/context/organization-client-context";
 import { LinkButton } from "@/components/link-button";
+import WorkspaceLayoutSkeleton from "@/components/skeletons/workspace-layout-skeleton";
 import { getOrganization } from "@/server-actions/organization";
 import { Card } from "@heroui/react";
 import { Suspense, type ReactNode } from "react";
@@ -9,9 +10,14 @@ type Props = {
   params: Promise<{ slug: string }>;
 };
 
-const WorkspaceMainLayout = async ({ children, params }: Props) => {
+const Content = async ({
+  slug,
+  children,
+}: {
+  slug: string;
+  children: ReactNode;
+}) => {
   try {
-    const { slug } = await params;
     const result = await getOrganization(slug);
 
     if (!result.success) {
@@ -23,11 +29,9 @@ const WorkspaceMainLayout = async ({ children, params }: Props) => {
     }
 
     return (
-      <Suspense fallback={<h2>Loading....</h2>}>
-        <OrganizationProvider slug={slug} initialOrg={result.data}>
-          {children}
-        </OrganizationProvider>
-      </Suspense>
+      <OrganizationProvider slug={slug} initialOrg={result.data}>
+        {children}
+      </OrganizationProvider>
     );
   } catch (error: any) {
     return (
@@ -48,6 +52,15 @@ const WorkspaceMainLayout = async ({ children, params }: Props) => {
       </div>
     );
   }
+};
+
+const WorkspaceMainLayout = async ({ children, params }: Props) => {
+  const { slug } = await params;
+  return (
+    <Suspense fallback={<WorkspaceLayoutSkeleton />}>
+      <Content slug={slug}>{children}</Content>
+    </Suspense>
+  );
 };
 
 export default WorkspaceMainLayout;

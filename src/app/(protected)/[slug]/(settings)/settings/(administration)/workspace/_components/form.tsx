@@ -2,8 +2,11 @@
 import OrganizationForm from "@/components/forms/organization-form";
 import { useOrganization } from "@/hooks/use-organizations";
 import { Card, Spinner } from "@heroui/react";
+import { useParams } from "next/navigation";
 
-const Form = ({ slug }: { slug: string }) => {
+const Form = () => {
+  const { slug } = useParams<{ slug: string }>();
+
   const {
     data: organization,
     isLoading,

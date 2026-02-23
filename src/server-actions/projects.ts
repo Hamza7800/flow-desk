@@ -108,3 +108,5 @@ export const getProjects = async (teamId?: string) => {
     return returnError(error, "Unable to fetch projects");
   }
 };
+
+export type ProjectsType = Awaited<ReturnType<typeof getProjects>>;

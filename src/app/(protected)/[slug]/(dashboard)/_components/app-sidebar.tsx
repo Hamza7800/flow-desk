@@ -11,7 +11,7 @@ import { OrganizationSwitcher } from "@/components/organization-switcher";
 import { LinkButton } from "@/components/link-button";
 import type { ComponentProps } from "react";
 import { ChevronDown } from "@gravity-ui/icons";
-import UserTeams from "./user-teams";
+import UserTeams from "./teams/user-teams";
 
 // This is sample data.
 const data = {

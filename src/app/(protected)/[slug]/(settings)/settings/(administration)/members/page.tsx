@@ -5,9 +5,10 @@ import { Loader2 } from "lucide-react";
 import { Card, Chip, Surface } from "@heroui/react";
 import { useOrganization } from "@/hooks/use-organizations";
 import InviteMembers from "@/app/(protected)/[slug]/(settings)/_components/invite-members";
-import CancelInvitation from "@/app/(protected)/[slug]/(settings)/_components/cancel-invitation";
+import CancelInvitation from "@/app/(protected)/[slug]/(settings)/_components/invitations/cancel-invitation";
 import { authClient } from "@/server/better-auth/client";
 
+// TODO: WILL NEED TO ADD SERVER CHECKS
 export default function MembersPage() {
   const params = useParams();
   const { data } = authClient.useSession();

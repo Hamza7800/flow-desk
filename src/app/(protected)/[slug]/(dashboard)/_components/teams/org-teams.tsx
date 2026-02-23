@@ -3,23 +3,13 @@
 import { useOrganizationContext } from "@/components/context/organization-client-context";
 import { LinkButton } from "@/components/link-button";
 import { useOrgTeams } from "@/hooks/use-teams";
-import { Card, Spinner } from "@heroui/react";
-import DeleteTeams from "@/app/(protected)/[slug]/(settings)/settings/_components/delete-teams";
+import type { TeamsType } from "@/server-actions/teams";
+import { Card } from "@heroui/react";
+import { TeamJoinButton } from "./team-join-button";
 
-// TODO: EDIT TEAM
-const Page = () => {
+const OrgTeams = ({ initialData }: { initialData: TeamsType["data"] }) => {
   const { org } = useOrganizationContext();
-  const { data: teams, isPending, isError } = useOrgTeams(org?.id ?? "");
-
-  if (!org) return null;
-
-  if (isPending) {
-    return (
-      <div className="flex justify-center py-10">
-        <Spinner size="md" />
-      </div>
-    );
-  }
+  const { data: teams, isError } = useOrgTeams(org?.id ?? "", initialData);
 
   if (isError) {
     return (
@@ -37,7 +27,7 @@ const Page = () => {
         </div>
       ) : (
         teams.map((team) => (
-          <Card key={team.id} className="">
+          <Card key={team.id} className="w-full">
             <Card.Header className="flex flex-row items-center justify-between">
               <div>
                 <h3 className="text-lg font-semibold text-white">
@@ -48,16 +38,18 @@ const Page = () => {
               <div className="flex items-center gap-2">
                 {/* View */}
                 <LinkButton
-                  href={`/${org.slug}/settings/teams/${team.id}`}
+                  href={`/${org?.slug}/settings/teams/${team.id}`}
                   size="sm"
                   variant="ghost"
                   className="shadow-none"
                 >
                   View
                 </LinkButton>
-
-                {/* Delete */}
-                <DeleteTeams teamId={team.id} orgId={team.organizationId} />
+                <TeamJoinButton
+                  teamId={team.id}
+                  orgId={org?.id ?? ""}
+                  isMember={false}
+                />
               </div>
             </Card.Header>
           </Card>
@@ -67,4 +59,4 @@ const Page = () => {
   );
 };
 
-export default Page;
+export default OrgTeams;

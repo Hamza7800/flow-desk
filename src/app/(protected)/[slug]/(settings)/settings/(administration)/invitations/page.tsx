@@ -1,24 +1,17 @@
 "use client";
 import { useUserInvitations } from "@/hooks/use-invitations";
-import { Card, Chip, Surface } from "@heroui/react";
-import { Loader2 } from "lucide-react";
+import { Card, Chip, Spinner, Surface } from "@heroui/react";
 import { useParams } from "next/navigation";
-import AcceptInvitation from "@/app/(protected)/[slug]/(settings)/_components/accept-invitation";
-import { authClient } from "@/server/better-auth/client";
-import RejectInvitation from "@/app/(protected)/[slug]/(settings)/_components/reject-invitation";
+import AcceptInvitation from "@/app/(protected)/[slug]/(settings)/_components/invitations/accept-invitation";
+import RejectInvitation from "@/app/(protected)/[slug]/(settings)/_components/invitations/reject-invitation";
 
+// TODO: NO NEED FOR INITIAL DATA JUST FIX THIS COMPONENT NORMALLY
 const Page = () => {
-  const params = useParams();
-  const { data } = authClient.useSession();
-  const slug = params.slug as string;
-  const { data: invitations, isLoading } = useUserInvitations(slug);
+  const { slug } = useParams<{ slug: string }>();
+  const { data: invitations, isPending } = useUserInvitations(slug);
 
-  if (isLoading) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-gradient-to-b from-slate-900 to-slate-800">
-        <Loader2 className="h-8 w-8 animate-spin text-blue-400" />
-      </div>
-    );
+  if (isPending) {
+    return <Spinner />;
   }
 
   if (!invitations?.length) {

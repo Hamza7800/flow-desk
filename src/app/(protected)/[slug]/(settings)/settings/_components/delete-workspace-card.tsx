@@ -1,7 +1,7 @@
 import { Card } from "@heroui/react";
 import DeleteWorkspace from "./delete-workspace";
 
-const DeleteWorkspaceCard = ({ slug }: { slug: string }) => {
+const DeleteWorkspaceCard = () => {
   return (
     <div className="w-full space-y-2">
       <h2>Danger Zone</h2>
@@ -11,7 +11,7 @@ const DeleteWorkspaceCard = ({ slug }: { slug: string }) => {
           <Card.Description>Delete your workspace permanently</Card.Description>
         </Card.Header>
         <Card.Footer>
-          <DeleteWorkspace slug={slug} />
+          <DeleteWorkspace />
         </Card.Footer>
       </Card>
     </div>

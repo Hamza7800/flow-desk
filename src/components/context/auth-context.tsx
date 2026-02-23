@@ -49,7 +49,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     return (
       <div className="flex min-h-screen items-center justify-center">
         <div className="flex flex-col items-center gap-4">
-          <Spinner size="lg" />
+          <Spinner size="lg" color="success" />
         </div>
       </div>
     );

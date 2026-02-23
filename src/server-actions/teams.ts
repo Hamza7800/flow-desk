@@ -3,7 +3,7 @@
 import { checkPermission } from "@/lib/permissions-checks";
 import { returnError } from "@/lib/utils";
 import { auth } from "@/server/better-auth";
-import { getUser } from "@/server/better-auth/server";
+import { getActiveOrgId, getUser } from "@/server/better-auth/server";
 import { db } from "@/server/db";
 import { team, teamMember } from "@/server/db/schema";
 import { teamSchema, type TeamSchemaType } from "@/zod-schema/teams-schema";
@@ -23,6 +23,7 @@ import { headers } from "next/headers";
 //   });
 // };
 
+// TODO: FIX ADD ACTIVE ORG FROM SERVER
 export const createTeam = async (orgId: string, values: TeamSchemaType) => {
   try {
     const user = await getUser();
@@ -173,9 +174,9 @@ export const setActiveTeam = async (teamId: string) => {
   }
 };
 
-export const getOrgTeams = async (orgId: string) => {
+export const getOrgTeams = async () => {
   try {
-    await getUser();
+    const { orgId } = await getActiveOrgId();
     const data = await auth.api.listOrganizationTeams({
       query: {
         organizationId: orgId,
@@ -193,7 +194,9 @@ export const getOrgTeams = async (orgId: string) => {
   }
 };
 
-export const getUserTeams = async (orgId: string) => {
+export type TeamsType = Awaited<ReturnType<typeof getOrgTeams>>;
+
+export const getUserTeams = async () => {
   try {
     await getUser();
     const data = await auth.api.listUserTeams({
@@ -210,9 +213,34 @@ export const getUserTeams = async (orgId: string) => {
   }
 };
 
-export const getUserTeamsCurrentOrg = async (orgId: string) => {
+export const getTeam = async (teamId: string) => {
   try {
-    const user = await getUser();
+    const { userId, orgId } = await getActiveOrgId();
+    const teamDetails = await db.query.team.findFirst({
+      where: and(eq(team.organizationId, orgId), eq(team.id, teamId)),
+    });
+
+    if (!teamDetails) {
+      return {
+        success: false,
+        message: "No Team Found",
+      };
+    }
+
+    return {
+      success: true,
+      data: teamDetails,
+      message: "Team Details",
+    };
+  } catch (error) {
+    return returnError(error, "Unable to get team");
+  }
+};
+
+export const getUserTeamsCurrentOrg = async () => {
+  try {
+    const { userId, orgId } = await getActiveOrgId();
+    // const user = await getUser();
     const data = await db
       .select({
         id: team.id,
@@ -223,7 +251,7 @@ export const getUserTeamsCurrentOrg = async (orgId: string) => {
       .from(team)
       .innerJoin(teamMember, eq(team.id, teamMember.teamId))
       .where(
-        and(eq(team.organizationId, orgId), eq(teamMember.userId, user.id)),
+        and(eq(team.organizationId, orgId), eq(teamMember.userId, userId)),
       );
 
     return {

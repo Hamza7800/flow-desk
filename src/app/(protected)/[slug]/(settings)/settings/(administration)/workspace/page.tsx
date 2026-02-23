@@ -1,17 +1,11 @@
 import DeleteWorkspaceCard from "@/app/(protected)/[slug]/(settings)/settings/_components/delete-workspace-card";
 import Form from "./_components/form";
 
-type Props = {
-  params: Promise<{ slug: string }>;
-};
-
-const Page = async ({ params }: Props) => {
-  const { slug } = await params;
-
+const Page = () => {
   return (
     <div className="space-y-6">
-      <Form slug={slug} />
-      <DeleteWorkspaceCard slug={slug} />
+      <Form />
+      <DeleteWorkspaceCard />
     </div>
   );
 };
