@@ -14,7 +14,7 @@ export const createIssue = async (
   data: IssueSchemaType,
 ) => {
   try {
-    const { orgId: organizationId } = await getActiveOrgId();
+    const { orgId: organizationId, userId } = await getActiveOrgId();
     const values = issueSchema.parse(data);
 
     const newIssue = await db.transaction(async (tx) => {
@@ -28,6 +28,7 @@ export const createIssue = async (
           description: values.description,
           status: values.status,
           priority: values.priority,
+          creatorId: userId,
           identifier: values.title.replace(/\s/g, "").slice(0, 3),
         })
         .returning();

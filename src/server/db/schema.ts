@@ -205,6 +205,7 @@ export const userRelations = relations(user, ({ many }) => ({
   teamMembers: many(teamMember),
   members: many(member),
   invitations: many(invitation),
+  issues: many(issue),
 }));
 
 export const sessionRelations = relations(session, ({ one }) => ({
@@ -390,6 +391,7 @@ export const issue = createTable("issue", {
 
   // members: text("members"),
   dueDate: timestamp("due_date"),
+  creatorId: text("creator_id").references(() => user.id),
   // labels: text("labels"),
 });
 
@@ -499,6 +501,10 @@ export const issueRelations = relations(issue, ({ one, many }) => ({
   team: one(team, {
     fields: [issue.teamId],
     references: [team.id],
+  }),
+  creatorId: one(user, {
+    fields: [issue.creatorId],
+    references: [user.id],
   }),
   comments: many(comment),
   activities: many(issueActivity),
