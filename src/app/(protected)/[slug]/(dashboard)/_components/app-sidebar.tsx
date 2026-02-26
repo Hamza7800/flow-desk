@@ -51,7 +51,7 @@ export function AppSidebar({ slug, ...props }: ComponentProps<typeof Sidebar>) {
               variant="ghost"
               className={"justify-start pl-4.5 text-left shadow-none"}
               fullWidth
-              href={`/${slug}/settings/account/profile`}
+              href={`/${slug}/my-issues/assigned`}
             >
               My Issues
             </LinkButton>
