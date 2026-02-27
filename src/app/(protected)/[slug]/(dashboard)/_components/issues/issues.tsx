@@ -6,6 +6,7 @@ import React from "react";
 import { Card, Chip, Separator } from "@heroui/react";
 
 import type { IssuesType } from "@/server-actions/issues";
+import { useParams, useRouter } from "next/navigation";
 
 type Issue = {
   status:
@@ -63,6 +64,8 @@ const statusColor = (status: Issue["status"]) => {
 };
 
 export const IssuesBoard: React.FC<IssuesBoardProps> = ({ issues }) => {
+  const router = useRouter();
+  const { slug } = useParams<{ slug: string }>();
   if (!issues || issues.length === 0) {
     return (
       <div className="text-muted-foreground flex items-center justify-center py-20">
@@ -91,6 +94,7 @@ export const IssuesBoard: React.FC<IssuesBoardProps> = ({ issues }) => {
 
             {filtered.map((issue) => (
               <Card
+                onClick={() => router.push(`/${slug}/issue/${issue.id}`)}
                 key={issue.id}
                 className="transition-all hover:scale-[1.02]"
               >

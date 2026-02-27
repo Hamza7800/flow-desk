@@ -1,5 +1,5 @@
-const AssignedIssues = () => {
-  return <div>AssignedIssues</div>;
+const AssignedIssuesPage = () => {
+  return <div>AssignedIssuesPage</div>;
 };
 
-export default AssignedIssues;
+export default AssignedIssuesPage;

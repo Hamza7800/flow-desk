@@ -1,8 +1,7 @@
 import { format } from "date-fns";
 import { Lock, Archive, Calendar, Layers } from "lucide-react";
-import { useTeamProjects } from "@/hooks/use-projects";
-import { CreateProjectModal } from "./create-project";
 import type { ProjectsType } from "@/server-actions/projects";
+import { useParams, useRouter } from "next/navigation";
 
 export const ProjectsCards = ({
   projects,
@@ -25,13 +24,15 @@ export const ProjectsCards = ({
 };
 
 function ProjectCard({ project }: { project: any }) {
+  const router = useRouter();
+  const { slug } = useParams<{ slug: string }>();
+
   const isArchived = !!project.archivedAt;
 
-  console.log(project);
   const lead = project.members.find((m: any) => m.user.id === project.leadId);
-  console.log(lead);
   return (
     <div
+      onClick={() => router.push(`/${slug}/project/${project.id}/overview`)}
       className={`group relative overflow-hidden rounded-xl border border-zinc-800 bg-zinc-950 p-5 transition-all duration-200 hover:border-zinc-700 hover:bg-zinc-900 ${
         isArchived ? "opacity-60" : ""
       }`}
