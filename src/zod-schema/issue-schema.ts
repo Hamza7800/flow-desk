@@ -17,3 +17,6 @@ export const issueSchema = z.object({
 });
 
 export type IssueSchemaType = z.infer<typeof issueSchema>;
+
+export const issueUpdateSchema = issueSchema.partial();
+export type IssueUpdateSchemaType = z.infer<typeof issueUpdateSchema>;

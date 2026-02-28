@@ -393,6 +393,8 @@ export const issue = createTable("issue", {
   dueDate: timestamp("due_date"),
   creatorId: text("creator_id").references(() => user.id),
   // labels: text("labels"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
 export const issueAssignee = createTable(

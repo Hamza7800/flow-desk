@@ -1,12 +1,18 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import type { IssueSchemaType } from "@/zod-schema/issue-schema";
+import type {
+  IssueSchemaType,
+  IssueUpdateSchemaType,
+} from "@/zod-schema/issue-schema";
 import {
   createIssue,
+  deleteIssue,
   getIssues,
+  updateIssue,
   type IssuesType,
 } from "@/server-actions/issues";
 import { toast } from "@heroui/react";
 import { queryKeys } from "@/lib/query-keys";
+import type { IssueSnapshot } from "@/lib/types";
 
 export const useCreateIssue = (organizationId: string, teamId: string) => {
   const queryClient = useQueryClient();
@@ -60,5 +66,116 @@ export const useTeamIssues = (
     },
     initialData: initialData ?? [],
     enabled: !!teamId,
+  });
+};
+
+export const useDeleteIssue = (teamId: string) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (issueId: string) => {
+      const result = await deleteIssue(issueId);
+      if (!result.success) {
+        throw new Error(result.message);
+      }
+      return result.data;
+    },
+    onMutate: async (issueId) => {
+      await queryClient.cancelQueries({
+        queryKey: queryKeys.issues.byTeam(teamId),
+      });
+
+      const previousIssues = queryClient.getQueryData(
+        queryKeys.issues.byTeam(teamId),
+      );
+
+      queryClient.setQueryData(
+        queryKeys.issues.byTeam(teamId),
+        (old: any[]) => {
+          return old.filter((issue) => issue.id !== issueId);
+        },
+      );
+
+      return { previousIssues };
+    },
+    onError: (error, _, context) => {
+      if (context?.previousIssues) {
+        queryClient.setQueryData(
+          queryKeys.issues.byTeam(teamId),
+          context.previousIssues,
+        );
+      }
+      toast.danger(error.message);
+    },
+
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.issues.byTeam(teamId),
+      });
+      toast.success("Issue Deleted");
+    },
+  });
+};
+
+export const useUpdateIssue = (
+  issueId: string,
+  { orgId, teamId, projectId }: IssueSnapshot,
+) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (values: IssueUpdateSchemaType) => {
+      const result = await updateIssue(issueId, values);
+      if (!result.success) {
+        throw new Error(result.message);
+      }
+      return result.data;
+    },
+    onMutate: async (newValues) => {
+      await queryClient.cancelQueries({
+        queryKey: queryKeys.issues.detail(issueId),
+      });
+
+      const previousIssue = queryClient.getQueryData(
+        queryKeys.issues.detail(issueId),
+      );
+
+      queryClient.setQueryData(queryKeys.issues.detail(issueId), (old: any) => {
+        old ? { ...old, ...newValues } : old;
+      });
+
+      queryClient.setQueryData(
+        queryKeys.issues.byTeam(teamId ?? ""),
+        (old: any[]) =>
+          old.map((issue) =>
+            issue.id === issueId
+              ? {
+                  ...issue,
+                  ...newValues,
+                }
+              : issue,
+          ),
+      );
+
+      return {
+        previousIssue,
+      };
+    },
+    onError: (error, _, context) => {
+      console.log(error);
+      if (context?.previousIssue) {
+        queryClient.setQueryData(
+          queryKeys.issues.detail(issueId),
+          context.previousIssue,
+        );
+      }
+      toast.danger(error.message);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.issues.detail(issueId),
+      });
+      toast.success("Update Success");
+    },
   });
 };

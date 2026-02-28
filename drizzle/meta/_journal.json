@@ -43,6 +43,13 @@
       "when": 1772038527041,
       "tag": "0005_panoramic_slyde",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1772239335351,
+      "tag": "0006_fancy_namora",
+      "breakpoints": true
     }
   ]
 }
