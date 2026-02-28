@@ -21,12 +21,24 @@ export const useOrgTeams = (orgId: string, initialData?: TeamsType["data"]) => {
     queryKey: queryKeys.teams.orgList(orgId),
     queryFn: async () => {
       const result = await getOrgTeams();
-
       if (!result.success) throw new Error(result.message);
       return result.data;
     },
     enabled: !!orgId,
-    initialData: initialData || [],
+    initialData,
+  });
+};
+
+export const useUserTeams = (initialData?: TeamsType["data"]) => {
+  return useQuery({
+    // queryKey: queryKeys.teams.userList(orgId),
+    queryKey: queryKeys.teams.userList(),
+    queryFn: async () => {
+      const result = await getUserTeamsCurrentOrg();
+      if (!result.success) throw new Error(result.message);
+      return result.data;
+    },
+    initialData,
   });
 };
 
@@ -41,19 +53,6 @@ export const useTeam = (teamId: string) => {
       return result.data;
     },
     enabled: !!teamId,
-  });
-};
-
-export const useUserTeams = (initialData?: TeamsType["data"]) => {
-  return useQuery({
-    // queryKey: queryKeys.teams.userList(orgId),
-    queryKey: queryKeys.teams.userList(),
-    queryFn: async () => {
-      const result = await getUserTeamsCurrentOrg();
-      if (!result.success) throw new Error(result.message);
-      return result.data;
-    },
-    initialData,
   });
 };
 
@@ -72,7 +71,6 @@ export const useCreateTeam = (orgId: string) => {
         queryKey: queryKeys.teams.orgList(orgId),
       });
       queryClient.invalidateQueries({
-        // queryKey: queryKeys.teams.userList(orgId),
         queryKey: queryKeys.teams.userList(),
       });
       toast.success(data.message);
@@ -125,13 +123,25 @@ export const useRemoveTeam = (orgId: string) => {
         throw new Error(result.message || "Failed to remove team");
       return result;
     },
-    onSuccess: (data) => {
+    onSuccess: async (data, teamId) => {
       queryClient.invalidateQueries({
         queryKey: queryKeys.teams.orgList(orgId),
       });
+
+      queryClient.setQueryData(queryKeys.teams.userList(), (old: any[]) => {
+        if (!old) return old;
+        return old.filter((team: any) => team.id !== teamId);
+      });
+
       queryClient.invalidateQueries({
         queryKey: queryKeys.teams.userList(),
       });
+
+      // await queryClient.resetQueries({
+      //   queryKey: queryKeys.teams.userList(),
+      //   exact: true,
+      // });
+
       toast.success(data.message);
     },
     onError: (error: Error) => {

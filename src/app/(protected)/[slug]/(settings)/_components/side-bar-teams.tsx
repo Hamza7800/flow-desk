@@ -46,6 +46,8 @@ const SideBarTeams = ({ slug }: { slug?: string }) => {
     );
   }
 
+  console.log(teams);
+
   return (
     <SidebarGroup>
       <SidebarGroupLabel>{data.title}</SidebarGroupLabel>

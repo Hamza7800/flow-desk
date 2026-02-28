@@ -46,7 +46,7 @@ export const useOrgProjects = (
       return result.data;
     },
     enabled: !!orgId,
-    initialData: initialData || [],
+    initialData,
   });
 };
 
@@ -66,6 +66,6 @@ export const useTeamProjects = (
       return result.data;
     },
     enabled: !!orgId && !!teamId,
-    initialData: initialData || [],
+    initialData,
   });
 };

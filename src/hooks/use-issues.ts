@@ -64,7 +64,7 @@ export const useTeamIssues = (
 
       return result.data;
     },
-    initialData: initialData ?? [],
+    initialData,
     enabled: !!teamId,
   });
 };

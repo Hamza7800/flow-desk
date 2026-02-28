@@ -57,7 +57,7 @@ export const useCreateOrganization = () => {
 
 export const useOrganization = (
   slug: string | undefined,
-  org?: OrgType["data"],
+  initialData?: OrgType["data"],
 ) => {
   return useQuery({
     queryKey: queryKeys.organizations.detail(slug || "no-slug"),
@@ -72,7 +72,7 @@ export const useOrganization = (
       return result.data;
     },
     enabled: !!slug,
-    initialData: org,
+    initialData,
   });
 };
 
