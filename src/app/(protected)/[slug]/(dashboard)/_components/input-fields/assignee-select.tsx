@@ -16,6 +16,8 @@ import { useState } from "react";
 type Props = {
   value: string[];
   onChange: (values: string[]) => void;
+  selection?: "multiple" | "single";
+  label: string;
 };
 
 const getInitials = (email: string) => {
@@ -23,7 +25,12 @@ const getInitials = (email: string) => {
   return name?.slice(0, 2).toUpperCase();
 };
 
-const AssigneeSelect = ({ value, onChange }: Props) => {
+const AssigneeSelect = ({
+  value,
+  label,
+  onChange,
+  selection = "multiple",
+}: Props) => {
   const { org: organization } = useOrganizationContext();
   const [selected, setSelected] = useState<Key[]>(value);
   const members = organization?.members;
@@ -31,14 +38,14 @@ const AssigneeSelect = ({ value, onChange }: Props) => {
   return (
     <Select
       placeholder="Select Assignee"
-      selectionMode="multiple"
+      selectionMode={selection}
       value={selected}
       onChange={(keys) => {
         setSelected(keys as Key[]);
         onChange(keys as string[]);
       }}
     >
-      <Label>Assignee</Label>
+      <Label>{label}</Label>
       <Select.Trigger>
         <Select.Value>
           {({ state, isPlaceholder, defaultChildren }) => {

@@ -8,10 +8,10 @@ import { Card, Chip, Separator } from "@heroui/react";
 import type { IssuesType } from "@/server-actions/issues";
 import { useParams, useRouter } from "next/navigation";
 import DeleteIssue from "./delete-issue";
-import PrioritySelect from "./priority-select";
-import StatusSelect from "./status-select";
-import AssigneeSelect from "./assignee-select";
-import InlineInput from "./input";
+import PrioritySelect from "../input-fields/priority-select";
+import StatusSelect from "../input-fields/status-select";
+import AssigneeSelect from "../input-fields/assignee-select";
+import InlineInput from "../input-fields/input";
 import { issueSchema, issueUpdateSchema } from "@/zod-schema/issue-schema";
 import type { Priority, Status } from "@/lib/contants";
 

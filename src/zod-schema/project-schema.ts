@@ -33,14 +33,14 @@ export const projectSchema = z.object({
     .string()
     .regex(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/, "Invalid hex color"),
 
-  leadId: z.string().optional().nullable(),
+  leadId: z.array(z.string()).optional(),
 
   isPrivate: z.boolean(),
   status: projectStatusEnum,
   priority: projectPriorityEnum,
 
-  startDate: z.date().optional().nullable(),
-  endDate: z.date().optional().nullable(),
+  startDate: z.date().optional(),
+  endDate: z.date().optional(),
 });
 // .refine(
 //   (data) => {

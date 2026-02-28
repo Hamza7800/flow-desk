@@ -24,26 +24,15 @@ import PopupModal from "@/components/modal";
 import { useOrganizationContext } from "@/components/context/organization-client-context";
 import { useCreateProject } from "@/hooks/use-projects";
 import { format } from "date-fns";
+import StatusSelect from "../input-fields/status-select";
+import PrioritySelect from "../input-fields/priority-select";
+import AssigneeSelect from "../input-fields/assignee-select";
+import InlineInput from "../input-fields/input";
+import StartDatePicker from "../input-fields/date-picker";
 
 type Props = {
   teamId: string;
 };
-
-const STATUS_OPTIONS = [
-  { key: "backlog", label: "Backlog" },
-  { key: "planned", label: "Planned" },
-  { key: "in-progress", label: "In Progress" },
-  { key: "completed", label: "Completed" },
-  { key: "canceled", label: "Canceled" },
-];
-
-const PRIORITY_OPTIONS = [
-  { key: "no-priority", label: "No Priority" },
-  { key: "low", label: "Low" },
-  { key: "medium", label: "Medium" },
-  { key: "high", label: "High" },
-  { key: "urgent", label: "Urgent" },
-];
 
 export function CreateProjectModal({ teamId }: Props) {
   const { org: organization } = useOrganizationContext();
@@ -52,7 +41,6 @@ export function CreateProjectModal({ teamId }: Props) {
     organization?.id ?? "",
     teamId,
   );
-  const members = organization?.members;
 
   const {
     control,
@@ -97,12 +85,15 @@ export function CreateProjectModal({ teamId }: Props) {
           <Controller
             control={control}
             name="name"
-            render={({ field, fieldState }) => (
-              <TextField isInvalid={fieldState.invalid} className="flex-1">
-                <Label>Project Name</Label>
-                <Input {...field} placeholder="e.g. Mobile App" />
-                <FieldError>{fieldState.error?.message}</FieldError>
-              </TextField>
+            render={({ field }) => (
+              <InlineInput
+                initialValue={field.value}
+                onSave={(val) => field.onChange(val)}
+                schema={projectSchema.shape.name}
+                debounceMs={0}
+                placeholder="Project Name"
+                label="Name"
+              />
             )}
           />
 
@@ -110,12 +101,15 @@ export function CreateProjectModal({ teamId }: Props) {
           <Controller
             control={control}
             name="identifier"
-            render={({ field, fieldState }) => (
-              <TextField isInvalid={fieldState.invalid} className="w-32">
-                <Label>ID</Label>
-                <Input {...field} placeholder="APP" />
-                <FieldError>{fieldState.error?.message}</FieldError>
-              </TextField>
+            render={({ field }) => (
+              <InlineInput
+                initialValue={field.value}
+                onSave={(val) => field.onChange(val)}
+                schema={projectSchema.shape.identifier}
+                debounceMs={0}
+                placeholder="Project Id"
+                label="ID"
+              />
             )}
           />
         </div>
@@ -124,51 +118,26 @@ export function CreateProjectModal({ teamId }: Props) {
         <Controller
           control={control}
           name="summary"
-          render={({ field, fieldState }) => (
-            <TextField isInvalid={fieldState.invalid}>
-              <Label>Summary</Label>
-              <TextArea {...field} placeholder="What is this project about?" />
-              <FieldError>{fieldState.error?.message}</FieldError>
-            </TextField>
+          render={({ field }) => (
+            <InlineInput
+              initialValue={field.value ?? ""}
+              onSave={(val) => field.onChange(val)}
+              schema={projectSchema.shape.summary}
+              debounceMs={0}
+              label="Summary"
+              placeholder="Summary"
+            />
           )}
         />
 
-        <div className="flex flex-wrap gap-4">
+        <div className="flex flex-col flex-wrap gap-4">
           {/* STATUS */}
           <Controller
             control={control}
             name="status"
             render={({ field }) => {
-              const [selected, setSelected] = useState<Selection>(
-                new Set([field.value]),
-              );
-
               return (
-                <Dropdown>
-                  <Button variant="secondary">{field.value}</Button>
-
-                  <Dropdown.Popover>
-                    <Dropdown.Menu
-                      selectionMode="single"
-                      selectedKeys={selected}
-                      onSelectionChange={(keys) => {
-                        setSelected(keys);
-                        const value = Array.from(keys)[0] as string;
-                        field.onChange(value);
-                      }}
-                    >
-                      {STATUS_OPTIONS.map((status) => (
-                        <Dropdown.Item
-                          id={status.key}
-                          key={status.key}
-                          className="text-zinc-300"
-                        >
-                          {status.label}
-                        </Dropdown.Item>
-                      ))}
-                    </Dropdown.Menu>
-                  </Dropdown.Popover>
-                </Dropdown>
+                <StatusSelect value={field.value} onChange={field.onChange} />
               );
             }}
           />
@@ -178,36 +147,8 @@ export function CreateProjectModal({ teamId }: Props) {
             control={control}
             name="priority"
             render={({ field }) => {
-              const [selected, setSelected] = useState<Selection>(
-                new Set([field.value]),
-              );
-
               return (
-                <Dropdown>
-                  <Button variant="secondary">{field.value}</Button>
-
-                  <Dropdown.Popover>
-                    <Dropdown.Menu
-                      selectionMode="single"
-                      selectedKeys={selected}
-                      onSelectionChange={(keys) => {
-                        setSelected(keys);
-                        const value = Array.from(keys)[0] as string;
-                        field.onChange(value);
-                      }}
-                    >
-                      {PRIORITY_OPTIONS.map((priority) => (
-                        <Dropdown.Item
-                          id={priority.key}
-                          key={priority.key}
-                          className="text-zinc-300"
-                        >
-                          {priority.label}
-                        </Dropdown.Item>
-                      ))}
-                    </Dropdown.Menu>
-                  </Dropdown.Popover>
-                </Dropdown>
+                <PrioritySelect value={field.value} onChange={field.onChange} />
               );
             }}
           />
@@ -217,43 +158,19 @@ export function CreateProjectModal({ teamId }: Props) {
             control={control}
             name="leadId"
             render={({ field }) => {
-              const lead = members?.find((m) => m.user.id === field.value);
               return (
-                <Dropdown>
-                  <Button variant="secondary">
-                    {lead ? lead.user.email : "Project Lead"}
-                  </Button>
-                  <Dropdown.Popover className="min-w-[200px]">
-                    <Dropdown.Menu
-                      selectionMode="single"
-                      selectedKeys={
-                        field.value ? new Set([field.value]) : new Set()
-                      }
-                      onSelectionChange={(keys) =>
-                        field.onChange(Array.from(keys)[0])
-                      }
-                    >
-                      <Dropdown.Section>
-                        <Header>Assign Lead</Header>
-                        {members?.map((member) => (
-                          <Dropdown.Item
-                            key={member.user.id}
-                            id={member.user.id}
-                          >
-                            {member.user.email}
-                          </Dropdown.Item>
-                        ))}
-                      </Dropdown.Section>
-                    </Dropdown.Menu>
-                  </Dropdown.Popover>
-                </Dropdown>
+                <AssigneeSelect
+                  label="Project Lead"
+                  value={field.value || []}
+                  onChange={field.onChange}
+                />
               );
             }}
           />
         </div>
 
         {/* TIMELINE SECTION */}
-        <div className="flex gap-4 border-t border-zinc-800 pt-4">
+        <div className="">
           <Controller
             control={control}
             name="startDate"

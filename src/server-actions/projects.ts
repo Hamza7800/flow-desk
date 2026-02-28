@@ -44,7 +44,7 @@ export const createProject = async ({
           icon: validatedData.icon,
           color: validatedData.color,
           isPrivate: validatedData.isPrivate,
-          leadId: validatedData.leadId,
+          leadId: validatedData?.leadId?.[0],
           status: validatedData.status,
           priority: validatedData.priority,
           startDate: validatedData.startDate,
@@ -52,9 +52,9 @@ export const createProject = async ({
         })
         .returning();
       // TODO: ADD MEMBERS
-      if (createdProject && validatedData.leadId) {
+      if (createdProject && validatedData?.leadId?.[0]) {
         await tx.insert(projectMember).values({
-          userId: validatedData.leadId,
+          userId: validatedData?.leadId?.[0],
           projectId: createdProject.id,
         });
       }

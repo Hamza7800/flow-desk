@@ -24,10 +24,10 @@ import {
 import { useState } from "react";
 import PopupModal from "@/components/modal";
 import { useOrganizationContext } from "@/components/context/organization-client-context";
-import StatusSelect from "./status-select";
-import PrioritySelect from "./priority-select";
-import AssigneeSelect from "./assignee-select";
-import InlineInput from "./input";
+import StatusSelect from "../input-fields/status-select";
+import PrioritySelect from "../input-fields/priority-select";
+import AssigneeSelect from "../input-fields/assignee-select";
+import InlineInput from "../input-fields/input";
 
 type Props = {
   teamId: string;
@@ -126,6 +126,7 @@ export function CreateIssueModal({ teamId }: Props) {
           name="assigneeIds"
           render={({ field }) => (
             <AssigneeSelect
+              label="Assignee"
               value={field.value || []}
               onChange={field.onChange}
             />

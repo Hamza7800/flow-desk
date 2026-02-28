@@ -26,7 +26,7 @@ const TeamProjects = ({
   return (
     <div>
       <ProjectsCards projects={projects} />
-      <CreateProjectModal teamId={teamId} />
+      {/* <CreateProjectModal teamId={teamId} /> */}
     </div>
   );
 };

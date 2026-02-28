@@ -42,8 +42,9 @@ const InlineInput = ({
 
   return (
     <TextField isInvalid={!!error} className={className}>
-      <Label className="text-xs text-zinc-500">{label}</Label>
+      <Label className="text-xs">{label}</Label>
       <Input
+        className={"w-full"}
         value={text}
         onChange={(e) => {
           const val = e.target.value;
