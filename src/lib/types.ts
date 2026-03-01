@@ -1,3 +1,4 @@
+import type { IssuesType } from "@/server-actions/issues";
 import type z from "zod";
 
 export type SelectProps = {
@@ -16,7 +17,17 @@ export type InputType = {
 };
 
 export type IssueSnapshot = {
-  orgId: string;
-  teamId: string | null;
-  projectId: string | null;
+  orgId?: string | null;
+  teamId?: string | null;
+  projectId?: string | null;
+};
+
+export type ListGroup = {
+  group: {
+    key: string;
+    label: string;
+    icon: string;
+    color: string;
+    issues: NonNullable<IssuesType["data"]>;
+  };
 };

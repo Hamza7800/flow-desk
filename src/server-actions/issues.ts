@@ -81,6 +81,8 @@ export const getIssues = async (teamId?: string) => {
       ),
       with: {
         assignees: true,
+        labels: true,
+        project: true,
       },
       orderBy: (issue, { desc }) => [desc(issue.createdAt)],
     });

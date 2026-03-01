@@ -14,6 +14,13 @@ import AssigneeSelect from "../input-fields/assignee-select";
 import InlineInput from "../input-fields/input";
 import { issueSchema, issueUpdateSchema } from "@/zod-schema/issue-schema";
 import type { Priority, Status } from "@/lib/contants";
+import { useIssueViewStore, type ViewMode } from "@/store/issue-view-store";
+import { DisplayControls } from "./display-controls";
+import { IssueDndContext } from "@/components/context/issue-dnd-context";
+import { ListView } from "./list-view";
+import { BoardView } from "./board-view";
+import { useGroupedIssues } from "@/hooks/use-grouped-issues";
+import { useOrganizationContext } from "@/components/context/organization-client-context";
 
 type Issue = {
   status:
@@ -69,6 +76,82 @@ const statusColor = (status: Issue["status"]) => {
       return "default";
   }
 };
+
+type Props = {
+  issues: NonNullable<IssuesType["data"]>;
+};
+
+export const IssueBoard = ({ issues }: Props) => {
+  const { viewMode } = useIssueViewStore();
+
+  return (
+    <div className="flex h-full flex-col">
+      <div className="mb-4 flex items-center justify-between">
+        <p className="text-sm text-zinc-400">{issues.length} issues</p>
+        <DisplayControls />
+      </div>
+
+      {/* DND OVERLAY */}
+      <IssueDndContext
+        issues={issues}
+        renderOverlay={(issue) => (
+          <div className="w-64 rounded-md border border-zinc-600 bg-zinc-800 p-2 text-sm opacity-95 shadow-xl">
+            {issue.title}
+          </div>
+        )}
+      >
+        {(orderedIssues) => (
+          <IssueBoardInner orderedIssues={orderedIssues} viewMode={viewMode} />
+        )}
+      </IssueDndContext>
+    </div>
+  );
+};
+
+// Separate component so hooks work correctly
+const IssueBoardInner = ({
+  orderedIssues,
+  viewMode,
+}: {
+  orderedIssues: NonNullable<IssuesType["data"]>;
+  viewMode: ViewMode;
+}) => {
+  const { groupBy } = useIssueViewStore();
+  const groupedIssues = useGroupedIssues(orderedIssues, groupBy);
+
+  return viewMode === "list" ? (
+    <ListView groupedIssues={groupedIssues} />
+  ) : (
+    <BoardView groupedIssues={groupedIssues} />
+  );
+};
+
+const Issues = ({
+  initialData,
+  teamId,
+}: {
+  teamId: string;
+  initialData: IssuesType["data"];
+}) => {
+  // TODO remove useOrg hook
+  const { data: issues, isError, error } = useTeamIssues(teamId, initialData);
+
+  if (isError) {
+    return <h2>Error : {error.message}</h2>;
+  }
+
+  return (
+    <div>
+      <IssueBoard issues={issues ?? []} />
+      {/* {issues?.map((issue) => (
+        <Issue issue={issue} key={issue.id} />
+      ))} */}
+      <CreateIssueModal teamId={teamId} />
+    </div>
+  );
+};
+
+export default Issues;
 
 // export const IssuesBoard: React.FC<IssuesBoardProps> = ({ issues }) => {
 //   const router = useRouter();
@@ -156,77 +239,99 @@ const statusColor = (status: Issue["status"]) => {
 //   );
 // };
 
-type IssueType = {
-  issue: NonNullable<IssuesType["data"]>[number];
-};
+// type IssueType = {
+//   issue: NonNullable<IssuesType["data"]>[number];
+// };
 
-const Issue = ({ issue }: IssueType) => {
-  const mutate = useUpdateIssue(issue.id, {
-    orgId: issue.organizationId,
-    projectId: issue.projectId,
-    teamId: issue?.teamId,
-  });
+// const Issue = ({ issue }: IssueType) => {
+//   const mutate = useUpdateIssue(issue.id, {
+//     orgId: issue.organizationId,
+//     projectId: issue.projectId,
+//     teamId: issue?.teamId,
+//   });
 
-  return (
-    <Card>
-      <h2>
-        <InlineInput
-          schema={issueSchema.shape.title}
-          initialValue={issue.title}
-          onSave={(val) => mutate.mutate({ title: val })}
-          debounceMs={1500}
-          placeholder="Issue title"
-        />
-      </h2>
-      <h2>
-        <InlineInput
-          schema={issueSchema.shape.description}
-          initialValue={issue.description ?? ""}
-          onSave={(val) => mutate.mutate({ description: val })}
-          debounceMs={1500}
-          placeholder="Issue description"
-        />
-      </h2>
-      <p>{issue.identifier}</p>
-      <p>{issue.priority}</p>
-      <StatusSelect
-        value={issue.status ?? ""}
-        onChange={(value) => mutate.mutate({ status: value as Status })}
-      />
-      <PrioritySelect
-        value={issue.priority ?? ""}
-        onChange={(value) => mutate.mutate({ priority: value as Priority })}
-      />
-      <AssigneeSelect
-        value={issue.assignees?.map((a) => a.userId) ?? []}
-        onChange={(values) => mutate.mutate({ assigneeIds: values })}
-      />
-      <DeleteIssue issueId={issue.id} teamId={issue.teamId ?? ""} />
-    </Card>
-  );
-};
+//   return (
+//     <Card>
+//       <h2>
+//         <InlineInput
+//           schema={issueSchema.shape.title}
+//           initialValue={issue.title}
+//           onSave={(val) => mutate.mutate({ title: val })}
+//           debounceMs={1500}
+//           placeholder="Issue title"
+//         />
+//       </h2>
+//       <h2>
+//         <InlineInput
+//           schema={issueSchema.shape.description}
+//           initialValue={issue.description ?? ""}
+//           onSave={(val) => mutate.mutate({ description: val })}
+//           debounceMs={1500}
+//           placeholder="Issue description"
+//         />
+//       </h2>
+//       <p>{issue.identifier}</p>
+//       <p>{issue.priority}</p>
+//       <StatusSelect
+//         value={issue.status ?? ""}
+//         onChange={(value) => mutate.mutate({ status: value as Status })}
+//       />
+//       <PrioritySelect
+//         value={issue.priority ?? ""}
+//         onChange={(value) => mutate.mutate({ priority: value as Priority })}
+//       />
+//       <AssigneeSelect
+//         value={issue.assignees?.map((a) => a.userId) ?? []}
+//         onChange={(values) => mutate.mutate({ assigneeIds: values })}
+//       />
+//       <DeleteIssue issueId={issue.id} teamId={issue.teamId ?? ""} />
+//     </Card>
+//   );
+// };
 
-const Issues = ({
-  initialData,
-  teamId,
-}: {
-  teamId: string;
-  initialData: IssuesType["data"];
-}) => {
-  const { data: issues, isError, error } = useTeamIssues(teamId, initialData);
+// type Props = {
+//   issues: NonNullable<IssuesType["data"]>;
+//   orgId: string;
+//   members: any[];
+// };
 
-  if (isError) {
-    return <h2>Error : {error.message}</h2>;
-  }
+// export const IssueBoard = ({ issues, orgId, members }: Props) => {
+//   const { viewMode, groupBy } = useIssueViewStore();
+//   const groupedIssues = useGroupedIssues(issues, groupBy);
 
-  return (
-    <div>
-      {issues?.map((issue) => (
-        <Issue issue={issue} key={issue.id} />
-      ))}
-      <CreateIssueModal teamId={teamId} />
-    </div>
-  );
-};
+//   return (
+//     <div className="flex h-full flex-col">
+//       {/* Toolbar */}
+//       <div className="mb-4 flex items-center justify-between">
+//         <p className="text-sm text-zinc-400">{issues.length} issues</p>
+//         <DisplayControls />
+//       </div>
 
-export default Issues;
+//       {/* DnD wraps both views — same context, same onDragEnd */}
+//       <IssueDndContext
+//         issues={issues}
+//         orgId={orgId}
+//         renderOverlay={(issue) => (
+//           // mini card shown while dragging
+//           <div className="w-64 rounded-md border border-zinc-600 bg-zinc-800 p-2 text-sm opacity-95 shadow-xl">
+//             {issue.title}
+//           </div>
+//         )}
+//       >
+//         {viewMode === "list" ? (
+//           <ListView
+//             groupedIssues={groupedIssues}
+//             orgId={orgId}
+//             members={members}
+//           />
+//         ) : (
+//           <BoardView
+//             groupedIssues={groupedIssues}
+//             orgId={orgId}
+//             members={members}
+//           />
+//         )}
+//       </IssueDndContext>
+//     </div>
+//   );
+// };

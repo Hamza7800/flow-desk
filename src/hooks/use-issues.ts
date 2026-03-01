@@ -117,61 +117,71 @@ export const useDeleteIssue = (teamId: string) => {
   });
 };
 
-export const useUpdateIssue = (
-  issueId: string,
-  { orgId, teamId, projectId }: IssueSnapshot,
-) => {
+export const useUpdateIssue = ({ orgId, teamId, projectId }: IssueSnapshot) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (values: IssueUpdateSchemaType) => {
+    mutationFn: async ({
+      issueId,
+      values,
+      teamId,
+    }: {
+      issueId: string;
+      values: IssueUpdateSchemaType;
+      teamId: string;
+    }) => {
       const result = await updateIssue(issueId, values);
       if (!result.success) {
         throw new Error(result.message);
       }
       return result.data;
     },
-    onMutate: async (newValues) => {
+    onMutate: async ({ issueId, teamId, values: newValues }) => {
       await queryClient.cancelQueries({
         queryKey: queryKeys.issues.detail(issueId),
+      });
+
+      await queryClient.cancelQueries({
+        queryKey: queryKeys.issues.byTeam(teamId ?? ""),
       });
 
       const previousIssue = queryClient.getQueryData(
         queryKeys.issues.detail(issueId),
       );
+      const previousList = queryClient.getQueryData(
+        queryKeys.issues.byTeam(teamId ?? ""),
+      );
 
-      queryClient.setQueryData(queryKeys.issues.detail(issueId), (old: any) => {
-        old ? { ...old, ...newValues } : old;
-      });
+      queryClient.setQueryData(queryKeys.issues.detail(issueId), (old: any) =>
+        old ? { ...old, ...newValues } : old,
+      );
 
       queryClient.setQueryData(
         queryKeys.issues.byTeam(teamId ?? ""),
         (old: any[]) =>
-          old.map((issue) =>
-            issue.id === issueId
-              ? {
-                  ...issue,
-                  ...newValues,
-                }
-              : issue,
-          ),
+          old?.map((issue) =>
+            issue.id === issueId ? { ...issue, ...newValues } : issue,
+          ) ?? old,
       );
 
-      return {
-        previousIssue,
-      };
+      return { previousIssue, previousList, issueId, teamId };
     },
     onError: (error, _, context) => {
-      console.log(error);
       if (context?.previousIssue) {
         queryClient.setQueryData(
-          queryKeys.issues.detail(issueId),
+          queryKeys.issues.detail(context.issueId),
           context.previousIssue,
+        );
+      }
+      if (context?.previousList) {
+        queryClient.setQueryData(
+          queryKeys.issues.byTeam(context.teamId ?? ""),
+          context.previousList,
         );
       }
       toast.danger(error.message);
     },
-    onSuccess: () => {
+    onSuccess: (_, { issueId }) => {
       queryClient.invalidateQueries({
         queryKey: queryKeys.issues.detail(issueId),
       });
