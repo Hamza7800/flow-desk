@@ -38,6 +38,7 @@ const AssigneeSelect = ({
   return (
     <Select
       placeholder="Select Assignee"
+      className={"w-full"}
       selectionMode={selection}
       value={selected}
       onChange={(keys) => {

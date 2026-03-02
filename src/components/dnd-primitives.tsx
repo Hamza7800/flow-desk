@@ -1,29 +1,58 @@
+import type { Issues } from "@/lib/issue-config/issue-groups";
 import { cn } from "@/lib/utils";
 import { useDroppable } from "@dnd-kit/core";
-import { useSortable } from "@dnd-kit/sortable";
+import {
+  SortableContext,
+  useSortable,
+  verticalListSortingStrategy,
+} from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import { Surface } from "@heroui/react";
 import type { ReactNode } from "react";
 
 export const DroppableGroup = ({
-  groupKey,
+  containerId,
+  items,
   children,
   className,
 }: {
-  groupKey: string;
+  containerId: string;
+  items: Issues;
   children: ReactNode;
   className?: string;
 }) => {
-  const { setNodeRef, isOver } = useDroppable({ id: groupKey });
+  const { setNodeRef, isOver } = useDroppable({ id: containerId });
+
   return (
-    <div
+    <Surface
+      variant="default"
       ref={setNodeRef}
       className={cn(
         className,
-        isOver && "bg-indigo-500/5 ring-2 ring-indigo-500/50 transition-colors",
+        "min-h-10 transition-colors duration-150",
+        "scrollbar-thin scrollbar-thumb-zinc-700 scrollbar-track-transparent flex-1 space-y-2 overflow-y-auto rounded-lg p-2",
+        isOver &&
+          "rounded-lg bg-indigo-500/5 ring-1 ring-indigo-500/20 ring-inset",
       )}
     >
-      {children}
-    </div>
+      <SortableContext
+        items={items.map((i) => i.id)}
+        strategy={verticalListSortingStrategy}
+      >
+        {children}
+        {items.length === 0 && (
+          <div
+            className={cn(
+              "h-16 rounded border border-dashed border-zinc-700/50",
+              "flex items-center justify-center text-xs text-zinc-600",
+              isOver && "border-indigo-500/40 text-indigo-400/60",
+            )}
+          >
+            Drop here
+          </div>
+        )}
+      </SortableContext>
+    </Surface>
   );
 };
 
@@ -43,15 +72,18 @@ export const DraggableIssue = ({
     isDragging,
   } = useSortable({ id: issueId });
 
-  const style = {
-    transform: CSS.Transform.toString(transform),
-    transition,
-    opacity: isDragging ? 0.4 : 1,
-    cursor: isDragging ? "grabbing" : "grab",
-  };
-
   return (
-    <div ref={setNodeRef} style={style} {...attributes} {...listeners}>
+    <div
+      ref={setNodeRef}
+      style={{
+        transform: CSS.Transform.toString(transform),
+        transition,
+        opacity: isDragging ? 0.5 : 1,
+        cursor: isDragging ? "grabbing" : "grab",
+      }}
+      {...attributes}
+      {...listeners}
+    >
       {children}
     </div>
   );

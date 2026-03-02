@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 import { useIssueViewStore } from "@/store/issue-view-store";
-import { Dropdown, Button } from "@heroui/react";
+import { Dropdown, Button, Label, Checkbox } from "@heroui/react";
 import { LayoutList, LayoutGrid, Settings2 } from "lucide-react";
 
 const DISPLAY_PROPERTY_LABELS = {
@@ -30,29 +30,19 @@ export const DisplayControls = () => {
   return (
     <div className="flex items-center gap-2">
       {/* View mode toggle */}
-      <div className="flex rounded-md border border-zinc-700">
-        <button
+      <div className="flex gap-2">
+        <Button
           onClick={() => setViewMode("list")}
-          className={cn(
-            "rounded-l-md p-1.5 transition-colors",
-            viewMode === "list"
-              ? "bg-zinc-700 text-white"
-              : "text-zinc-400 hover:text-white",
-          )}
+          variant={viewMode === "list" ? "danger" : "ghost"}
         >
           <LayoutList size={16} />
-        </button>
-        <button
+        </Button>
+        <Button
           onClick={() => setViewMode("board")}
-          className={cn(
-            "rounded-r-md p-1.5 transition-colors",
-            viewMode === "board"
-              ? "bg-zinc-700 text-white"
-              : "text-zinc-400 hover:text-white",
-          )}
+          variant={viewMode === "board" ? "danger" : "ghost"}
         >
           <LayoutGrid size={16} />
-        </button>
+        </Button>
       </div>
 
       {/* Display options popover */}
@@ -62,51 +52,51 @@ export const DisplayControls = () => {
           Display
         </Button>
 
-        <Dropdown.Popover className="w-64 space-y-4 p-3">
+        <Dropdown.Popover className="w-64 space-y-4">
           {/* Grouping */}
-          <div>
+          <div className="p-3">
             <p className="mb-2 text-xs text-zinc-500">Grouping</p>
             <div className="flex gap-1">
               {GROUPBY_OPTIONS.map((opt) => (
-                <button
+                <Button
+                  fullWidth
                   key={opt.key}
                   onClick={() => setGroupBy(opt.key)}
-                  className={cn(
-                    "flex-1 rounded px-2 py-1 text-sm transition-colors",
-                    groupBy === opt.key
-                      ? "bg-zinc-700 text-white"
-                      : "text-zinc-400 hover:bg-zinc-800",
-                  )}
+                  variant={groupBy === opt.key ? "danger" : "ghost"}
                 >
                   {opt.label}
-                </button>
+                </Button>
               ))}
             </div>
           </div>
 
           {/* Display properties */}
           <div>
-            <p className="mb-2 text-xs text-zinc-500">Properties</p>
-            <div className="space-y-1">
+            <p className="mb-2 px-3 text-xs text-zinc-500">Properties</p>
+            <div className="">
               {Object.entries(DISPLAY_PROPERTY_LABELS).map(([key, label]) => (
-                <label
+                <Checkbox
+                  className={
+                    "w-full justify-between px-3 py-2 hover:bg-[#1c1c1c]"
+                  }
                   key={key}
-                  className="flex cursor-pointer items-center justify-between py-1"
+                  id={key}
+                  isSelected={
+                    displayProperties[key as keyof typeof displayProperties]
+                  }
+                  onChange={() => {
+                    toggleDisplayProperty(
+                      key as keyof typeof displayProperties,
+                    );
+                  }}
                 >
-                  <span className="text-sm text-zinc-300">{label}</span>
-                  <input
-                    type="checkbox"
-                    checked={
-                      displayProperties[key as keyof typeof displayProperties]
-                    }
-                    onChange={() =>
-                      toggleDisplayProperty(
-                        key as keyof typeof displayProperties,
-                      )
-                    }
-                    className="rounded border-zinc-600"
-                  />
-                </label>
+                  <Checkbox.Content>
+                    <Label htmlFor={key}>{label}</Label>
+                  </Checkbox.Content>
+                  <Checkbox.Control>
+                    <Checkbox.Indicator />
+                  </Checkbox.Control>
+                </Checkbox>
               ))}
             </div>
           </div>

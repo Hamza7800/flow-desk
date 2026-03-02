@@ -4,203 +4,244 @@ import {
   DndContext,
   DragOverlay,
   PointerSensor,
+  KeyboardSensor,
   useSensor,
   useSensors,
-  type DragEndEvent,
+  closestCorners,
+  defaultDropAnimationSideEffects,
   type DragStartEvent,
   type DragOverEvent,
+  type DragEndEvent,
+  type DragCancelEvent,
+  type UniqueIdentifier,
 } from "@dnd-kit/core";
-import { arrayMove } from "@dnd-kit/sortable";
-import { useState, useEffect, type ReactNode } from "react";
-import type { Issues } from "@/lib/issue-config/issue-groups";
-import { useIssueViewStore } from "@/store/issue-view-store";
+import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable";
+import { useState, useEffect, useRef, useCallback } from "react";
+import { useIssueViewStore, type GroupBy } from "@/store/issue-view-store";
 import { useUpdateIssue } from "@/hooks/use-issues";
+import { GROUP_CONFIG, type Issues } from "@/lib/issue-config/issue-groups";
 import { useOrganizationContext } from "./organization-client-context";
+
+export type IssueContainer = {
+  id: string;
+  label: string;
+  icon: string;
+  color: string;
+  items: Issues;
+};
+
+const buildContainers = (issues: Issues, groupBy: GroupBy): IssueContainer[] =>
+  GROUP_CONFIG[groupBy].map((config) => ({
+    id: config.key,
+    label: config.label,
+    icon: config.icon,
+    color: config.color,
+    items: issues.filter((issue) => issue[groupBy] === config.key),
+  }));
 
 type Props = {
   issues: Issues;
-  children: (orderedIssues: Issues) => ReactNode;
-  renderOverlay?: (issue: Issues[number]) => ReactNode;
+  renderCard: (issue: Issues[number]) => React.ReactNode;
+  children: (containers: IssueContainer[]) => React.ReactNode;
 };
 
-export const IssueDndContext = ({ issues, children, renderOverlay }: Props) => {
+export const IssueDndContext = ({ issues, renderCard, children }: Props) => {
   const { groupBy } = useIssueViewStore();
   const { org } = useOrganizationContext();
-  const [activeIssue, setActiveIssue] = useState<Issues[number] | null>(null);
-  const isDragging = activeIssue !== null;
+  const [containers, setContainers] = useState<IssueContainer[]>(() =>
+    buildContainers(issues, groupBy),
+  );
+  const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
+  const updateIssue = useUpdateIssue({ orgId: org?.id ?? "" });
 
-  const [orderedIssues, setOrderedIssues] = useState<Issues>(issues);
+  const originalContainerRef = useRef<string | null>(null);
+  const pendingMutationRef = useRef(false);
+
+  const isDragging = activeId !== null;
 
   useEffect(() => {
-    if (!isDragging) {
-      setOrderedIssues(issues);
+    if (!isDragging && !pendingMutationRef.current) {
+      setContainers(buildContainers(issues, groupBy));
     }
-  }, [issues, isDragging]);
+  }, [issues, groupBy, isDragging]);
 
   const sensors = useSensors(
-    useSensor(PointerSensor, {
-      activationConstraint: { distance: 8 },
+    useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
+    useSensor(KeyboardSensor, {
+      coordinateGetter: sortableKeyboardCoordinates,
     }),
   );
 
-  const updateIssue = useUpdateIssue({ orgId: org?.id ?? "" });
+  const containersRef = useRef(containers);
+  useEffect(() => {
+    containersRef.current = containers;
+  }, [containers]);
 
-  const handleDragStart = ({ active }: DragStartEvent) => {
-    const issue = orderedIssues.find((i) => i.id === active.id);
-    if (issue) setActiveIssue(issue);
+  const findContainerId = (id: UniqueIdentifier): string | undefined => {
+    const current = containersRef.current;
+    if (current.some((c) => c.id === id)) return id as string;
+    return current.find((c) => c.items.some((item) => item.id === id))?.id;
   };
 
-  // onDragOver fires continuously while dragging — use it for live reorder preview
-  const handleDragOver = ({ active, over }: DragOverEvent) => {
-    if (!over || active.id === over.id) return;
-
-    const activeIndex = orderedIssues.findIndex((i) => i.id === active.id);
-    const overIndex = orderedIssues.findIndex((i) => i.id === over.id);
-
-    // Only reorder if both are issues (overIndex !== -1) and in the same group
-    if (activeIndex === -1 || overIndex === -1) return;
-
-    const activeIssue = orderedIssues[activeIndex];
-    const overIssue = orderedIssues[overIndex];
-
-    if (activeIssue?.[groupBy] === overIssue?.[groupBy]) {
-      // Same group → reorder locally for live preview
-      setOrderedIssues((prev) => arrayMove(prev, activeIndex, overIndex));
+  const getActiveIssue = (): Issues[number] | null => {
+    if (!activeId) return null;
+    for (const container of containersRef.current) {
+      const issue = container.items.find((item) => item.id === activeId);
+      if (issue) return issue;
     }
+    return null;
+  };
+
+  const handleDragStart = ({ active }: DragStartEvent) => {
+    setActiveId(active.id);
+    originalContainerRef.current = findContainerId(active.id) ?? null;
+  };
+
+  const handleDragOver = ({ active, over }: DragOverEvent) => {
+    if (!over) return;
+
+    const activeContainerId = findContainerId(active.id);
+    const overContainerId = findContainerId(over.id);
+
+    if (!activeContainerId || !overContainerId) return;
+
+    if (activeContainerId === overContainerId) {
+      if (active.id === over.id) return;
+
+      setContainers((prev) =>
+        prev.map((container) => {
+          if (container.id !== activeContainerId) return container;
+
+          const oldIndex = container.items.findIndex((i) => i.id === active.id);
+          const newIndex = container.items.findIndex((i) => i.id === over.id);
+
+          if (oldIndex === -1 || newIndex === -1) return container;
+
+          return {
+            ...container,
+            items: arrayMove(container.items, oldIndex, newIndex),
+          };
+        }),
+      );
+
+      return;
+    }
+
+    setContainers((prev) => {
+      const activeContainer = prev.find((c) => c.id === activeContainerId);
+      if (!activeContainer) return prev;
+
+      const activeItem = activeContainer.items.find((i) => i.id === active.id);
+      if (!activeItem) return prev;
+
+      const updatedItem = { ...activeItem, [groupBy]: overContainerId };
+
+      return prev.map((container) => {
+        if (container.id === activeContainerId) {
+          return {
+            ...container,
+            items: container.items.filter((i) => i.id !== active.id),
+          };
+        }
+
+        if (container.id === overContainerId) {
+          if (over.id === overContainerId) {
+            return { ...container, items: [...container.items, updatedItem] };
+          }
+
+          const overItemIndex = container.items.findIndex(
+            (i) => i.id === over.id,
+          );
+
+          if (overItemIndex !== -1) {
+            return {
+              ...container,
+              items: [
+                ...container.items.slice(0, overItemIndex + 1),
+                updatedItem,
+                ...container.items.slice(overItemIndex + 1),
+              ],
+            };
+          }
+
+          return { ...container, items: [...container.items, updatedItem] };
+        }
+
+        return container;
+      });
+    });
   };
 
   const handleDragEnd = ({ active, over }: DragEndEvent) => {
-    setActiveIssue(null);
-    if (!over || active.id === over.id) return;
+    setActiveId(null);
 
-    const draggedIssue = orderedIssues.find((i) => i.id === active.id);
-    if (!draggedIssue) return;
+    const originalContainerId = originalContainerRef.current;
+    originalContainerRef.current = null;
 
-    const overId = over.id as string;
-    const overIssue = orderedIssues.find((i) => i.id === overId);
-    const newGroupValue = overIssue ? overIssue[groupBy] : overId;
-    const currentValue = draggedIssue[groupBy];
+    if (!over) {
+      pendingMutationRef.current = false;
+      setContainers(buildContainers(issues, groupBy));
+      return;
+    }
 
-    if (newGroupValue === currentValue) return;
+    const overContainerId = findContainerId(over.id);
 
-    setOrderedIssues((prev) =>
-      prev.map((issue) =>
-        issue.id === draggedIssue.id
-          ? { ...issue, [groupBy]: newGroupValue }
-          : issue,
-      ),
+    if (!originalContainerId || !overContainerId) return;
+
+    if (originalContainerId === overContainerId) return;
+
+    const originalIssue = issues.find((i) => i.id === active.id);
+    if (!originalIssue) return;
+
+    pendingMutationRef.current = true;
+
+    updateIssue.mutate(
+      {
+        issueId: active.id as string,
+        values: { [groupBy]: overContainerId },
+        teamId: originalIssue.teamId ?? "",
+      },
+      {
+        onSettled: () => {
+          pendingMutationRef.current = false;
+        },
+      },
     );
+  };
 
-    updateIssue.mutate({
-      issueId: draggedIssue.id,
-      values: { [groupBy]: newGroupValue },
-      teamId: draggedIssue.teamId ?? "",
-    });
+  const handleDragCancel = (_event: DragCancelEvent) => {
+    setActiveId(null);
+    originalContainerRef.current = null;
+    pendingMutationRef.current = false;
+    setContainers(buildContainers(issues, groupBy));
   };
 
   return (
     <DndContext
       sensors={sensors}
+      collisionDetection={closestCorners}
       onDragStart={handleDragStart}
       onDragOver={handleDragOver}
       onDragEnd={handleDragEnd}
+      onDragCancel={handleDragCancel}
     >
-      {/* Render prop passes orderedIssues down so views use the local order */}
-      {children(orderedIssues)}
+      {children(containers)}
 
-      <DragOverlay>
-        {activeIssue && renderOverlay ? renderOverlay(activeIssue) : null}
+      <DragOverlay
+        dropAnimation={{
+          duration: 150,
+          easing: "cubic-bezier(0.18, 0.67, 0.6, 1.22)",
+          sideEffects: defaultDropAnimationSideEffects({
+            styles: { active: { opacity: "0.5" } },
+          }),
+        }}
+      >
+        {activeId ? (
+          <div className="scale-[1.02] rotate-[0.5deg] cursor-grabbing rounded-md shadow-2xl ring-1 ring-indigo-500/40">
+            {renderCard(getActiveIssue()!)}
+          </div>
+        ) : null}
       </DragOverlay>
     </DndContext>
   );
 };
-
-// import {
-//   DndContext,
-//   DragOverlay,
-//   PointerSensor,
-//   useSensor,
-//   useSensors,
-//   type DragEndEvent,
-//   type DragStartEvent,
-// } from "@dnd-kit/core";
-// import { useState, type ReactNode } from "react";
-// import { useUpdateIssue } from "@/hooks/use-issues";
-// import { useIssueViewStore } from "@/store/issue-view-store";
-// import type { Issues } from "@/lib/issue-config/issue-groups";
-// import { useGroupedIssues } from "@/hooks/use-grouped-issues";
-
-// type Props = {
-//   issues: Issues;
-//   orgId: string;
-//   children: ReactNode;
-//   renderOverlay?: (issue: Issues[number]) => ReactNode;
-// };
-
-// export const IssueDndContext = ({
-//   issues,
-//   orgId,
-//   children,
-//   renderOverlay,
-// }: Props) => {
-//   const { groupBy } = useIssueViewStore();
-//   const [activeIssue, setActiveIssue] = useState<Issues[number] | null>(null);
-
-//   const sensors = useSensors(
-//     useSensor(PointerSensor, {
-//       activationConstraint: { distance: 0 },
-//     }),
-//   );
-
-//   const updateIssue = useUpdateIssue({ orgId });
-
-//   const handleDragStart = ({ active }: DragStartEvent) => {
-//     const issue = issues.find((i) => i.id === active.id);
-//     if (issue) setActiveIssue(issue);
-//   };
-
-//   const handleDragEnd = ({ active, over }: DragEndEvent) => {
-//     setActiveIssue(null);
-//     if (!over || active.id === over.id) return;
-
-//     const draggedIssue = issues.find((i) => i.id === active.id);
-//     if (!draggedIssue) return;
-
-//     const overId = over.id as string;
-//     const overIssue = issues.find((i) => i.id === overId);
-
-//     const newGroupValue = overIssue ? overIssue[groupBy] : overId;
-//     const currentValue = draggedIssue[groupBy];
-
-//     if (newGroupValue === currentValue) return;
-
-//     // console.log({
-//     //   [groupBy]: newGroupValue,
-//     //   id: draggedIssue.id,
-//     //   orgId,
-//     //   teamId: draggedIssue.teamId ?? undefined,
-//     //   projectId: draggedIssue.projectId ?? undefined,
-//     // });
-
-//     console.log(newGroupValue);
-
-//     updateIssue.mutate({
-//       issueId: draggedIssue.id,
-//       values: { [groupBy]: newGroupValue },
-//       teamId: draggedIssue.teamId ?? "",
-//     });
-//   };
-
-//   return (
-//     <DndContext
-//       sensors={sensors}
-//       onDragStart={handleDragStart}
-//       onDragEnd={handleDragEnd}
-//     >
-//       {children}
-//       <DragOverlay>
-//         {activeIssue && renderOverlay ? renderOverlay(activeIssue) : null}
-//       </DragOverlay>
-//     </DndContext>
-//   );
-// };

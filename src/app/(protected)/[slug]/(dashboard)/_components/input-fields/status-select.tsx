@@ -7,6 +7,7 @@ const StatusSelect = ({ value, onChange }: SelectProps) => {
 
   return (
     <Select
+      className={"w-full"}
       placeholder="Select Status"
       value={currentStatus?.key}
       onChange={(value) => {

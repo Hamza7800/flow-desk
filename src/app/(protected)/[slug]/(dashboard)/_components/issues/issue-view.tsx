@@ -5,6 +5,59 @@ import PrioritySelect from "../input-fields/priority-select";
 import StatusSelect from "../input-fields/status-select";
 import AssigneeSelect from "../input-fields/assignee-select";
 import type { Priority, Status } from "@/lib/contants";
+import { MoreHorizontal } from "lucide-react";
+import { Card } from "@heroui/react";
+
+type Issue = {
+  status:
+    | "backlog"
+    | "planned"
+    | "in-progress"
+    | "completed"
+    | "canceled"
+    | null;
+  priority: "no-priority" | "urgent" | "high" | "medium" | "low" | null;
+};
+
+const statusColumns = [
+  "backlog",
+  "planned",
+  "in-progress",
+  "completed",
+  "canceled",
+] as const;
+
+const priorityColor = (priority: Issue["priority"]) => {
+  switch (priority) {
+    case "urgent":
+      return "danger";
+    case "high":
+      return "warning";
+    case "medium":
+      return "accent";
+    case "low":
+      return "success";
+    default:
+      return "default";
+  }
+};
+
+const statusColor = (status: Issue["status"]) => {
+  switch (status) {
+    case "completed":
+      return "success";
+    case "in-progress":
+      return "accent";
+    case "planned":
+      return "warning";
+    case "backlog":
+      return "default";
+    case "canceled":
+      return "danger";
+    default:
+      return "default";
+  }
+};
 
 const IssueView = ({
   issue,
@@ -17,10 +70,23 @@ const IssueView = ({
   switch (viewMode) {
     case "board":
       return (
-        <div className="space-y-2 rounded-md border border-zinc-700/50 bg-zinc-800/80 p-3 transition-colors hover:border-zinc-600">
-          {/* Top row */}
-          <div className="flex items-center justify-between">
-            <span className="text-xs text-zinc-500">{issue.identifier}</span>
+        <Card className="rounded-lg p-4" variant="secondary">
+          {/* Header with icon and priority */}
+          <div className="flex items-start justify-between">
+            {issue.priority === "high" && (
+              <span className="rounded border border-yellow-500/30 bg-yellow-500/20 px-2 py-0.5 text-xs font-semibold text-yellow-400">
+                HP
+              </span>
+            )}
+          </div>
+
+          {/* Task ID and title */}
+          <div className="space-y-1">
+            <p className="text-xs text-gray-500">{issue.identifier}</p>
+            <h3 className="text-sm font-medium text-white">{issue.title}</h3>
+          </div>
+
+          <div className="flex gap-2 pt-1">
             {displayProperties.showPriority && (
               <PrioritySelect
                 onChange={(value) =>
@@ -35,13 +101,6 @@ const IssueView = ({
                 value={issue.priority ?? ""}
               />
             )}
-          </div>
-
-          {/* Title */}
-          <p className="line-clamp-2 text-sm leading-snug">{issue.title}</p>
-
-          {/* Bottom row */}
-          <div className="flex items-center gap-2 pt-1">
             {displayProperties.showStatus && (
               <StatusSelect
                 onChange={(value) =>
@@ -71,23 +130,35 @@ const IssueView = ({
             </span>
           ))} */}
             {displayProperties.showAssignee && (
-              <div className="ml-auto">
-                <AssigneeSelect
-                  label="Assignee"
-                  value={issue.assignees?.map((a) => a.userId) ?? []}
-                  onChange={(values) =>
-                    updateIssue.mutate({
-                      values: {
-                        assigneeIds: values,
-                      },
-                      teamId: issue.teamId ?? "",
-                      issueId: issue.id,
-                    })
-                  }
-                />
-              </div>
+              <AssigneeSelect
+                label="Assignee"
+                value={issue.assignees?.map((a) => a.userId) ?? []}
+                onChange={(values) =>
+                  updateIssue.mutate({
+                    values: {
+                      assigneeIds: values,
+                    },
+                    teamId: issue.teamId ?? "",
+                    issueId: issue.id,
+                  })
+                }
+              />
             )}
           </div>
+          {/* <p className="text-xs text-gray-500">Created {new Date(issue.createdAt)}</p> */}
+        </Card>
+      );
+      return (
+        <div className="space-y-2 rounded-md border border-zinc-700/50 bg-zinc-800/80 p-3 transition-colors hover:border-zinc-600">
+          {/* Top row */}
+          <div className="flex items-center justify-between">
+            <span className="text-xs text-zinc-500">{issue.identifier}</span>
+          </div>
+
+          {/* Title */}
+          <p className="line-clamp-2 text-sm leading-snug">{issue.title}</p>
+
+          {/* Bottom row */}
         </div>
       );
 

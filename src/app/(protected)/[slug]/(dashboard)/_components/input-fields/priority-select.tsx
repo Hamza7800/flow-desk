@@ -8,6 +8,7 @@ const PrioritySelect = ({ value, onChange }: SelectProps) => {
   return (
     <Select
       placeholder="Priority"
+      className={"w-full"}
       value={currentStatus?.key}
       onChange={(value) => {
         onChange(value as string);
