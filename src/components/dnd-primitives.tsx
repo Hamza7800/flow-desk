@@ -7,6 +7,7 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
+import type { ReactNode } from "react";
 
 export const DroppableGroup = ({
   containerId,
@@ -57,7 +58,7 @@ export const DraggableIssue = ({
   children,
 }: {
   issueId: string;
-  children: React.ReactNode;
+  children: ReactNode;
 }) => {
   const {
     attributes,
@@ -75,7 +76,6 @@ export const DraggableIssue = ({
         transform: CSS.Transform.toString(transform),
         transition,
         opacity: isDragging ? 0.5 : 1,
-        cursor: isDragging ? "grabbing" : "grab",
       }}
       {...attributes}
       {...listeners}

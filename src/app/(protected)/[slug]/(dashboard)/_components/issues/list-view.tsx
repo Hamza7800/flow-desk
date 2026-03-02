@@ -5,40 +5,10 @@ import IssueView from "./issue-view";
 import { ChevronDown } from "lucide-react";
 import { useState } from "react";
 import type { IssueContainer } from "@/components/context/issue-dnd-context";
+import { Button } from "@heroui/react";
 
-export const ListGroupHeader = ({
-  container,
-}: {
-  container: IssueContainer;
-}) => {
-  const [collapsed, setCollapsed] = useState(false);
-
-  return (
-    <button
-      onClick={() => setCollapsed((c) => !c)}
-      className="group mb-1 flex w-full items-center gap-2 rounded px-1 py-1 text-left hover:bg-zinc-800/40"
-    >
-      <span className={cn("text-sm", container.color)}>{container.icon}</span>
-      <span className="text-sm font-medium text-zinc-200">
-        {container.label}
-      </span>
-      <span className="rounded-full bg-zinc-800 px-1.5 py-0.5 text-xs text-zinc-500">
-        {container.items.length}
-      </span>
-      <ChevronDown
-        size={14}
-        className={cn(
-          "ml-auto text-zinc-500 transition-transform duration-200",
-          collapsed && "-rotate-90",
-        )}
-      />
-    </button>
-  );
-};
-
-// Updated ListView with collapse support
 export const ListView = ({ containers }: { containers: IssueContainer[] }) => (
-  <div className="space-y-4">
+  <div className="scrollbar-thin h-full space-y-4 overflow-y-auto px-2">
     {containers.map((container) => (
       <CollapsibleListGroup key={container.id} container={container} />
     ))}
@@ -51,9 +21,10 @@ const CollapsibleListGroup = ({ container }: { container: IssueContainer }) => {
   return (
     <div>
       {/* Header */}
-      <button
+      <Button
+        variant="ghost"
         onClick={() => setCollapsed((c) => !c)}
-        className="group mb-1 flex w-full items-center gap-2 rounded-md px-2 py-1.5 text-left hover:bg-zinc-800/40"
+        className="group mb-1 flex w-full items-center hover:bg-zinc-800/40"
       >
         <span className={cn("text-sm", container.color)}>{container.icon}</span>
         <span className="text-sm font-medium text-zinc-200">
@@ -69,7 +40,7 @@ const CollapsibleListGroup = ({ container }: { container: IssueContainer }) => {
             collapsed && "-rotate-90",
           )}
         />
-      </button>
+      </Button>
 
       {/* Droppable rows */}
       {!collapsed && (

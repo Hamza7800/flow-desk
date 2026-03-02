@@ -4,6 +4,8 @@
 @import "shadcn/tailwind.css";
 @import "@heroui/styles";
 
+@plugin 'tailwind-scrollbar';
+
 @custom-variant dark (&:is(.dark *));
 
 @theme {

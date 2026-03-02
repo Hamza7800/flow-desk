@@ -74,8 +74,8 @@ export const IssueBoard = ({ issues }: Props) => {
   const { viewMode } = useIssueViewStore();
 
   return (
-    <div className="flex h-screen flex-col select-none">
-      <div className="mb-4 flex items-center justify-between">
+    <div className="flex h-[90vh] flex-col select-none">
+      <div className="mb-4 flex items-center justify-between p-2">
         <p className="text-sm text-zinc-400">{issues.length} issues</p>
         <DisplayControls />
       </div>
@@ -107,7 +107,6 @@ const Issues = ({
   teamId: string;
   initialData: IssuesType["data"];
 }) => {
-  // TODO remove useOrg hook
   const { data: issues, isError, error } = useTeamIssues(teamId, initialData);
 
   if (isError) {

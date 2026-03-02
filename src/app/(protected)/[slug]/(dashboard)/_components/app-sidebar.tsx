@@ -44,7 +44,7 @@ export function AppSidebar({ slug, ...props }: ComponentProps<typeof Sidebar>) {
         <OrganizationSwitcher />
         {/* <SearchForm /> */}
       </SidebarHeader>
-      <SidebarContent className="scrollbar-hide gap-0">
+      <SidebarContent className="scrollbar-thin gap-0">
         <SidebarMenu>
           <SidebarMenuItem>
             <LinkButton

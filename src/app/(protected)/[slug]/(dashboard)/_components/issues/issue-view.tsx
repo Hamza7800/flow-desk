@@ -7,6 +7,7 @@ import AssigneeSelect from "../input-fields/assignee-select";
 import type { Priority, Status } from "@/lib/contants";
 import { MoreHorizontal } from "lucide-react";
 import { Card } from "@heroui/react";
+import { useParams, useRouter } from "next/navigation";
 
 type Issue = {
   status:
@@ -64,13 +65,19 @@ const IssueView = ({
 }: {
   issue: NonNullable<IssuesType["data"]>[number];
 }) => {
+  const router = useRouter();
+  const { slug } = useParams<{ slug: string }>();
   const { displayProperties, viewMode } = useIssueViewStore();
   const updateIssue = useUpdateIssue({ orgId: issue.organizationId });
 
   switch (viewMode) {
     case "board":
       return (
-        <Card className="rounded-lg p-4" variant="secondary">
+        <Card
+          onClick={() => router.push(`/${slug}/issue/${issue.id}`)}
+          className="rounded-lg p-4"
+          variant="secondary"
+        >
           {/* Header with icon and priority */}
           <div className="flex items-start justify-between">
             {issue.priority === "high" && (
@@ -148,25 +155,13 @@ const IssueView = ({
           {/* <p className="text-xs text-gray-500">Created {new Date(issue.createdAt)}</p> */}
         </Card>
       );
-      return (
-        <div className="space-y-2 rounded-md border border-zinc-700/50 bg-zinc-800/80 p-3 transition-colors hover:border-zinc-600">
-          {/* Top row */}
-          <div className="flex items-center justify-between">
-            <span className="text-xs text-zinc-500">{issue.identifier}</span>
-          </div>
-
-          {/* Title */}
-          <p className="line-clamp-2 text-sm leading-snug">{issue.title}</p>
-
-          {/* Bottom row */}
-        </div>
-      );
 
     case "list":
       return (
         <Card
+          onClick={() => router.push(`/${slug}/issue/${issue.id}`)}
           variant="tertiary"
-          className="group grid grid-cols-2 items-center gap-3 rounded border-b border-zinc-800/50 px-2 py-1.5 hover:bg-zinc-800/90"
+          className="group mb-1 grid grid-cols-2 items-center gap-3 rounded border-b border-zinc-800/50 px-2 py-1.5 hover:bg-zinc-800/90"
         >
           <span className="w-16 shrink-0 text-xs text-zinc-500">
             {issue.identifier}
