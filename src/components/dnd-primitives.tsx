@@ -7,8 +7,6 @@ import {
   verticalListSortingStrategy,
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
-import { Surface } from "@heroui/react";
-import type { ReactNode } from "react";
 
 export const DroppableGroup = ({
   containerId,
@@ -18,19 +16,17 @@ export const DroppableGroup = ({
 }: {
   containerId: string;
   items: Issues;
-  children: ReactNode;
+  children: React.ReactNode;
   className?: string;
 }) => {
   const { setNodeRef, isOver } = useDroppable({ id: containerId });
 
   return (
-    <Surface
-      variant="default"
+    <div
       ref={setNodeRef}
       className={cn(
         className,
         "min-h-10 transition-colors duration-150",
-        "scrollbar-thin scrollbar-thumb-zinc-700 scrollbar-track-transparent flex-1 space-y-2 overflow-y-auto rounded-lg p-2",
         isOver &&
           "rounded-lg bg-indigo-500/5 ring-1 ring-indigo-500/20 ring-inset",
       )}
@@ -52,7 +48,7 @@ export const DroppableGroup = ({
           </div>
         )}
       </SortableContext>
-    </Surface>
+    </div>
   );
 };
 

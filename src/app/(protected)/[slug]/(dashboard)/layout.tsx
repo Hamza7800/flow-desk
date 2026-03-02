@@ -1,4 +1,5 @@
 import { AppSidebar } from "@/app/(protected)/[slug]/(dashboard)/_components/app-sidebar";
+import { SiteHeader } from "@/components/site-header";
 import { Separator } from "@/components/ui/separator";
 import {
   SidebarInset,
@@ -16,14 +17,22 @@ export default async function SlugLayout({ children, params }: Props) {
   const { slug } = await params;
 
   return (
-    <SidebarProvider>
-      <AppSidebar slug={slug} />
+    <SidebarProvider
+      style={
+        {
+          "--sidebar-width": "calc(var(--spacing) * 72)",
+          "--header-height": "calc(var(--spacing) * 12)",
+        } as React.CSSProperties
+      }
+    >
+      <AppSidebar slug={slug} variant="inset" />
       <SidebarInset>
-        <header className="sticky top-0 z-[10] flex h-16 w-full shrink-0 items-center gap-2 border-b bg-[#161616] px-4">
-          <SidebarTrigger className="-ml-1" />
-          <Separator orientation="vertical" className="mr-2 h-4" />
-        </header>
-        <div className="p-4">{children}</div>
+        <SiteHeader />
+        <div className="flex flex-1 flex-col">
+          <div className="@container/main flex flex-1 flex-col gap-2">
+            <div className="flex flex-col gap-4 p-4 md:gap-6">{children}</div>
+          </div>
+        </div>
       </SidebarInset>
     </SidebarProvider>
   );

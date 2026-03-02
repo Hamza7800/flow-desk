@@ -6,14 +6,17 @@ import IssueView from "./issue-view";
 import type { IssueContainer } from "@/components/context/issue-dnd-context";
 
 export const BoardView = ({ containers }: { containers: IssueContainer[] }) => (
-  <div className="flex h-full w-full gap-4 overflow-x-auto overflow-y-hidden px-4 pb-4">
+  <div className="flex h-full w-full max-w-7xl gap-4 overflow-x-auto pb-4">
     {containers.map((container) => (
-      <div key={container.id} className="flex w-md shrink-0 flex-col">
+      <div
+        key={container.id}
+        className="flex w-full max-w-md shrink-0 flex-col"
+      >
         <BoardColumnHeader container={container} />
         <DroppableGroup
           containerId={container.id}
           items={container.items}
-          className="scrollbar-thin scrollbar-thumb-zinc-700 scrollbar-track-transparent flex-1 space-y-2 overflow-y-auto rounded-lg p-2"
+          className="flex-1 space-y-2 rounded-lg bg-zinc-900/50 p-2"
         >
           {container.items.map((issue) => (
             <DraggableIssue key={issue.id} issueId={issue.id}>

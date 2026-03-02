@@ -164,13 +164,18 @@ const IssueView = ({
 
     case "list":
       return (
-        <div className="group flex items-center gap-3 rounded border-b border-zinc-800/50 px-2 py-1.5 hover:bg-zinc-800/50">
+        <Card
+          variant="tertiary"
+          className="group grid grid-cols-2 items-center gap-3 rounded border-b border-zinc-800/50 px-2 py-1.5 hover:bg-zinc-800/90"
+        >
           <span className="w-16 shrink-0 text-xs text-zinc-500">
             {issue.identifier}
+            <span className="w-full flex-1 truncate text-sm">
+              {issue.title}
+            </span>
           </span>
-          <span className="flex-1 truncate text-sm">{issue.title}</span>
 
-          <div className="ml-auto flex items-center gap-1 transition-opacity">
+          <div className="flex w-full items-center gap-1 transition-opacity">
             {displayProperties.showPriority && (
               <PrioritySelect
                 onChange={(value) =>
@@ -220,7 +225,7 @@ const IssueView = ({
           </span>
         )} */}
           </div>
-        </div>
+        </Card>
       );
   }
 };
