@@ -18,12 +18,6 @@ export const projectPriorityEnum = z.enum([
 
 export const projectSchema = z.object({
   name: z.string().min(1, "Project name is required").max(200),
-  identifier: z
-    .string()
-    .min(1, "Identifier is required")
-    .max(10)
-    .toUpperCase()
-    .regex(/^[A-Z0-9]+$/, "Identifier must be alphanumeric"),
 
   summary: z.string().max(300, "Summary is too long").optional(),
   description: z.string().optional(),
@@ -57,3 +51,4 @@ export const projectSchema = z.object({
 
 export type ProjectSchemaType = z.infer<typeof projectSchema>;
 export const updateProjectSchema = projectSchema.partial();
+export type ProjectUpdateSchemaType = z.infer<typeof updateProjectSchema>;

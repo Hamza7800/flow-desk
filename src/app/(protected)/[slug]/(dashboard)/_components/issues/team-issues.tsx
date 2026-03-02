@@ -4,7 +4,7 @@ import { useTeamIssues } from "@/hooks/use-issues";
 
 import type { IssuesType } from "@/server-actions/issues";
 import { IssueBoard } from "@/app/(protected)/[slug]/(dashboard)/_components/issues/issue-board";
-import { DisplayControls } from "./display-controls";
+import { DisplayControls } from "./issues-display-controls";
 import { Separator } from "@heroui/react";
 
 const TeamIssues = ({

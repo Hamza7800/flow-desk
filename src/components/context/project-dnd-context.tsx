@@ -16,54 +16,68 @@ import {
   type UniqueIdentifier,
 } from "@dnd-kit/core";
 import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable";
-import { useState, useEffect, useRef, useCallback } from "react";
-import { useIssueViewStore, type GroupBy } from "@/store/issue-view-store";
-import { useUpdateIssue } from "@/hooks/use-issues";
-import { GROUP_CONFIG, type Issues } from "@/lib/dnd-config/issue-groups";
+import {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  type ReactNode,
+} from "react";
+import { useProjectViewStore, type GroupBy } from "@/store/project-view-store";
+import { GROUP_CONFIG, type Projects } from "@/lib/dnd-config/project-groups";
 import { useOrganizationContext } from "./organization-client-context";
+import { useUpdateProjects } from "@/hooks/use-projects";
 
-export type IssueContainer = {
+export type ProjectContainer = {
   id: string;
   label: string;
   icon: string;
   color: string;
-  items: Issues;
+  items: Projects;
 };
 
-const buildContainers = (issues: Issues, groupBy: GroupBy): IssueContainer[] =>
+const buildContainers = (
+  projects: Projects,
+  groupBy: GroupBy,
+): ProjectContainer[] =>
   GROUP_CONFIG[groupBy].map((config) => ({
     id: config.key,
     label: config.label,
     icon: config.icon,
     color: config.color,
-    items: issues.filter((issue) => issue[groupBy] === config.key),
+    items: projects.filter((project) => project[groupBy] === config.key),
   }));
 
 type Props = {
-  issues: Issues;
-  renderCard: (issue: Issues[number]) => React.ReactNode;
-  children: (containers: IssueContainer[]) => React.ReactNode;
+  projects: Projects;
+  renderCard: (project: Projects[number]) => ReactNode;
+  children: (containers: ProjectContainer[]) => ReactNode;
 };
 
-export const IssueDndContext = ({ issues, renderCard, children }: Props) => {
-  const { groupBy } = useIssueViewStore();
+// TODO: MAKE DND REUSABLE
+export const ProjectDndContext = ({
+  projects,
+  renderCard,
+  children,
+}: Props) => {
+  const { groupBy } = useProjectViewStore();
   const { org } = useOrganizationContext();
-  const [containers, setContainers] = useState<IssueContainer[]>(() =>
-    buildContainers(issues, groupBy),
+  const [containers, setContainers] = useState<ProjectContainer[]>(() =>
+    buildContainers(projects, groupBy),
   );
   const [activeId, setActiveId] = useState<UniqueIdentifier | null>(null);
-  const updateIssue = useUpdateIssue({ orgId: org?.id ?? "" });
-
-  const originalContainerRef = useRef<string | null>(null);
-  const pendingMutationRef = useRef(false);
+  const updateProject = useUpdateProjects(org?.id ?? "");
 
   const isDragging = activeId !== null;
 
   useEffect(() => {
     if (!isDragging && !pendingMutationRef.current) {
-      setContainers(buildContainers(issues, groupBy));
+      setContainers(buildContainers(projects, groupBy));
     }
-  }, [issues, groupBy]);
+  }, [projects, groupBy]);
+
+  const originalContainerRef = useRef<string | null>(null);
+  const pendingMutationRef = useRef(false);
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
@@ -83,11 +97,11 @@ export const IssueDndContext = ({ issues, renderCard, children }: Props) => {
     return current.find((c) => c.items.some((item) => item.id === id))?.id;
   };
 
-  const getActiveIssue = (): Issues[number] | null => {
+  const getActiveProject = (): Projects[number] | null => {
     if (!activeId) return null;
     for (const container of containersRef.current) {
-      const issue = container.items.find((item) => item.id === activeId);
-      if (issue) return issue;
+      const project = container.items.find((item) => item.id === activeId);
+      if (project) return project;
     }
     return null;
   };
@@ -180,7 +194,7 @@ export const IssueDndContext = ({ issues, renderCard, children }: Props) => {
 
     if (!over) {
       pendingMutationRef.current = false;
-      setContainers(buildContainers(issues, groupBy));
+      setContainers(buildContainers(projects, groupBy));
       return;
     }
 
@@ -190,16 +204,28 @@ export const IssueDndContext = ({ issues, renderCard, children }: Props) => {
 
     if (originalContainerId === overContainerId) return;
 
-    const originalIssue = issues.find((i) => i.id === active.id);
-    if (!originalIssue) return;
+    const originalProject = projects.find((p) => p.id === active.id);
+    if (!originalProject) return;
 
     pendingMutationRef.current = true;
 
-    updateIssue.mutate(
+    console.log(
       {
         issueId: active.id as string,
         values: { [groupBy]: overContainerId },
-        teamId: originalIssue.teamId ?? "",
+        teamId: originalProject.teamId ?? "",
+      },
+      {
+        onSettled: () => {
+          pendingMutationRef.current = false;
+        },
+      },
+    );
+    updateProject.mutate(
+      {
+        values: { [groupBy]: overContainerId },
+        projectId: originalProject.id,
+        teamId: originalProject.teamId ?? "",
       },
       {
         onSettled: () => {
@@ -213,7 +239,7 @@ export const IssueDndContext = ({ issues, renderCard, children }: Props) => {
     setActiveId(null);
     originalContainerRef.current = null;
     pendingMutationRef.current = false;
-    setContainers(buildContainers(issues, groupBy));
+    setContainers(buildContainers(projects, groupBy));
   };
 
   return (
@@ -238,7 +264,7 @@ export const IssueDndContext = ({ issues, renderCard, children }: Props) => {
       >
         {activeId ? (
           <div className="scale-[1.02] rotate-[0.5deg] cursor-grabbing rounded-md shadow-2xl ring-1 ring-indigo-500/40">
-            {renderCard(getActiveIssue()!)}
+            {renderCard(getActiveProject()!)}
           </div>
         ) : null}
       </DragOverlay>

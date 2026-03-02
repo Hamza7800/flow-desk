@@ -1,6 +1,5 @@
 "use client";
-import { cn } from "@/lib/utils";
-import { useIssueViewStore } from "@/store/issue-view-store";
+import { useProjectViewStore } from "@/store/project-view-store";
 import { Dropdown, Button, Label, Checkbox } from "@heroui/react";
 import { LayoutList, LayoutGrid, Settings2 } from "lucide-react";
 
@@ -8,9 +7,8 @@ const DISPLAY_PROPERTY_LABELS = {
   showStatus: "Status",
   showPriority: "Priority",
   showAssignee: "Assignee",
-  showProject: "Project",
-  showLabels: "Labels",
-  showDueDate: "Due Date",
+  showLead: "Lead",
+  showMembers: "Members",
 } as const;
 
 const GROUPBY_OPTIONS = [
@@ -26,7 +24,7 @@ export const DisplayControls = () => {
     setGroupBy,
     displayProperties,
     toggleDisplayProperty,
-  } = useIssueViewStore();
+  } = useProjectViewStore();
 
   return (
     <div className="flex items-center gap-2">

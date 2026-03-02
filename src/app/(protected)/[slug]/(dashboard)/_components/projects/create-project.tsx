@@ -52,7 +52,6 @@ export function CreateProjectModal({ teamId }: Props) {
     mode: "onChange",
     defaultValues: {
       name: "",
-      identifier: "",
       summary: "",
       color: "#6366f1",
       status: "backlog",
@@ -93,22 +92,6 @@ export function CreateProjectModal({ teamId }: Props) {
                 debounceMs={0}
                 placeholder="Project Name"
                 label="Name"
-              />
-            )}
-          />
-
-          {/* IDENTIFIER */}
-          <Controller
-            control={control}
-            name="identifier"
-            render={({ field }) => (
-              <InlineInput
-                initialValue={field.value}
-                onSave={(val) => field.onChange(val)}
-                schema={projectSchema.shape.identifier}
-                debounceMs={0}
-                placeholder="Project Id"
-                label="ID"
               />
             )}
           />

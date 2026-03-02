@@ -2,11 +2,13 @@ import { queryKeys } from "@/lib/query-keys";
 import {
   createProject,
   getProjects,
+  updateProject,
   type ProjectsType,
 } from "@/server-actions/projects";
 import type { ProjectSchemaType } from "@/zod-schema/project-schema";
 import { toast } from "@heroui/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import type { ProjectUpdateSchemaType } from "@/zod-schema/project-schema";
 
 export const useCreateProject = (orgId: string, teamId: string) => {
   const queryClient = useQueryClient();
@@ -26,10 +28,70 @@ export const useCreateProject = (orgId: string, teamId: string) => {
           queryKey: queryKeys.projects.teamList(orgId, teamId),
         });
       }
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.projects.all,
+      });
       toast.success(data.message);
     },
     onError: (error) => {
       toast.danger(error.message);
+    },
+  });
+};
+
+export const useUpdateProjects = (orgId: string) => {
+  const queryClient = useQueryClient();
+  return useMutation({
+    mutationFn: async ({
+      projectId,
+      values,
+      teamId,
+    }: {
+      projectId: string;
+      teamId: string;
+      values: ProjectUpdateSchemaType;
+    }) => {
+      const result = await updateProject({ projectId, values });
+      if (!result.success) {
+        throw new Error(result.message);
+      }
+      return result.data;
+    },
+    onMutate: async ({ projectId, teamId, values: newValues }) => {
+      await queryClient.cancelQueries({
+        queryKey: queryKeys.projects.all,
+      });
+
+      const previousProjects = queryClient.getQueryData(
+        queryKeys.projects.teamList(orgId, teamId),
+      );
+
+      queryClient.setQueryData(
+        queryKeys.projects.teamList(orgId, teamId),
+        (old: any[]) =>
+          old?.map((project) =>
+            project.id === projectId ? { ...project, ...newValues } : project,
+          ) ?? old,
+      );
+
+      return { previousProjects, teamId, projectId };
+    },
+    onError: (error, _, context) => {
+      if (context?.previousProjects) {
+        queryClient.setQueryData(
+          queryKeys.projects.teamList(orgId, context.teamId),
+          context.previousProjects,
+        );
+      }
+
+      toast.danger(error.message);
+    },
+    onSuccess: (_) => {
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.projects.all,
+      });
+
+      toast.success("Update Success");
     },
   });
 };

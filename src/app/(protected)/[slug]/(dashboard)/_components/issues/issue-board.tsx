@@ -2,7 +2,6 @@ import { IssueDndContext } from "@/components/context/issue-dnd-context";
 import type { IssuesType } from "@/server-actions/issues";
 import { useIssueViewStore } from "@/store/issue-view-store";
 import { BoardView } from "@/app/(protected)/[slug]/(dashboard)/_components/issues/board-view";
-import { DisplayControls } from "@/app/(protected)/[slug]/(dashboard)/_components/issues/display-controls";
 import IssueView from "@/app/(protected)/[slug]/(dashboard)/_components/issues/issue-view";
 import { ListView } from "@/app/(protected)/[slug]/(dashboard)/_components/issues/list-view";
 

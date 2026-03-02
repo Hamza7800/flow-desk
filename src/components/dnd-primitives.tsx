@@ -1,4 +1,5 @@
-import type { Issues } from "@/lib/issue-config/issue-groups";
+import type { Issues } from "@/lib/dnd-config/issue-groups";
+import type { Projects } from "@/lib/dnd-config/project-groups";
 import { cn } from "@/lib/utils";
 import { useDroppable } from "@dnd-kit/core";
 import {
@@ -16,7 +17,7 @@ export const DroppableGroup = ({
   className,
 }: {
   containerId: string;
-  items: Issues;
+  items: Issues | Projects;
   children: React.ReactNode;
   className?: string;
 }) => {
@@ -53,11 +54,11 @@ export const DroppableGroup = ({
   );
 };
 
-export const DraggableIssue = ({
-  issueId,
+export const Draggable = ({
+  id,
   children,
 }: {
-  issueId: string;
+  id: string;
   children: ReactNode;
 }) => {
   const {
@@ -67,7 +68,7 @@ export const DraggableIssue = ({
     transform,
     transition,
     isDragging,
-  } = useSortable({ id: issueId });
+  } = useSortable({ id });
 
   return (
     <div

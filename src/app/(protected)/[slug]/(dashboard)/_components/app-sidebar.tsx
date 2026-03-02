@@ -20,10 +20,6 @@ const data = {
       title: "Workspace",
       items: [
         {
-          title: "Projects",
-          url: "/projects/all",
-        },
-        {
           title: "Members",
           url: "/members",
         },

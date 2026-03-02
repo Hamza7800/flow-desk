@@ -1,13 +1,16 @@
 import { cn } from "@/lib/utils";
 import { Draggable, DroppableGroup } from "@/components/dnd-primitives";
-import IssueView from "./issue-view";
-
 import { ChevronDown } from "lucide-react";
 import { useState } from "react";
-import type { IssueContainer } from "@/components/context/issue-dnd-context";
 import { Button } from "@heroui/react";
+import type { ProjectContainer } from "@/components/context/project-dnd-context";
+import ProjectView from "./project-view";
 
-export const ListView = ({ containers }: { containers: IssueContainer[] }) => (
+export const ListView = ({
+  containers,
+}: {
+  containers: ProjectContainer[];
+}) => (
   <div className="scrollbar-thin h-full space-y-4 overflow-y-auto px-2">
     {containers.map((container) => (
       <CollapsibleListGroup key={container.id} container={container} />
@@ -15,7 +18,11 @@ export const ListView = ({ containers }: { containers: IssueContainer[] }) => (
   </div>
 );
 
-const CollapsibleListGroup = ({ container }: { container: IssueContainer }) => {
+const CollapsibleListGroup = ({
+  container,
+}: {
+  container: ProjectContainer;
+}) => {
   const [collapsed, setCollapsed] = useState(false);
 
   return (
@@ -45,9 +52,9 @@ const CollapsibleListGroup = ({ container }: { container: IssueContainer }) => {
       {/* Droppable rows */}
       {!collapsed && (
         <DroppableGroup containerId={container.id} items={container.items}>
-          {container.items.map((issue) => (
-            <Draggable key={issue.id} id={issue.id}>
-              <IssueView issue={issue} />
+          {container.items.map((project) => (
+            <Draggable key={project.id} id={project.id}>
+              <ProjectView project={project} />
             </Draggable>
           ))}
         </DroppableGroup>

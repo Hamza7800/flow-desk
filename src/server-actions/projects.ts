@@ -4,12 +4,14 @@ import { checkPermission } from "@/lib/permissions-checks";
 import { returnError } from "@/lib/utils";
 import { getActiveOrgId } from "@/server/better-auth/server";
 import { db } from "@/server/db";
-import { project, projectMember } from "@/server/db/schema";
+import { organization, project, projectMember } from "@/server/db/schema";
 import {
   projectSchema,
+  updateProjectSchema,
   type ProjectSchemaType,
+  type ProjectUpdateSchemaType,
 } from "@/zod-schema/project-schema";
-import { and, eq, exists, or } from "drizzle-orm";
+import { and, eq, exists, or, sql } from "drizzle-orm";
 
 export const createProject = async ({
   teamId,
@@ -110,3 +112,67 @@ export const getProjects = async (teamId?: string) => {
 };
 
 export type ProjectsType = Awaited<ReturnType<typeof getProjects>>;
+
+export const updateProject = async ({
+  projectId,
+  values,
+}: {
+  projectId: string;
+  values: ProjectUpdateSchemaType;
+}) => {
+  try {
+    const { orgId } = await getActiveOrgId();
+    const validatedData = updateProjectSchema.parse(values);
+
+    const existing = await db.query.project.findFirst({
+      where: and(eq(project.organizationId, orgId), eq(project.id, projectId)),
+      columns: {
+        id: true,
+        status: true,
+        priority: true,
+        leadId: true,
+        teamId: true,
+        organizationId: true,
+      },
+    });
+
+    if (!existing) {
+      return { success: false, message: "Project not found", data: null };
+    }
+
+    const updatedProject = await db
+      .update(project)
+      .set({
+        ...validatedData,
+        identifier: await generateIdentifier(orgId),
+        leadId: validatedData?.leadId?.[0],
+      })
+      .where(and(eq(project.organizationId, orgId), eq(project.id, projectId)))
+      .returning();
+
+    return {
+      success: true,
+      message: "Project Updated",
+      data: updatedProject,
+    };
+  } catch (error) {
+    return returnError(error, "Unable to update project");
+  }
+};
+
+const generateIdentifier = async (orgId: string) => {
+  const org = await db.query.organization.findFirst({
+    where: eq(organization.id, orgId),
+    columns: { slug: true },
+  });
+
+  const count = await db
+    .select({ count: sql<number>`count(*)` })
+    .from(project)
+    .where(eq(project.organizationId, orgId));
+
+  const prefix = org?.slug.slice(0, 3).toUpperCase() ?? "ISS";
+  const number = (count[0]?.count ?? 0) + 1;
+
+  return `${prefix}-${number}`;
+};

@@ -1,7 +1,7 @@
 import { Chip, Separator } from "@heroui/react";
 import Link from "next/link";
 import type { ReactNode } from "react";
-import { DisplayControls } from "../_components/issues/display-controls";
+import { DisplayControls } from "../_components/issues/issues-display-controls";
 
 const MyIssuesLayout = async ({
   params,

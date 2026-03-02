@@ -179,7 +179,7 @@ export const updateIssue = async (
     });
 
     if (!existing) {
-      return { success: false as const, message: "Issue not found" };
+      return { success: false, data: null, message: "Issue not found" };
     }
 
     const { assigneeIds, labelIds, ...scalerFields } = validatedData;
@@ -187,7 +187,6 @@ export const updateIssue = async (
     const hasScalerFields = Object.keys(scalerFields).length > 0;
 
     if (hasScalerFields) {
-      console.log(scalerFields);
       await db
         .update(issue)
         .set(scalerFields)

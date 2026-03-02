@@ -1,18 +1,14 @@
 import { cn } from "@/lib/utils";
 import { Draggable, DroppableGroup } from "@/components/dnd-primitives";
-import IssueView from "./issue-view";
-import type { IssueContainer } from "@/components/context/issue-dnd-context";
-import { CreateIssueModal } from "./create-issue";
-import { useParams } from "next/navigation";
-import { useIssueViewStore } from "@/store/issue-view-store";
-import {
-  PRIORITY_OPTIONS,
-  STATUS_OPTIONS,
-  type Priority,
-  type Status,
-} from "@/lib/contants";
 
-export const BoardView = ({ containers }: { containers: IssueContainer[] }) => (
+import ProjectView from "./project-view";
+import type { ProjectContainer } from "@/components/context/project-dnd-context";
+
+export const BoardView = ({
+  containers,
+}: {
+  containers: ProjectContainer[];
+}) => (
   <div className="scrollbar-thin flex h-full w-full max-w-7xl gap-4 overflow-x-auto overflow-y-hidden px-2 pb-4">
     {containers.map((container) => (
       <div
@@ -25,9 +21,9 @@ export const BoardView = ({ containers }: { containers: IssueContainer[] }) => (
           items={container.items}
           className="scrollbar-thin flex-1 space-y-2 overflow-y-auto rounded-lg p-2"
         >
-          {container.items.map((issue) => (
-            <Draggable key={issue.id} id={issue.id}>
-              <IssueView issue={issue} />
+          {container.items.map((project) => (
+            <Draggable key={project.id} id={project.id}>
+              <ProjectView project={project} />
             </Draggable>
           ))}
         </DroppableGroup>
@@ -39,25 +35,25 @@ export const BoardView = ({ containers }: { containers: IssueContainer[] }) => (
 export const BoardColumnHeader = ({
   container,
 }: {
-  container: IssueContainer;
+  container: ProjectContainer;
 }) => {
-  const { id } = useParams<{ id: string }>();
-  const { groupBy } = useIssueViewStore();
+  // const { id } = useParams<{ id: string }>();
+  // const { groupBy } = useIssueViewStore();
 
-  const getDefaultValue = () => {
-    switch (groupBy) {
-      case "priority":
-        return {
-          priority: PRIORITY_OPTIONS.find((p) => p.label === container.label)
-            ?.key! as Priority,
-        };
-      case "status":
-        return {
-          status: STATUS_OPTIONS.find((s) => s.label === container.label)
-            ?.key! as Status,
-        };
-    }
-  };
+  // const getDefaultValue = () => {
+  //   switch (groupBy) {
+  //     case "priority":
+  //       return {
+  //         priority: PRIORITY_OPTIONS.find((p) => p.label === container.label)
+  //           ?.key! as Priority,
+  //       };
+  //     case "status":
+  //       return {
+  //         status: STATUS_OPTIONS.find((s) => s.label === container.label)
+  //           ?.key! as Status,
+  //       };
+  //   }
+  // };
   return (
     <div className="mb-2 flex items-center gap-2 px-1">
       <span className={cn("text-sm", container.color)}>{container.icon}</span>
@@ -67,11 +63,11 @@ export const BoardColumnHeader = ({
       <span className="ml-auto rounded-full bg-zinc-800/80 px-1.5 py-0.5 text-xs text-zinc-500">
         {container.items.length}
       </span>
-      <CreateIssueModal
+      {/* <CreateIssueModal
         defaultValues={getDefaultValue()}
         triggerText="+"
         teamId={id}
-      />
+      /> */}
     </div>
   );
 };
