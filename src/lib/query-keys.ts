@@ -54,6 +54,8 @@ export const queryKeys = {
       [...queryKeys.issues.all, "project", projectId] as const,
     byTeam: (teamId: string) =>
       [...queryKeys.issues.all, "team", teamId] as const,
+    byUserAssigned: () => [...queryKeys.issues.all, "user-assigned"] as const,
+    byUserCreated: () => [...queryKeys.issues.all, "user-created"] as const,
     detail: (issueId: string) =>
       [...queryKeys.issues.all, "detail", issueId] as const,
   },

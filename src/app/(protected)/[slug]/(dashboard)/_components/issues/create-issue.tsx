@@ -5,37 +5,31 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { issueSchema, type IssueSchemaType } from "@/zod-schema/issue-schema";
 import { useCreateIssue } from "@/hooks/use-issues";
 
-import type { Selection } from "@heroui/react";
+import { Button, Form, Spinner } from "@heroui/react";
 
-import {
-  Modal,
-  Button,
-  Input,
-  TextArea,
-  Form,
-  TextField,
-  Label,
-  FieldError,
-  Dropdown,
-  Spinner,
-  Header,
-} from "@heroui/react";
-
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import PopupModal from "@/components/modal";
 import { useOrganizationContext } from "@/components/context/organization-client-context";
 import StatusSelect from "../input-fields/status-select";
 import PrioritySelect from "../input-fields/priority-select";
 import AssigneeSelect from "../input-fields/assignee-select";
 import InlineInput from "../input-fields/input";
+import { useTeamProjects } from "@/hooks/use-projects";
+import ProjectSelect from "../input-fields/project-select";
 
 type Props = {
   teamId: string;
+  defaultValues?: Partial<IssueSchemaType>;
+  triggerText?: string;
 };
 
 // TODO: ADD LABELS and PROJECTS
 // TODO NEED TO FIX UI AND COMPONENTS
-export function CreateIssueModal({ teamId }: Props) {
+export function CreateIssueModal({
+  teamId,
+  defaultValues,
+  triggerText = "Create Issue",
+}: Props) {
   const [isOpen, setIsOpen] = useState(false);
   const { org: organization } = useOrganizationContext();
   const { mutate, isPending } = useCreateIssue(organization?.id ?? "", teamId);
@@ -45,7 +39,6 @@ export function CreateIssueModal({ teamId }: Props) {
     handleSubmit,
     formState: { isValid },
     reset,
-    setValue,
   } = useForm<IssueSchemaType>({
     resolver: zodResolver(issueSchema),
     mode: "onChange",
@@ -56,6 +49,12 @@ export function CreateIssueModal({ teamId }: Props) {
       labelIds: [],
     },
   });
+
+  useEffect(() => {
+    if (defaultValues) {
+      reset(defaultValues);
+    }
+  }, [defaultValues]);
 
   const onSubmit = (data: IssueSchemaType) => {
     mutate(data, {
@@ -71,7 +70,7 @@ export function CreateIssueModal({ teamId }: Props) {
       isOpen={isOpen}
       onOpenChange={setIsOpen}
       heading="Create Issue"
-      triggerText="Create Issue"
+      triggerText={triggerText}
     >
       <Form className="flex flex-col gap-6" onSubmit={handleSubmit(onSubmit)}>
         {/* TITLE */}
@@ -121,6 +120,20 @@ export function CreateIssueModal({ teamId }: Props) {
             <PrioritySelect value={field.value} onChange={field.onChange} />
           )}
         />
+
+        <Controller
+          control={control}
+          name="projectId"
+          render={({ field }) => (
+            <ProjectSelect
+              orgId={organization?.id ?? ""}
+              teamId={teamId}
+              value={field.value ?? ""}
+              onChange={field.onChange}
+            />
+          )}
+        />
+
         <Controller
           control={control}
           name="assigneeIds"

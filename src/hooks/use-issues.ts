@@ -7,6 +7,8 @@ import {
   createIssue,
   deleteIssue,
   getIssues,
+  getUserAssignedIssues,
+  getUserCreatedIssues,
   updateIssue,
   type IssuesType,
 } from "@/server-actions/issues";
@@ -14,6 +16,7 @@ import { toast } from "@heroui/react";
 import { queryKeys } from "@/lib/query-keys";
 import type { IssueSnapshot } from "@/lib/types";
 
+// TODO: FIX BUG FOR REFETCHING ISSUES ON UPDATE
 export const useCreateIssue = (organizationId: string, teamId: string) => {
   const queryClient = useQueryClient();
 
@@ -69,6 +72,32 @@ export const useTeamIssues = (
   });
 };
 
+export const useUserAssignedIssues = (initialData?: IssuesType["data"]) => {
+  return useQuery({
+    queryKey: queryKeys.issues.byUserAssigned(),
+    queryFn: async () => {
+      const result = await getUserAssignedIssues();
+      if (!result.success) throw new Error(result.message);
+
+      return result.data;
+    },
+    initialData,
+  });
+};
+
+export const useUserCreatedIssues = (initialData?: IssuesType["data"]) => {
+  return useQuery({
+    queryKey: queryKeys.issues.byUserCreated(),
+    queryFn: async () => {
+      const result = await getUserCreatedIssues();
+      if (!result.success) throw new Error(result.message);
+
+      return result.data;
+    },
+    initialData,
+  });
+};
+
 export const useDeleteIssue = (teamId: string) => {
   const queryClient = useQueryClient();
 
@@ -111,6 +140,12 @@ export const useDeleteIssue = (teamId: string) => {
     onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: queryKeys.issues.byTeam(teamId),
+      });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.issues.byUserAssigned(),
+      });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.issues.byUserCreated(),
       });
       toast.success("Issue Deleted");
     },
@@ -184,6 +219,9 @@ export const useUpdateIssue = ({ orgId, teamId, projectId }: IssueSnapshot) => {
     onSuccess: (_, { issueId }) => {
       queryClient.invalidateQueries({
         queryKey: queryKeys.issues.detail(issueId),
+      });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.issues.all,
       });
       toast.success("Update Success");
     },

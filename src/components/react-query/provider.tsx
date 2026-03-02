@@ -14,8 +14,6 @@ function makeQueryClient() {
         // above 0 to avoid refetching immediately on the client
         gcTime: 30 * 60 * 1000,
         staleTime: 1000 * 60 * 5,
-        refetchOnWindowFocus: false,
-        refetchOnMount: false,
         retry: 1,
       },
     },

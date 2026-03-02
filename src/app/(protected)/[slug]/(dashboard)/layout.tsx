@@ -1,11 +1,6 @@
 import { AppSidebar } from "@/app/(protected)/[slug]/(dashboard)/_components/app-sidebar";
 import { SiteHeader } from "@/components/site-header";
-import { Separator } from "@/components/ui/separator";
-import {
-  SidebarInset,
-  SidebarProvider,
-  SidebarTrigger,
-} from "@/components/ui/sidebar";
+import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import { type ReactNode } from "react";
 
 type Props = {
@@ -20,7 +15,6 @@ export default async function SlugLayout({ children, params }: Props) {
     <SidebarProvider
       style={
         {
-          "--sidebar-width": "calc(var(--spacing) * 72)",
           "--header-height": "calc(var(--spacing) * 12)",
         } as React.CSSProperties
       }

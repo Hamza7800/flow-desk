@@ -17,7 +17,7 @@ import {
   type IssueSchemaType,
   type IssueUpdateSchemaType,
 } from "@/zod-schema/issue-schema";
-import { and, eq, inArray, sql } from "drizzle-orm";
+import { and, eq, exists, inArray, sql } from "drizzle-orm";
 
 export const createIssue = async (
   // organizationId: string,
@@ -70,7 +70,7 @@ export const createIssue = async (
 
 export const getIssues = async (teamId?: string) => {
   try {
-    const { userId, orgId } = await getActiveOrgId();
+    const { orgId } = await getActiveOrgId();
 
     // const { success:isAdmin} =await checkPermission("issue", "view");
 
@@ -94,6 +94,66 @@ export const getIssues = async (teamId?: string) => {
     };
   } catch (error) {
     return returnError(error, "Unable to fetch issues");
+  }
+};
+
+export const getUserCreatedIssues = async () => {
+  try {
+    const { userId, orgId } = await getActiveOrgId();
+
+    const issues = await db.query.issue.findMany({
+      where: and(eq(issue.organizationId, orgId), eq(issue.creatorId, userId)),
+      with: {
+        assignees: true,
+        project: true,
+        labels: true,
+      },
+      orderBy: (issue, { desc }) => [desc(issue.createdAt)],
+    });
+    return {
+      success: true,
+      data: issues,
+      message: `User issues`,
+    };
+  } catch (error) {
+    return returnError(error, "Unable to get issues");
+  }
+};
+
+export const getUserAssignedIssues = async () => {
+  try {
+    const { userId, orgId } = await getActiveOrgId();
+
+    const issues = await db.query.issue.findMany({
+      where: and(
+        eq(issue.organizationId, orgId),
+        exists(
+          db
+            .select()
+            .from(issueAssignee)
+            .where(
+              and(
+                eq(issueAssignee.userId, userId),
+                eq(issueAssignee.issueId, issue.id),
+              ),
+            ),
+        ),
+      ),
+      with: {
+        assignees: true,
+        project: true,
+        labels: true,
+      },
+      orderBy: (issue, { desc }) => [desc(issue.createdAt)],
+    });
+
+    return {
+      success: true,
+      data: issues,
+      message: "User assigned issues",
+    };
+  } catch (error) {
+    return returnError(error, "Unable to get issues");
   }
 };
 

@@ -8,6 +8,7 @@ import type { Priority, Status } from "@/lib/contants";
 import { MoreHorizontal } from "lucide-react";
 import { Card } from "@heroui/react";
 import { useParams, useRouter } from "next/navigation";
+import ProjectSelect from "../input-fields/project-select";
 
 type Issue = {
   status:
@@ -93,7 +94,7 @@ const IssueView = ({
             <h3 className="text-sm font-medium text-white">{issue.title}</h3>
           </div>
 
-          <div className="flex gap-2 pt-1">
+          <div className="flex flex-col gap-2 pt-1">
             {displayProperties.showPriority && (
               <PrioritySelect
                 onChange={(value) =>
@@ -151,7 +152,25 @@ const IssueView = ({
                 }
               />
             )}
+
+            {displayProperties.showProject && (
+              <ProjectSelect
+                teamId={issue.teamId ?? ""}
+                orgId={issue.organizationId}
+                onChange={(value) =>
+                  updateIssue.mutate({
+                    values: {
+                      projectId: value,
+                    },
+                    teamId: issue.teamId ?? "",
+                    issueId: issue.id,
+                  })
+                }
+                value={issue.projectId ?? ""}
+              />
+            )}
           </div>
+
           {/* <p className="text-xs text-gray-500">Created {new Date(issue.createdAt)}</p> */}
         </Card>
       );
@@ -214,11 +233,22 @@ const IssueView = ({
                 }
               />
             )}
-            {/* {displayProperties.showProject && issue?.project && (
-          <span className="rounded bg-zinc-800 px-1.5 py-0.5 text-xs text-zinc-400">
-            {issue?.project?.name}
-          </span>
-        )} */}
+            {displayProperties.showProject && issue?.project && (
+              <ProjectSelect
+                teamId={issue.teamId ?? ""}
+                orgId={issue.organizationId}
+                onChange={(value) =>
+                  updateIssue.mutate({
+                    values: {
+                      projectId: value,
+                    },
+                    teamId: issue.teamId ?? "",
+                    issueId: issue.id,
+                  })
+                }
+                value={issue.status ?? ""}
+              />
+            )}
           </div>
         </Card>
       );

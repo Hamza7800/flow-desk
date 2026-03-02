@@ -1,3 +1,4 @@
+"use client";
 import { cn } from "@/lib/utils";
 import { useIssueViewStore } from "@/store/issue-view-store";
 import { Dropdown, Button, Label, Checkbox } from "@heroui/react";

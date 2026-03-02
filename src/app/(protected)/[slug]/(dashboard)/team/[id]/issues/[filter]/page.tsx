@@ -1,6 +1,6 @@
 import { getIssues } from "@/server-actions/issues";
 import { Suspense } from "react";
-import Issues from "@/app/(protected)/[slug]/(dashboard)/_components/issues/issues";
+import TeamIssues from "@/app/(protected)/[slug]/(dashboard)/_components/issues/team-issues";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -13,7 +13,7 @@ const Content = async ({ teamId }: { teamId: string }) => {
       throw new Error(issues.message);
     }
 
-    return <Issues teamId={teamId} initialData={issues.data} />;
+    return <TeamIssues teamId={teamId} initialData={issues.data} />;
   } catch (error: any) {
     return <h2>No Issues For Team: {error.message}</h2>;
   }

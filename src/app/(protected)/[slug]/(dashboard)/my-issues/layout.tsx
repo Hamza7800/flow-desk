@@ -1,6 +1,7 @@
 import { Chip, Separator } from "@heroui/react";
 import Link from "next/link";
 import type { ReactNode } from "react";
+import { DisplayControls } from "../_components/issues/display-controls";
 
 const MyIssuesLayout = async ({
   params,
@@ -12,14 +13,17 @@ const MyIssuesLayout = async ({
   const { slug } = await params;
   return (
     <div>
-      <div className="mb-2 flex flex-col gap-2">
-        <div>
-          <Link href={`/${slug}/my-issues/assigned`}>
-            <Chip className="mr-2">Assigned</Chip>
-          </Link>
-          <Link href={`/${slug}/my-issues/created`}>
-            <Chip>Created</Chip>
-          </Link>
+      <div className="mb-2 gap-2">
+        <div className="flex items-center justify-between p-1">
+          <div className="flex">
+            <Link href={`/${slug}/my-issues/assigned`}>
+              <Chip className="mr-2">Assigned</Chip>
+            </Link>
+            <Link href={`/${slug}/my-issues/created`}>
+              <Chip>Created</Chip>
+            </Link>
+          </div>
+          <DisplayControls />
         </div>
         <Separator />
       </div>

@@ -57,13 +57,13 @@ export const IssueDndContext = ({ issues, renderCard, children }: Props) => {
   const originalContainerRef = useRef<string | null>(null);
   const pendingMutationRef = useRef(false);
 
-  const isDragging = activeId !== null;
+  // const isDragging = activeId !== null;
 
-  useEffect(() => {
-    if (!isDragging && !pendingMutationRef.current) {
-      setContainers(buildContainers(issues, groupBy));
-    }
-  }, [issues, groupBy, isDragging]);
+  // useEffect(() => {
+  //   if (!isDragging && !pendingMutationRef.current) {
+  //     setContainers(buildContainers(issues, groupBy));
+  //   }
+  // }, [issues, groupBy, isDragging]);
 
   const sensors = useSensors(
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),

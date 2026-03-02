@@ -65,7 +65,7 @@ export const useTeamProjects = (
       if (!result.success) throw new Error(result.message);
       return result.data;
     },
-    enabled: !!orgId && !!teamId,
+    // enabled: !!orgId && !!teamId,
     initialData,
   });
 };
