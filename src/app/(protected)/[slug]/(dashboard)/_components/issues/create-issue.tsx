@@ -16,6 +16,7 @@ import AssigneeSelect from "../input-fields/assignee-select";
 import InlineInput from "../input-fields/input";
 import { useTeamProjects } from "@/hooks/use-projects";
 import ProjectSelect from "../input-fields/project-select";
+import InlineBlockNote from "../input-fields/block-note-input";
 
 type Props = {
   teamId: string;
@@ -93,7 +94,7 @@ export function CreateIssueModal({
           control={control}
           name="description"
           render={({ field }) => (
-            <InlineInput
+            <InlineBlockNote
               initialValue={field.value ?? ""}
               onSave={(val) => field.onChange(val)}
               schema={issueSchema.shape.description}

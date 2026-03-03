@@ -108,3 +108,12 @@
     background-color: #090909;
   }
 }
+
+.bn-editor {
+  padding-inline: 2px !important;
+}
+
+/* Optional: If you want to move the text even further left */
+.bn-block-content {
+  margin-left: 2px !important;
+}

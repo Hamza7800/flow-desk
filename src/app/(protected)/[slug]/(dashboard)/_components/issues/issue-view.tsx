@@ -9,6 +9,8 @@ import { MoreHorizontal } from "lucide-react";
 import { Card } from "@heroui/react";
 import { useParams, useRouter } from "next/navigation";
 import ProjectSelect from "../input-fields/project-select";
+import InlineBlockNote from "../input-fields/block-note-input";
+import { issueSchema } from "@/zod-schema/issue-schema";
 
 type Issue = {
   status:
@@ -93,6 +95,15 @@ const IssueView = ({
             <p className="text-xs text-gray-500">{issue.identifier}</p>
             <h3 className="text-sm font-medium text-white">{issue.title}</h3>
           </div>
+          {/* <div className="space-y-1">
+            <InlineBlockNote
+              schema={issueSchema.shape.description}
+              initialValue={issue.description ?? ""}
+              onSave={(val) => console.log(val)}
+              debounceMs={700}
+              placeholder="Issue Description"
+            />
+          </div> */}
 
           <div className="flex flex-col gap-2 pt-1">
             {displayProperties.showPriority && (
