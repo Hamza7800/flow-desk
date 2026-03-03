@@ -20,11 +20,8 @@ export default async function SlugLayout({ children, params }: Props) {
       }
     >
       <AppSidebar slug={slug} variant="inset" />
-      <SidebarInset>
-        <SiteHeader />
-        <div className="@container/main flex flex-1 flex-col gap-2">
-          {children}
-        </div>
+      <SidebarInset className="overflow-hidden border bg-[#101012]">
+        <div className="@container/main flex flex-1 flex-col">{children}</div>
       </SidebarInset>
     </SidebarProvider>
   );

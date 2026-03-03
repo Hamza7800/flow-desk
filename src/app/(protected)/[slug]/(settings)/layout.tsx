@@ -23,6 +23,7 @@ const SettingsLayout = async ({ children, params }: Props) => {
         <header className="sticky top-0 z-[10] flex h-16 w-full shrink-0 items-center gap-2 border-b bg-[#161616] px-4">
           <SidebarTrigger className="-ml-1" />
           <Separator orientation="vertical" className="mr-2 h-4" />
+          <h2>Settings</h2>
         </header>
         <div className="mx-auto flex w-full max-w-3xl flex-1 flex-col gap-4 p-4">
           {children}

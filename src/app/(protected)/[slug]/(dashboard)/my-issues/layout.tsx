@@ -2,6 +2,7 @@ import { Chip, Separator } from "@heroui/react";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { DisplayControls } from "../_components/issues/issues-display-controls";
+import { SiteHeader } from "@/components/site-header";
 
 const MyIssuesLayout = async ({
   params,
@@ -13,6 +14,7 @@ const MyIssuesLayout = async ({
   const { slug } = await params;
   return (
     <div>
+      <SiteHeader heading="My Issues" />
       <div className="mb-2 gap-2">
         <div className="flex items-center justify-between p-1">
           <div className="flex">

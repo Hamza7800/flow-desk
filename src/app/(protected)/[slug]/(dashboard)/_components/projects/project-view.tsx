@@ -18,7 +18,7 @@ const ProjectView = ({ project }: { project: Projects[number] }) => {
     case "board":
       return (
         <Card
-          onClick={() => router.push(`/${slug}/project/${project.id}`)}
+          onClick={() => router.push(`/${slug}/project/${project.id}/overview`)}
           className="rounded-lg p-4"
           variant="secondary"
         >
@@ -121,7 +121,7 @@ const ProjectView = ({ project }: { project: Projects[number] }) => {
     case "list":
       return (
         <Card
-          onClick={() => router.push(`/${slug}/project/${project.id}`)}
+          onClick={() => router.push(`/${slug}/project/${project.id}/overview`)}
           variant="tertiary"
           className="group mb-1 grid grid-cols-2 items-center gap-3 rounded border-b border-zinc-800/50 px-2 py-1.5 hover:bg-zinc-800/90"
         >

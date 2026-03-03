@@ -34,7 +34,7 @@ const data = {
 
 export function AppSidebar({ slug, ...props }: ComponentProps<typeof Sidebar>) {
   return (
-    <Sidebar className="bg-[#161616]" {...props}>
+    <Sidebar {...props}>
       <SidebarHeader>
         {/* <Button fullWidth>Switch Organization</Button> */}
         <OrganizationSwitcher />

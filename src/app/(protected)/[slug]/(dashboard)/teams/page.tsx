@@ -1,6 +1,7 @@
 import { Suspense } from "react";
 import { getOrgTeams } from "@/server-actions/teams";
 import OrgTeams from "../_components/teams/org-teams";
+import { SiteHeader } from "@/components/site-header";
 
 const Content = async () => {
   try {
@@ -18,6 +19,7 @@ const Content = async () => {
 const TeamsPage = () => {
   return (
     <Suspense fallback={<h2>Loading... Teams</h2>}>
+      <SiteHeader heading="Teams" />
       <Content />
     </Suspense>
   );

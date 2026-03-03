@@ -1,6 +1,7 @@
 import { getProjects } from "@/server-actions/projects";
 import { Suspense } from "react";
 import TeamProjects from "@/app/(protected)/[slug]/(dashboard)/_components/projects/team-projects";
+import { SiteHeader } from "@/components/site-header";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -24,6 +25,7 @@ const ProjectsPage = async ({ params }: Props) => {
 
   return (
     <Suspense fallback={<h2>Loading... Projects</h2>}>
+      <SiteHeader heading="Team Projects" />
       <Content teamId={teamId} />
     </Suspense>
   );
