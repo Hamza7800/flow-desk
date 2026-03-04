@@ -1,15 +1,22 @@
 import { ConfirmModal } from "@/components/confirm-modal";
 import { useDeleteIssue } from "@/hooks/use-issues";
 import { Button } from "@heroui/react";
+import { useParams, useRouter } from "next/navigation";
 
 const DeleteIssue = ({
   issueId,
   teamId,
+  projectId,
 }: {
   teamId: string;
+  projectId: string;
   issueId: string;
 }) => {
-  const { mutate, isPending } = useDeleteIssue(teamId);
+  const { slug } = useParams<{ slug: string }>();
+
+  const router = useRouter();
+
+  const { mutate, isPending } = useDeleteIssue(teamId, projectId);
 
   return (
     <ConfirmModal
@@ -21,6 +28,7 @@ const DeleteIssue = ({
         mutate(issueId, {
           onSuccess: () => {
             close();
+            router.push(`/${slug}/my-issues`);
           },
         });
       }}

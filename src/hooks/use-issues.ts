@@ -6,11 +6,13 @@ import type {
 import {
   createIssue,
   deleteIssue,
+  getIssue,
   getIssues,
   getUserAssignedIssues,
   getUserCreatedIssues,
   updateIssue,
   type IssuesType,
+  type IssueType,
 } from "@/server-actions/issues";
 import { toast } from "@heroui/react";
 import { queryKeys } from "@/lib/query-keys";
@@ -52,6 +54,23 @@ export const useOrgIssues = (orgId: string | undefined) => {
       return result.data;
     },
     enabled: !!orgId,
+  });
+};
+
+export const useIssueDetails = (
+  issueId: string,
+  initialData?: IssueType["data"],
+) => {
+  return useQuery({
+    queryKey: queryKeys.issues.detail(issueId),
+    queryFn: async () => {
+      const result = await getIssue(issueId);
+      if (!result.success) throw new Error(result.message);
+
+      return result.data;
+    },
+    enabled: !!issueId,
+    initialData,
   });
 };
 
@@ -116,7 +135,7 @@ export const useUserCreatedIssues = (initialData?: IssuesType["data"]) => {
   });
 };
 
-export const useDeleteIssue = (teamId: string) => {
+export const useDeleteIssue = (teamId: string, projectId?: string) => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -136,14 +155,30 @@ export const useDeleteIssue = (teamId: string) => {
         queryKeys.issues.byTeam(teamId),
       );
 
+      let previousProjectIssues;
+      if (projectId) {
+        previousProjectIssues = queryClient.getQueryData(
+          queryKeys.issues.byProject(projectId),
+        );
+      }
+
       queryClient.setQueryData(
         queryKeys.issues.byTeam(teamId),
         (old: any[]) => {
-          return old.filter((issue) => issue.id !== issueId);
+          return old?.filter((issue) => issue.id !== issueId) ?? old;
         },
       );
 
-      return { previousIssues };
+      if (projectId) {
+        queryClient.setQueryData(
+          queryKeys.issues.byProject(projectId),
+          (old: any[]) => {
+            return old?.filter((issue) => issue.id !== issueId) ?? old;
+          },
+        );
+      }
+
+      return { previousIssues, previousProjectIssues };
     },
     onError: (error, _, context) => {
       if (context?.previousIssues) {
@@ -152,6 +187,14 @@ export const useDeleteIssue = (teamId: string) => {
           context.previousIssues,
         );
       }
+
+      if (context?.previousProjectIssues && projectId) {
+        queryClient.setQueryData(
+          queryKeys.issues.byProject(projectId),
+          context.previousProjectIssues,
+        );
+      }
+
       toast.danger(error.message);
     },
 
@@ -164,6 +207,13 @@ export const useDeleteIssue = (teamId: string) => {
       });
       queryClient.invalidateQueries({
         queryKey: queryKeys.issues.byUserCreated(),
+      });
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.issues.all,
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.issues.byProject(projectId ?? ""),
       });
       toast.success("Issue Deleted");
     },
@@ -228,10 +278,7 @@ export const useUpdateIssue = ({ orgId, teamId, projectId }: IssueSnapshot) => {
 
       queryClient.setQueryData(
         queryKeys.issues.byProject(projectId ?? ""),
-        (old: any[]) =>
-          old?.map((issue) =>
-            issue.id === issueId ? { ...issue, ...newValues } : issue,
-          ) ?? old,
+        (old: any[]) => old?.filter((issue) => issue.id !== issueId) ?? old,
       );
 
       return {

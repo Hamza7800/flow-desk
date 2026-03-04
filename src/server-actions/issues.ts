@@ -163,6 +163,42 @@ export const getUserAssignedIssues = async () => {
 
 export type IssuesType = Awaited<ReturnType<typeof getIssues>>;
 
+export const getIssue = async (issueId: string) => {
+  try {
+    const { orgId } = await getActiveOrgId();
+
+    const issueDetails = await db.query.issue.findFirst({
+      where: and(eq(issue.organizationId, orgId), eq(issue.id, issueId)),
+      with: {
+        assignees: true,
+        labels: true,
+        project: {
+          columns: {
+            id: true,
+            name: true,
+            teamId: true,
+          },
+        },
+        comments: true,
+        activities: {
+          orderBy: (issue, { desc }) => [desc(issue.createdAt)],
+        },
+      },
+      orderBy: (issue, { desc }) => [desc(issue.createdAt)],
+    });
+
+    return {
+      success: true,
+      data: issueDetails ?? null,
+      message: `Issue Details`,
+    };
+  } catch (error) {
+    return returnError(error, "Unable to get issue");
+  }
+};
+
+export type IssueType = Awaited<ReturnType<typeof getIssue>>;
+
 export const updateIssue = async (
   issueId: string,
   values: IssueUpdateSchemaType,
