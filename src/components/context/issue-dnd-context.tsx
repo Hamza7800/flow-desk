@@ -16,7 +16,13 @@ import {
   type UniqueIdentifier,
 } from "@dnd-kit/core";
 import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable";
-import { useState, useEffect, useRef, useCallback } from "react";
+import {
+  useState,
+  useEffect,
+  useRef,
+  useCallback,
+  type ReactNode,
+} from "react";
 import { useIssueViewStore, type GroupBy } from "@/store/issue-view-store";
 import { useUpdateIssue } from "@/hooks/use-issues";
 import { GROUP_CONFIG, type Issues } from "@/lib/dnd-config/issue-groups";
@@ -41,8 +47,8 @@ const buildContainers = (issues: Issues, groupBy: GroupBy): IssueContainer[] =>
 
 type Props = {
   issues: Issues;
-  renderCard: (issue: Issues[number]) => React.ReactNode;
-  children: (containers: IssueContainer[]) => React.ReactNode;
+  renderCard: (issue: Issues[number]) => ReactNode;
+  children: (containers: IssueContainer[]) => ReactNode;
 };
 
 export const IssueDndContext = ({ issues, renderCard, children }: Props) => {

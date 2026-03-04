@@ -13,17 +13,17 @@ import {
 } from "@/lib/contants";
 
 export const BoardView = ({ containers }: { containers: IssueContainer[] }) => (
-  <div className="scrollbar-thin flex h-full w-full max-w-7xl gap-4 overflow-x-auto overflow-y-hidden px-2 pb-4">
+  <div className="scrollbar-thin flex h-full min-h-0 w-full flex-1 gap-4 overflow-x-auto overflow-y-hidden px-2 pb-4">
     {containers.map((container) => (
       <div
         key={container.id}
-        className="flex w-full max-w-md shrink-0 flex-col"
+        className="flex h-full w-full max-w-md shrink-0 flex-col"
       >
         <BoardColumnHeader container={container} />
         <DroppableGroup
           containerId={container.id}
           items={container.items}
-          className="scrollbar-thin flex-1 space-y-2 overflow-y-auto rounded-lg p-2"
+          className="scrollbar-thin h-full flex-1 space-y-2 overflow-y-auto rounded-lg p-2"
         >
           {container.items.map((issue) => (
             <Draggable key={issue.id} id={issue.id}>

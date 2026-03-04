@@ -72,6 +72,24 @@ export const useTeamIssues = (
   });
 };
 
+export const useProjectIssues = (
+  teamId: string,
+  projectId: string,
+  initialData?: IssuesType["data"],
+) => {
+  return useQuery({
+    queryKey: queryKeys.issues.byProject(projectId),
+    queryFn: async () => {
+      const result = await getIssues(teamId, projectId);
+      if (!result.success) throw new Error(result.message);
+
+      return result.data;
+    },
+    initialData,
+    enabled: !!teamId,
+  });
+};
+
 export const useUserAssignedIssues = (initialData?: IssuesType["data"]) => {
   return useQuery({
     queryKey: queryKeys.issues.byUserAssigned(),

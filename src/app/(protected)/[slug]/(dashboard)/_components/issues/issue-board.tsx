@@ -13,7 +13,7 @@ export const IssueBoard = ({ issues }: Props) => {
   const { viewMode } = useIssueViewStore();
 
   return (
-    <div className="flex h-[81vh] flex-col select-none">
+    <div className="flex h-full flex-1 flex-col select-none">
       <IssueDndContext
         issues={issues}
         renderCard={(issue) => (

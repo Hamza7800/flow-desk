@@ -68,7 +68,7 @@ export const createIssue = async (
   }
 };
 
-export const getIssues = async (teamId?: string) => {
+export const getIssues = async (teamId?: string, projectId?: string) => {
   try {
     const { orgId } = await getActiveOrgId();
 
@@ -78,6 +78,7 @@ export const getIssues = async (teamId?: string) => {
       where: and(
         eq(issue.organizationId, orgId),
         teamId ? eq(issue.teamId, teamId) : undefined,
+        projectId ? eq(issue.projectId, projectId) : undefined,
       ),
       with: {
         assignees: true,
@@ -90,7 +91,7 @@ export const getIssues = async (teamId?: string) => {
     return {
       success: true,
       data: issues,
-      message: `${teamId ? "Team " : "Organization "} issues`,
+      message: `Issues`,
     };
   } catch (error) {
     return returnError(error, "Unable to fetch issues");

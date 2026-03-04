@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 import { DetailsSidebarContent } from "../../_components/details-sidebar";
 import { SiteHeader } from "@/components/site-header";
 import { Button, Chip, Separator } from "@heroui/react";
-import { Sidebar } from "lucide-react";
+import { SidebarIcon } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
 
@@ -13,8 +13,10 @@ export default function DetailsLayout({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(true);
   const { slug, id } = useParams<{ slug: string; id: string }>();
 
+  // return <>{children}</>;
+
   return (
-    <div className="h-full">
+    <div className="flex h-full flex-col overflow-hidden">
       <SiteHeader heading="Team Projects">
         <Button
           size="sm"
@@ -22,10 +24,10 @@ export default function DetailsLayout({ children }: { children: ReactNode }) {
           variant="ghost"
           onClick={() => setOpen(!open)}
         >
-          <Sidebar />
+          <SidebarIcon />
         </Button>
       </SiteHeader>
-      <div className="gap-2">
+      <div className="shrink-0 gap-2">
         <div className="flex items-center justify-between p-1">
           <div className="flex">
             <Link href={`/${slug}/project/${id}/overview`}>
@@ -40,8 +42,8 @@ export default function DetailsLayout({ children }: { children: ReactNode }) {
         <Separator />
       </div>
 
-      <div className="flex h-full">
-        <div className="h-screen flex-1">{children}</div>
+      <div className="flex min-h-0 flex-1">
+        <div className="h-full min-h-0 flex-1 overflow-hidden">{children}</div>
 
         <div
           className={cn(
