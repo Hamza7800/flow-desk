@@ -1,4 +1,4 @@
-import { getUser } from "@/server/better-auth/server";
+import { getSession } from "@/server/better-auth/server";
 import { redirect } from "next/navigation";
 
 type Props = {
@@ -7,8 +7,8 @@ type Props = {
 const Page = async ({ params }: Props) => {
   const { slug } = await params;
 
-  const user = await getUser();
-  if (!user) {
+  const session = await getSession();
+  if (!session?.user) {
     redirect("/sign-in");
   }
 

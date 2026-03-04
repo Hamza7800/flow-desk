@@ -6,29 +6,17 @@ import {
   projectSchema,
   type ProjectSchemaType,
 } from "@/zod-schema/project-schema";
-import {
-  Button,
-  Input,
-  TextArea,
-  Form,
-  TextField,
-  Label,
-  FieldError,
-  Dropdown,
-  Spinner,
-  Header,
-  type Selection,
-} from "@heroui/react";
+import { Button, Form, Spinner } from "@heroui/react";
 import { useState } from "react";
 import PopupModal from "@/components/modal";
 import { useOrganizationContext } from "@/components/context/organization-client-context";
 import { useCreateProject } from "@/hooks/use-projects";
-import { format } from "date-fns";
 import StatusSelect from "../input-fields/status-select";
 import PrioritySelect from "../input-fields/priority-select";
 import AssigneeSelect from "../input-fields/assignee-select";
 import InlineInput from "../input-fields/input";
-import StartDatePicker from "../input-fields/date-picker";
+import InlineBlockNote from "../input-fields/block-note-input";
+import DateSelect from "../input-fields/date-picker";
 
 type Props = {
   teamId: string;
@@ -79,30 +67,28 @@ export function CreateProjectModal({ teamId }: Props) {
       triggerText="New Project"
     >
       <Form className="flex flex-col gap-6" onSubmit={handleSubmit(onSubmit)}>
-        <div className="flex gap-4">
-          {/* PROJECT NAME */}
-          <Controller
-            control={control}
-            name="name"
-            render={({ field }) => (
-              <InlineInput
-                initialValue={field.value}
-                onSave={(val) => field.onChange(val)}
-                schema={projectSchema.shape.name}
-                debounceMs={0}
-                placeholder="Project Name"
-                label="Name"
-              />
-            )}
-          />
-        </div>
+        {/* PROJECT NAME */}
+        <Controller
+          control={control}
+          name="name"
+          render={({ field }) => (
+            <InlineInput
+              initialValue={field.value}
+              onSave={(val) => field.onChange(val)}
+              schema={projectSchema.shape.name}
+              debounceMs={0}
+              placeholder="Project Name"
+              label="Name"
+            />
+          )}
+        />
 
         {/* SUMMARY */}
         <Controller
           control={control}
           name="summary"
           render={({ field }) => (
-            <InlineInput
+            <InlineBlockNote
               initialValue={field.value ?? ""}
               onSave={(val) => field.onChange(val)}
               schema={projectSchema.shape.summary}
@@ -143,7 +129,22 @@ export function CreateProjectModal({ teamId }: Props) {
             render={({ field }) => {
               return (
                 <AssigneeSelect
-                  label="Project Lead"
+                  label="Lead"
+                  value={field.value || []}
+                  onChange={field.onChange}
+                />
+              );
+            }}
+          />
+
+          {/* Project Members */}
+          <Controller
+            control={control}
+            name="members"
+            render={({ field }) => {
+              return (
+                <AssigneeSelect
+                  label="Members"
                   value={field.value || []}
                   onChange={field.onChange}
                 />
@@ -158,44 +159,22 @@ export function CreateProjectModal({ teamId }: Props) {
             control={control}
             name="startDate"
             render={({ field }) => (
-              <TextField className="flex-1">
-                <Label>Start Date</Label>
-                <Input
-                  type="date"
-                  value={
-                    field.value
-                      ? format(new Date(field.value), "yyyy-MM-dd")
-                      : ""
-                  }
-                  onChange={(e) =>
-                    field.onChange(
-                      e.target.value ? new Date(e.target.value) : null,
-                    )
-                  }
-                />
-              </TextField>
+              <DateSelect
+                label="Start Date"
+                value={field.value}
+                onChange={(val) => field.onChange(val)}
+              />
             )}
           />
           <Controller
             control={control}
             name="endDate"
             render={({ field }) => (
-              <TextField className="flex-1">
-                <Label>End Date</Label>
-                <Input
-                  type="date"
-                  value={
-                    field.value
-                      ? format(new Date(field.value), "yyyy-MM-dd")
-                      : ""
-                  }
-                  onChange={(e) =>
-                    field.onChange(
-                      e.target.value ? new Date(e.target.value) : null,
-                    )
-                  }
-                />
-              </TextField>
+              <DateSelect
+                label="End Date"
+                value={field.value}
+                onChange={(val) => field.onChange(val)}
+              />
             )}
           />
         </div>

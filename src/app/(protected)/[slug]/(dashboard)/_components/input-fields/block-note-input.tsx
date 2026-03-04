@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from "react";
 import { useDebounce } from "use-debounce";
 import Editor from "./editor";
 import type { InputType } from "@/lib/types";
+import { Label } from "@heroui/react";
 
 const InlineBlockNote = ({
   initialValue,
@@ -10,6 +11,7 @@ const InlineBlockNote = ({
   schema,
   placeholder,
   className,
+  label,
   debounceMs = 1000,
 }: InputType) => {
   const [blocksJson, setBlocksJson] = useState(initialValue);
@@ -32,10 +34,11 @@ const InlineBlockNote = ({
     } else {
       setError(result.error.issues[0]?.message ?? "Invalid content");
     }
-  }, [debouncedJson, initialValue, onSave, schema]);
+  }, [debouncedJson, initialValue]);
 
   return (
     <div className={`w-full ${className}`}>
+      <Label className="text-xs">{label}</Label>
       <div
         className={`rounded-md border p-1 transition-colors ${
           error

@@ -322,6 +322,8 @@ export const project = createTable("project", {
   startDate: timestamp("start_date"),
   endDate: timestamp("end_date"),
   // labelId: uuid("labels"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
 });
 
 export const projectMember = createTable(

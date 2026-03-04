@@ -16,7 +16,7 @@ export const projectPriorityEnum = z.enum([
   "low",
 ]);
 
-export const projectSchema = z.object({
+export const projectBaseSchema = z.object({
   name: z.string().min(1, "Project name is required").max(200),
 
   summary: z.string().max(300, "Summary is too long").optional(),
@@ -28,27 +28,29 @@ export const projectSchema = z.object({
     .regex(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/, "Invalid hex color"),
 
   leadId: z.array(z.string()).optional(),
-
+  members: z.array(z.string()).optional(),
   isPrivate: z.boolean(),
   status: projectStatusEnum,
   priority: projectPriorityEnum,
 
-  startDate: z.date().optional(),
-  endDate: z.date().optional(),
+  startDate: z.string().optional(),
+  endDate: z.string().optional(),
 });
-// .refine(
-//   (data) => {
-//     if (data.startDate && data.endDate) {
-//       return data.endDate >= data.startDate;
-//     }
-//     return true;
-//   },
-//   {
-//     message: "End date must be after start date",
-//     path: ["endDate"],
-//   },
-// );
+
+export const projectSchema = projectBaseSchema.refine(
+  (data) => {
+    if (data.startDate && data.endDate) {
+      return new Date(data.endDate) >= new Date(data.startDate);
+    }
+    return true;
+  },
+  {
+    message: "End date must be after start date",
+    path: ["endDate"],
+  },
+);
 
 export type ProjectSchemaType = z.infer<typeof projectSchema>;
-export const updateProjectSchema = projectSchema.partial();
+
+export const updateProjectSchema = projectBaseSchema.partial();
 export type ProjectUpdateSchemaType = z.infer<typeof updateProjectSchema>;

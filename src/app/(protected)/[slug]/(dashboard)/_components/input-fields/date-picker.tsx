@@ -1,79 +1,97 @@
 "use client";
 
-import type { DateValue } from "@internationalized/date";
-
+import { Calendar, DateField, DatePicker, Label } from "@heroui/react";
+import type { DateValue } from "@heroui/react";
 import {
-  Button,
-  Calendar,
-  DateField,
-  DatePicker,
-  Description,
-  Label,
-} from "@heroui/react";
-import { getLocalTimeZone, today } from "@internationalized/date";
-import { useState } from "react";
+  parseDate,
+  getLocalTimeZone,
+  CalendarDate,
+} from "@internationalized/date";
+import { format } from "date-fns";
 
-const StartDatePicker = () => {
-  const [value, setValue] = useState<DateValue | null>(
-    today(getLocalTimeZone()),
-  );
+type DateSelectProps = {
+  value?: string | Date | null;
+  onChange: (date: string | undefined) => void;
+  label?: string;
+};
+
+const DateSelect = ({ value, onChange, label }: DateSelectProps) => {
+  const toCalendarDate = (val?: string | Date | null): CalendarDate | null => {
+    if (!val) return null;
+    try {
+      // Take only the date portion — avoids timezone shifts and invalid formats
+      const iso =
+        val instanceof Date
+          ? format(val, "yyyy-MM-dd")
+          : (val as string).slice(0, 10); // "2026-03-05 18:00:00" → "2026-03-05"
+
+      return parseDate(iso); // CalendarDate is date-only, no time needed
+    } catch {
+      return null;
+    }
+  };
+
+  const handleChange = (heroValue: DateValue | null) => {
+    if (!heroValue) {
+      onChange(undefined);
+      return;
+    }
+
+    const jsDate = heroValue.toDate(getLocalTimeZone());
+
+    const dbFormat = format(jsDate, "yyyy-MM-dd HH:mm:ss");
+    onChange(dbFormat);
+  };
 
   return (
-    <div className="flex w-64 flex-col gap-4">
-      <DatePicker name="date" value={value} onChange={setValue}>
-        <Label>Date</Label>
-        <DateField.Group fullWidth>
-          <DateField.Input>
-            {(segment) => <DateField.Segment segment={segment} />}
-          </DateField.Input>
-          <DateField.Suffix>
-            <DatePicker.Trigger>
-              <DatePicker.TriggerIndicator />
-            </DatePicker.Trigger>
-          </DateField.Suffix>
-        </DateField.Group>
-        <DatePicker.Popover>
-          <Calendar aria-label="Event date">
-            <Calendar.Header>
-              <Calendar.YearPickerTrigger>
-                <Calendar.YearPickerTriggerHeading />
-                <Calendar.YearPickerTriggerIndicator />
-              </Calendar.YearPickerTrigger>
+    <DatePicker
+      className="w-full"
+      value={toCalendarDate(value)}
+      onChange={handleChange}
+    >
+      {label && <Label className="text-xs">{label}</Label>}
+      <DateField.Group className="flex items-center gap-2 rounded-md border bg-transparent px-2 py-1">
+        <DateField.Input className="flex-1 text-sm outline-none">
+          {(segment) => <DateField.Segment segment={segment} />}
+        </DateField.Input>
+        <DateField.Suffix>
+          <DatePicker.Trigger>
+            <DatePicker.TriggerIndicator />
+          </DatePicker.Trigger>
+        </DateField.Suffix>
+      </DateField.Group>
+
+      <DatePicker.Popover>
+        <Calendar
+          aria-label="Choose date"
+          className="rounded-lg border bg-white p-4 shadow-xl dark:bg-zinc-950"
+        >
+          <Calendar.Header className="flex items-center justify-between pb-4">
+            <Calendar.YearPickerTrigger className="flex items-center gap-1 font-medium">
+              <Calendar.YearPickerTriggerHeading />
+              <Calendar.YearPickerTriggerIndicator />
+            </Calendar.YearPickerTrigger>
+            <div className="flex gap-1">
               <Calendar.NavButton slot="previous" />
               <Calendar.NavButton slot="next" />
-            </Calendar.Header>
-            <Calendar.Grid>
-              <Calendar.GridHeader>
-                {(day) => <Calendar.HeaderCell>{day}</Calendar.HeaderCell>}
-              </Calendar.GridHeader>
-              <Calendar.GridBody>
-                {(date) => <Calendar.Cell date={date} />}
-              </Calendar.GridBody>
-            </Calendar.Grid>
-            <Calendar.YearPickerGrid>
-              <Calendar.YearPickerGridBody>
-                {({ year }) => <Calendar.YearPickerCell year={year} />}
-              </Calendar.YearPickerGridBody>
-            </Calendar.YearPickerGrid>
-          </Calendar>
-        </DatePicker.Popover>
-      </DatePicker>
-      <Description>
-        Current value: {value ? value.toString() : "(empty)"}
-      </Description>
-      <div className="flex gap-2">
-        <Button
-          variant="tertiary"
-          onPress={() => setValue(today(getLocalTimeZone()))}
-        >
-          Set today
-        </Button>
-        <Button variant="tertiary" onPress={() => setValue(null)}>
-          Clear
-        </Button>
-      </div>
-    </div>
+            </div>
+          </Calendar.Header>
+          <Calendar.Grid className="border-collapse">
+            <Calendar.GridHeader>
+              {(day) => (
+                <Calendar.HeaderCell className="pb-2 text-xs font-normal text-zinc-500">
+                  {day}
+                </Calendar.HeaderCell>
+              )}
+            </Calendar.GridHeader>
+            <Calendar.GridBody>
+              {(date) => <Calendar.Cell date={date} className="p-1" />}
+            </Calendar.GridBody>
+          </Calendar.Grid>
+        </Calendar>
+      </DatePicker.Popover>
+    </DatePicker>
   );
 };
 
-export default StartDatePicker;
+export default DateSelect;

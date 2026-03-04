@@ -37,6 +37,7 @@ const TeamProjects = ({
 
   return (
     <div className="">
+      <CreateProjectModal teamId={teamId} />
       <div className="flex items-center justify-end py-2">
         <DisplayControls />
       </div>

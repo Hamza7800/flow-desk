@@ -96,6 +96,22 @@ const ProjectView = ({ project }: { project: Projects[number] }) => {
               />
             )}
 
+            {displayProperties.showMembers && (
+              <AssigneeSelect
+                label="Members"
+                value={project.members.map((user) => user.userId) ?? []}
+                onChange={(values) =>
+                  updateProject.mutate({
+                    values: {
+                      members: values,
+                    },
+                    teamId: project.teamId ?? "",
+                    projectId: project.id,
+                  })
+                }
+              />
+            )}
+
             {/* {displayProperties.showProject && (
               <ProjectSelect
                 teamId={issue.teamId ?? ""}

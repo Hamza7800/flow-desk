@@ -1,9 +1,11 @@
 "use client";
 
+import ProjectProperties from "./projects/project-properties";
+
 export const DetailsSidebarContent = () => {
   return (
     <div>
-      <h2>Details</h2>
+      <ProjectProperties />
     </div>
   );
 };

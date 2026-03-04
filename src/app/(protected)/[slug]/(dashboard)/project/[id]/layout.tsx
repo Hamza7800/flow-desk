@@ -41,7 +41,7 @@ export default function DetailsLayout({ children }: { children: ReactNode }) {
       </div>
 
       <div className="flex h-full">
-        <div className="flex-1 overflow-hidden">{children}</div>
+        <div className="h-screen flex-1">{children}</div>
 
         <div
           className={cn(

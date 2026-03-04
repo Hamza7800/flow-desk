@@ -37,11 +37,12 @@ const AssigneeSelect = ({
 
   return (
     <Select
-      placeholder="Select Assignee"
+      placeholder="Select"
       className={"w-full"}
       selectionMode={selection}
       value={selected}
       onChange={(keys) => {
+        // TODO: FIX SINGLE MODE
         setSelected(keys as Key[]);
         onChange(keys as string[]);
       }}

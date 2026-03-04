@@ -50,6 +50,13 @@
       "when": 1772239335351,
       "tag": "0006_fancy_namora",
       "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1772563097565,
+      "tag": "0007_kind_ulik",
+      "breakpoints": true
     }
   ]
 }
