@@ -25,8 +25,10 @@ const ProjectIssues = ({
   }
 
   return (
-    <div className="flex h-full flex-1 flex-col">
-      <IssueBoard issues={issues ?? []} />
+    <div className="relative min-h-0 w-full flex-1">
+      <div className="absolute inset-0 flex flex-col">
+        <IssueBoard issues={issues ?? []} />
+      </div>
     </div>
   );
 };

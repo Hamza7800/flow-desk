@@ -10,10 +10,10 @@ import { authClient } from "@/server/better-auth/client";
 
 // TODO: WILL NEED TO ADD SERVER CHECKS
 export default function MembersPage() {
-  const params = useParams();
+  const { slug } = useParams<{ slug: string }>();
   const { data } = authClient.useSession();
 
-  const slug = params.slug as string;
+  // const slug = params.slug as string;
   const { data: organization, isLoading } = useOrganization(slug);
 
   if (isLoading || !organization) {

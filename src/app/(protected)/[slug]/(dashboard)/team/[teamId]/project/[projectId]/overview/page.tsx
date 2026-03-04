@@ -3,7 +3,7 @@ import { getProject } from "@/server-actions/projects";
 import ProjectDetails from "@/app/(protected)/[slug]/(dashboard)/_components/projects/project-details";
 
 type Props = {
-  params: Promise<{ id: string }>;
+  params: Promise<{ projectId: string }>;
 };
 
 const Content = async ({ projectId }: { projectId: string }) => {
@@ -20,7 +20,7 @@ const Content = async ({ projectId }: { projectId: string }) => {
 };
 
 const ProjectDetailsPage = async ({ params }: Props) => {
-  const { id: projectId } = await params;
+  const { projectId } = await params;
 
   return (
     <Suspense fallback={<h2>Loading Project....</h2>}>

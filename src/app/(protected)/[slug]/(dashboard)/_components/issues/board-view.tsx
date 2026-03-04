@@ -17,13 +17,14 @@ export const BoardView = ({ containers }: { containers: IssueContainer[] }) => (
     {containers.map((container) => (
       <div
         key={container.id}
-        className="flex h-full w-full max-w-md shrink-0 flex-col"
+        className="flex h-full min-h-0 w-full max-w-md shrink-0 flex-col"
       >
         <BoardColumnHeader container={container} />
+
         <DroppableGroup
           containerId={container.id}
           items={container.items}
-          className="scrollbar-thin h-full flex-1 space-y-2 overflow-y-auto rounded-lg p-2"
+          className="scrollbar-thin flex-1 space-y-2 overflow-x-hidden overflow-y-auto rounded-lg p-2"
         >
           {container.items.map((issue) => (
             <Draggable key={issue.id} id={issue.id}>
@@ -41,7 +42,7 @@ export const BoardColumnHeader = ({
 }: {
   container: IssueContainer;
 }) => {
-  const { id } = useParams<{ id: string }>();
+  const { teamId } = useParams<{ teamId: string }>();
   const { groupBy } = useIssueViewStore();
 
   const getDefaultValue = () => {
@@ -70,7 +71,7 @@ export const BoardColumnHeader = ({
       <CreateIssueModal
         defaultValues={getDefaultValue()}
         triggerText="+"
-        teamId={id}
+        teamId={teamId}
       />
     </div>
   );

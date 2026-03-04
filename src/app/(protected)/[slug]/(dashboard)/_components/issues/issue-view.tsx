@@ -71,7 +71,11 @@ const IssueView = ({
   const router = useRouter();
   const { slug } = useParams<{ slug: string }>();
   const { displayProperties, viewMode } = useIssueViewStore();
-  const updateIssue = useUpdateIssue({ orgId: issue.organizationId });
+  const updateIssue = useUpdateIssue({
+    teamId: issue.teamId,
+    projectId: issue.projectId,
+    orgId: issue.organizationId,
+  });
 
   switch (viewMode) {
     case "board":

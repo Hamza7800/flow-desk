@@ -18,7 +18,13 @@ const UserAssignedIssues = ({
     return <h2>Error : {error.message}</h2>;
   }
 
-  return <IssueBoard issues={issues ?? []} />;
+  return (
+    <div className="relative min-h-0 w-full flex-1">
+      <div className="absolute inset-0 flex flex-col">
+        <IssueBoard issues={issues ?? []} />
+      </div>
+    </div>
+  );
 };
 
 export default UserAssignedIssues;

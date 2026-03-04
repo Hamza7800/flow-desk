@@ -73,13 +73,16 @@ export const getIssues = async (teamId?: string, projectId?: string) => {
     const { orgId } = await getActiveOrgId();
 
     // const { success:isAdmin} =await checkPermission("issue", "view");
+    const filters = [eq(issue.organizationId, orgId)];
+    if (teamId && teamId.trim() !== "") {
+      filters.push(eq(issue.teamId, teamId));
+    }
+    if (projectId && projectId.trim() !== "") {
+      filters.push(eq(issue.projectId, projectId));
+    }
 
     const issues = await db.query.issue.findMany({
-      where: and(
-        eq(issue.organizationId, orgId),
-        teamId ? eq(issue.teamId, teamId) : undefined,
-        projectId ? eq(issue.projectId, projectId) : undefined,
-      ),
+      where: and(...filters),
       with: {
         assignees: true,
         labels: true,

@@ -1,10 +1,10 @@
 import { getIssues } from "@/server-actions/issues";
 import { Suspense } from "react";
-import TeamIssues from "@/app/(protected)/[slug]/(dashboard)/_components/issues/team-issues";
 import { SiteHeader } from "@/components/site-header";
+import TeamIssues from "@/app/(protected)/[slug]/(dashboard)/_components/issues/team-issues";
 
 type Props = {
-  params: Promise<{ id: string }>;
+  params: Promise<{ teamId: string }>;
 };
 
 const Content = async ({ teamId }: { teamId: string }) => {
@@ -21,11 +21,10 @@ const Content = async ({ teamId }: { teamId: string }) => {
 };
 
 const IssuesPage = async ({ params }: Props) => {
-  const { id: teamId } = await params;
+  const { teamId } = await params;
 
   return (
     <Suspense fallback={<h2>Loading issues....</h2>}>
-      <SiteHeader heading="Team Issues" />
       <Content teamId={teamId} />
     </Suspense>
   );

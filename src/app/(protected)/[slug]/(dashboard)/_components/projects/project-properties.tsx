@@ -1,18 +1,15 @@
 import { useProjectDetails, useUpdateProjects } from "@/hooks/use-projects";
 import type { Priority, Status } from "@/lib/contants";
-import { projectSchema } from "@/zod-schema/project-schema";
 import { useParams } from "next/navigation";
 import AssigneeSelect from "../input-fields/assignee-select";
-import InlineBlockNote from "../input-fields/block-note-input";
-import InlineInput from "../input-fields/input";
 import PrioritySelect from "../input-fields/priority-select";
 import StatusSelect from "../input-fields/status-select";
 import DateSelect from "../input-fields/date-picker";
 import DeleteProject from "./delete-project";
 
 const ProjectProperties = () => {
-  const { id } = useParams<{ id: string }>();
-  const { data: project, isError, error } = useProjectDetails(id);
+  const { projectId } = useParams<{ projectId: string }>();
+  const { data: project, isError, error } = useProjectDetails(projectId);
 
   const updateProject = useUpdateProjects(project?.organizationId ?? "");
 

@@ -198,11 +198,20 @@ export const useUpdateIssue = ({ orgId, teamId, projectId }: IssueSnapshot) => {
         queryKey: queryKeys.issues.byTeam(teamId ?? ""),
       });
 
+      await queryClient.cancelQueries({
+        queryKey: queryKeys.issues.byProject(projectId ?? ""),
+      });
+
       const previousIssue = queryClient.getQueryData(
         queryKeys.issues.detail(issueId),
       );
+
       const previousList = queryClient.getQueryData(
         queryKeys.issues.byTeam(teamId ?? ""),
+      );
+
+      const previousProjectIssuesList = queryClient.getQueryData(
+        queryKeys.issues.byProject(projectId ?? ""),
       );
 
       queryClient.setQueryData(queryKeys.issues.detail(issueId), (old: any) =>
@@ -217,7 +226,21 @@ export const useUpdateIssue = ({ orgId, teamId, projectId }: IssueSnapshot) => {
           ) ?? old,
       );
 
-      return { previousIssue, previousList, issueId, teamId };
+      queryClient.setQueryData(
+        queryKeys.issues.byProject(projectId ?? ""),
+        (old: any[]) =>
+          old?.map((issue) =>
+            issue.id === issueId ? { ...issue, ...newValues } : issue,
+          ) ?? old,
+      );
+
+      return {
+        previousIssue,
+        previousProjectIssuesList,
+        previousList,
+        issueId,
+        teamId,
+      };
     },
     onError: (error, _, context) => {
       if (context?.previousIssue) {
@@ -232,15 +255,27 @@ export const useUpdateIssue = ({ orgId, teamId, projectId }: IssueSnapshot) => {
           context.previousList,
         );
       }
+      if (context?.previousProjectIssuesList) {
+        queryClient.setQueryData(
+          queryKeys.issues.byProject(projectId ?? ""),
+          context.previousProjectIssuesList,
+        );
+      }
       toast.danger(error.message);
     },
-    onSuccess: (_, { issueId }) => {
+    onSuccess: (data, { issueId }) => {
       queryClient.invalidateQueries({
         queryKey: queryKeys.issues.detail(issueId),
       });
       queryClient.invalidateQueries({
         queryKey: queryKeys.issues.all,
       });
+
+      if (data?.projectId) {
+        queryClient.invalidateQueries({
+          queryKey: queryKeys.issues.byProject(data?.projectId),
+        });
+      }
       toast.success("Update Success");
     },
   });

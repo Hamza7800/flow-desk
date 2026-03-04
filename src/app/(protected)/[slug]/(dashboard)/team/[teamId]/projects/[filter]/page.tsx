@@ -4,7 +4,7 @@ import TeamProjects from "@/app/(protected)/[slug]/(dashboard)/_components/proje
 import { SiteHeader } from "@/components/site-header";
 
 type Props = {
-  params: Promise<{ id: string }>;
+  params: Promise<{ teamId: string }>;
 };
 
 const Content = async ({ teamId }: { teamId: string }) => {
@@ -21,7 +21,7 @@ const Content = async ({ teamId }: { teamId: string }) => {
 };
 
 const ProjectsPage = async ({ params }: Props) => {
-  const { id: teamId } = await params;
+  const { teamId } = await params;
 
   return (
     <Suspense fallback={<h2>Loading... Projects</h2>}>
