@@ -1,6 +1,10 @@
 "use server";
 
-import { canDeleteIssue, checkPermission } from "@/lib/permissions-checks";
+import {
+  canDeleteIssue,
+  checkPermission,
+  isTeamMember,
+} from "@/lib/permissions-checks";
 import { returnError } from "@/lib/utils";
 import { getActiveOrgId, getUser } from "@/server/better-auth/server";
 import { db } from "@/server/db";
@@ -70,7 +74,7 @@ export const createIssue = async (
 
 export const getIssues = async (teamId?: string, projectId?: string) => {
   try {
-    const { orgId } = await getActiveOrgId();
+    const { orgId, userId } = await getActiveOrgId();
 
     // const { success:isAdmin} =await checkPermission("issue", "view");
     const filters = [eq(issue.organizationId, orgId)];
@@ -79,6 +83,21 @@ export const getIssues = async (teamId?: string, projectId?: string) => {
     }
     if (projectId && projectId.trim() !== "") {
       filters.push(eq(issue.projectId, projectId));
+    }
+
+    let isMember;
+    if (teamId) {
+      isMember = await isTeamMember(userId, teamId);
+    }
+
+    console.log(isMember);
+
+    if (!isMember) {
+      return {
+        success: false,
+        data: null,
+        message: "You are not member of this team",
+      };
     }
 
     const issues = await db.query.issue.findMany({

@@ -13,8 +13,6 @@ const Page = () => {
   const { user } = useAuth();
   const { org } = useOrganizationContext();
 
-  console.log(teamMembers);
-
   if (isPending) {
     return <h2>Loading Team Members</h2>;
   }

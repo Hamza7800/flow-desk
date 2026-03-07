@@ -59,6 +59,9 @@ export function OrganizationSwitcher() {
                   textValue={org.slug}
                   id={org.slug}
                   onClick={() => {
+                    if (activeOrganization?.id === org.id) {
+                      return;
+                    }
                     action.mutate({ id: org.id, slug: org.slug });
                   }}
                   // onSelect={() => setSelectedVersion(version)}

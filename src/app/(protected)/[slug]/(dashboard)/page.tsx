@@ -34,24 +34,4 @@ export default async function Page({ params }: Props) {
   redirect(
     `/${organization.slug}/team/${organization?.teams[0]?.id}/issues/all`,
   );
-  // } catch (error: any) {
-  //   console.log(error);
-  //   return (
-  //     <div className="flex h-screen items-center justify-center">
-  //       <Card className="mx-auto flex w-lg items-center justify-center">
-  //         <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-red-100 text-red-600">
-  //           !
-  //         </div>
-
-  //         <h2 className="text-xl font-semibold">No Found</h2>
-
-  //         <p className="text-muted-foreground mt-2 text-sm">{error?.message}</p>
-
-  //         <div className="mt-6 flex items-center justify-center gap-3">
-  //           <LinkButton href="/">Home</LinkButton>
-  //         </div>
-  //       </Card>
-  //     </div>
-  //   );
-  // }
 }

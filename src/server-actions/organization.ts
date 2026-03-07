@@ -3,11 +3,15 @@
 import { returnError } from "@/lib/utils";
 import { auth } from "@/server/better-auth";
 import { getActiveOrgId, getUser } from "@/server/better-auth/server";
+import { db } from "@/server/db";
+import { organization } from "@/server/db/schema";
 import {
   organizationSchema,
   type OrganizationSchemaType,
 } from "@/zod-schema/organization-schema";
+import { eq } from "drizzle-orm";
 import { headers } from "next/headers";
+import { cache } from "react";
 import z from "zod";
 
 export const checkSlug = async (slug: string) => {
@@ -62,7 +66,7 @@ export const createOrganization = async (values: OrganizationSchemaType) => {
 
 // TODO: Maybe I should
 // FIXME: This get full organization, we need only org details not full org
-export const getOrganization = async (slug: string) => {
+export const getOrganization = cache(async (slug: string) => {
   try {
     await getUser();
 
@@ -83,6 +87,32 @@ export const getOrganization = async (slug: string) => {
       success: true,
       data: organization,
     };
+  } catch (error) {
+    return returnError(error, "Error fetching organization");
+  }
+});
+
+export const getActiveOrg = cache(async () => {
+  try {
+    const { orgId } = await getActiveOrgId();
+    return {
+      success: true,
+      data: orgId,
+      message: "Active Org",
+    };
+  } catch (error) {
+    return returnError(error, "Error fetching active organization");
+  }
+});
+
+export const getOrganizationById = async (orgId: string) => {
+  try {
+    const org = await db.query.organization.findFirst({
+      where: eq(organization.id, orgId),
+    });
+
+    if (!org) return { success: false, data: null, message: "Not found" };
+    return { success: true, data: org, message: "OK" };
   } catch (error) {
     return returnError(error, "Error fetching organization");
   }

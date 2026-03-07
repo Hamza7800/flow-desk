@@ -215,7 +215,7 @@ export const getUserTeams = async () => {
 
 export const getTeam = async (teamId: string) => {
   try {
-    const { userId, orgId } = await getActiveOrgId();
+    const { orgId } = await getActiveOrgId();
     const teamDetails = await db.query.team.findFirst({
       where: and(eq(team.organizationId, orgId), eq(team.id, teamId)),
     });
@@ -268,7 +268,7 @@ export const getUserTeamsCurrentOrg = async () => {
 
 export const addMemberToTeam = async (teamId: string, userId: string) => {
   try {
-    const user = await getUser();
+    // const user = await getUser();
 
     const data = await auth.api.addTeamMember({
       body: {
@@ -291,7 +291,7 @@ export const addMemberToTeam = async (teamId: string, userId: string) => {
 
 export const removeMemberFromTeam = async (teamId: string, userId: string) => {
   try {
-    const user = await getUser();
+    // const user = await getUser();
 
     const data = await auth.api.removeTeamMember({
       body: {

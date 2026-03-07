@@ -100,11 +100,7 @@ export const useUpdateTeam = (orgId: string) => {
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({
-        queryKey: queryKeys.teams.orgList(orgId),
-      });
-      queryClient.invalidateQueries({
-        // queryKey: queryKeys.teams.userList(orgId),
-        queryKey: queryKeys.teams.userList(),
+        queryKey: queryKeys.teams.all,
       });
       toast.success(data.message);
     },

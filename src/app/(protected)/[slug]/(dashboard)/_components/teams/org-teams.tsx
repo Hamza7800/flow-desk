@@ -5,7 +5,6 @@ import { LinkButton } from "@/components/link-button";
 import { useOrgTeams } from "@/hooks/use-teams";
 import type { TeamsType } from "@/server-actions/teams";
 import { Card } from "@heroui/react";
-import { TeamJoinButton } from "./remove-member-from-team";
 
 const OrgTeams = ({ initialData }: { initialData: TeamsType["data"] }) => {
   const { org } = useOrganizationContext();
@@ -38,18 +37,13 @@ const OrgTeams = ({ initialData }: { initialData: TeamsType["data"] }) => {
               <div className="flex items-center gap-2">
                 {/* View */}
                 <LinkButton
-                  href={`/${org?.slug}/settings/teams/${team.id}`}
+                  href={`/${org?.slug}/team/${team.id}/issues/all`}
                   size="sm"
                   variant="ghost"
                   className="shadow-none"
                 >
                   View
                 </LinkButton>
-                <TeamJoinButton
-                  teamId={team.id}
-                  orgId={org?.id ?? ""}
-                  isMember={false}
-                />
               </div>
             </Card.Header>
           </Card>

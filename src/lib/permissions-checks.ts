@@ -5,6 +5,7 @@ import {
   issueAssignee,
   project,
   projectMember,
+  teamMember,
 } from "@/server/db/schema";
 import { and, eq } from "drizzle-orm";
 import { headers } from "next/headers";
@@ -30,6 +31,16 @@ export const checkPermission = async (
     },
     headers: await headers(),
   });
+};
+
+export const isTeamMember = async (userId: string, teamId: string) => {
+  const result = await db.query.teamMember.findFirst({
+    where: and(eq(teamMember.teamId, teamId), eq(teamMember.userId, userId)),
+    columns: { id: true },
+  });
+
+  console.log(result);
+  return !!result;
 };
 
 export const isProjectLead = async (projectId: string, userId: string) => {
