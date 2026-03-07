@@ -58,7 +58,7 @@ export const useAcceptInvitation = (slug: string) => {
         queryKey: queryKeys.invitations.list(slug),
       });
       queryClient.invalidateQueries({
-        queryKey: queryKeys.organizations.detail(slug),
+        queryKey: queryKeys.organizations.all,
       });
       toast.success(data.message);
     },
@@ -85,7 +85,7 @@ export const useCancelInvitation = (slug: string) => {
       });
 
       queryClient.invalidateQueries({
-        queryKey: queryKeys.organizations.detail(slug),
+        queryKey: queryKeys.organizations.all,
       });
 
       toast.success(data.message);
@@ -135,7 +135,7 @@ export const useRejectInvitation = (slug: string) => {
       });
 
       queryClient.invalidateQueries({
-        queryKey: queryKeys.organizations.detail(slug),
+        queryKey: queryKeys.organizations.all,
       });
 
       toast.success(data.message);

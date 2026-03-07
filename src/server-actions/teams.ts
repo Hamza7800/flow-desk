@@ -266,14 +266,15 @@ export const getUserTeamsCurrentOrg = async () => {
 
 // TODO: WHEN INVITE YOU CAN ALSO SPECIFY A TEAM BY DEFAULT
 
-export const addMemberToTeam = async (teamId: string) => {
+export const addMemberToTeam = async (teamId: string, userId: string) => {
   try {
     const user = await getUser();
 
     const data = await auth.api.addTeamMember({
       body: {
         teamId,
-        userId: user.id,
+        // userId: user.id,
+        userId,
       },
       headers: await headers(),
     });
@@ -288,14 +289,15 @@ export const addMemberToTeam = async (teamId: string) => {
   }
 };
 
-export const removeMemberFromTeam = async (teamId: string) => {
+export const removeMemberFromTeam = async (teamId: string, userId: string) => {
   try {
     const user = await getUser();
 
     const data = await auth.api.removeTeamMember({
       body: {
         teamId,
-        userId: user.id,
+        userId,
+        // userId: user.id,
       },
       headers: await headers(),
     });

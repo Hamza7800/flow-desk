@@ -5,7 +5,7 @@ import { LinkButton } from "@/components/link-button";
 import { useOrgTeams } from "@/hooks/use-teams";
 import type { TeamsType } from "@/server-actions/teams";
 import { Card } from "@heroui/react";
-import { TeamJoinButton } from "./team-join-button";
+import { TeamJoinButton } from "./remove-member-from-team";
 
 const OrgTeams = ({ initialData }: { initialData: TeamsType["data"] }) => {
   const { org } = useOrganizationContext();

@@ -175,8 +175,14 @@ export const useAddMemberToTeam = (teamId: string) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (teamId: string) => {
-      const result = await addMemberToTeam(teamId);
+    mutationFn: async ({
+      teamId,
+      userId,
+    }: {
+      teamId: string;
+      userId: string;
+    }) => {
+      const result = await addMemberToTeam(teamId, userId);
       if (!result.success)
         throw new Error(result.message || "Failed to join team");
       return result;
@@ -200,19 +206,23 @@ export const useRemoveMemberFromTeam = (teamId: string) => {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (teamId: string) => {
-      const result = await removeMemberFromTeam(teamId);
+    mutationFn: async ({
+      teamId,
+      userId,
+    }: {
+      teamId: string;
+      userId: string;
+    }) => {
+      const result = await removeMemberFromTeam(teamId, userId);
       if (!result.success)
-        throw new Error(result.message || "Failed to leave team");
+        throw new Error(result.message || "Failed to remove from team");
       return result;
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({
         queryKey: queryKeys.teams.members(teamId),
       });
-      // queryClient.invalidateQueries({
-      //   queryKey: queryKeys.teams.userList(),
-      // });
+
       toast.success(data.message);
     },
     onError: (error: Error) => {

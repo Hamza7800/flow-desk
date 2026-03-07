@@ -1,26 +1,21 @@
 "use client";
 
 import { useOrganizationContext } from "@/components/context/organization-client-context";
-import { useTeamMembers } from "@/hooks/use-teams";
-import { getInitials } from "@/lib/utils";
+import { useAddMemberToTeam, useTeamMembers } from "@/hooks/use-teams";
 import {
-  Avatar,
-  AvatarFallback,
   ListBox,
   Popover,
   Button,
   type Selection,
-  Surface,
   Description,
   Label,
 } from "@heroui/react";
 import { useState, useMemo } from "react";
-import { ChevronDown, UserPlus } from "lucide-react";
-import InviteMembers from "../../../(settings)/_components/invite-members";
-import { Check } from "@gravity-ui/icons";
+import InviteMembers from "@/app/(protected)/[slug]/(settings)/_components/invite-members";
 
 const AddMembers = ({ teamId }: { teamId: string }) => {
   const { data: teamMembers, isPending } = useTeamMembers(teamId);
+  const addMember = useAddMemberToTeam(teamId);
   const { org } = useOrganizationContext();
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
@@ -34,8 +29,6 @@ const AddMembers = ({ teamId }: { teamId: string }) => {
     return org?.members?.find((m) => m.user.id === firstKey);
   }, [selectedKeys, org]);
 
-  console.log(selectedMember);
-
   const teamUserIds = new Set(teamMembers?.map((m) => m.userId));
   const membersNotInTeam =
     org?.members?.filter((member) => !teamUserIds.has(member.userId)) ?? [];
@@ -43,6 +36,23 @@ const AddMembers = ({ teamId }: { teamId: string }) => {
   const handleOpenInvite = () => {
     setIsPopoverOpen(false);
     setIsInviteModalOpen(true);
+  };
+
+  const onSelect = (keys: Selection) => {
+    const selectedId = Array.from(keys)[0] as string;
+    if (!selectedId) return;
+    const member = org?.members?.find((m) => m.userId === selectedId);
+
+    if (member) {
+      addMember.mutate({
+        teamId,
+        userId: member.user.id,
+      });
+
+      setIsPopoverOpen(false);
+    }
+
+    setSelectedKeys(new Set([]));
   };
 
   return (
@@ -61,13 +71,7 @@ const AddMembers = ({ teamId }: { teamId: string }) => {
                 aria-label="Users"
                 selectedKeys={selectedKeys}
                 selectionMode="single"
-                onSelectionChange={(keys) => {
-                  setSelectedKeys(keys);
-                  const firstKey = Array.from(keys);
-                  const fk = org?.members?.find(
-                    (m) => m.userId === firstKey[0],
-                  );
-                }}
+                onSelectionChange={onSelect}
               >
                 {membersNotInTeam.map((member) => {
                   return (
@@ -100,6 +104,7 @@ const AddMembers = ({ teamId }: { teamId: string }) => {
         slug={org?.slug ?? ""}
         setOpen={setIsInviteModalOpen}
         teamId={teamId}
+        heading="Invite Members to your Team"
       />
     </div>
   );

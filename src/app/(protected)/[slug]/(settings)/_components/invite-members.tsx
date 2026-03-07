@@ -18,6 +18,16 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 
+type Props = {
+  slug: string;
+  orgId: string;
+  teamId?: string;
+  isOpen: boolean;
+  setOpen: (val: boolean) => void;
+  onOpenChange: (val: boolean) => void;
+  heading: string;
+};
+
 const InviteMembers = ({
   orgId,
   slug,
@@ -25,14 +35,8 @@ const InviteMembers = ({
   isOpen,
   setOpen,
   onOpenChange,
-}: {
-  slug: string;
-  orgId: string;
-  teamId?: string;
-  isOpen: boolean;
-  setOpen: (val: boolean) => void;
-  onOpenChange: (val: boolean) => void;
-}) => {
+  heading,
+}: Props) => {
   const inviteMutation = useSendInvitation(orgId, slug, teamId);
 
   const form = useForm<InviteType>({
@@ -78,7 +82,7 @@ const InviteMembers = ({
                 <Modal.Icon className="bg-accent-soft text-accent-soft-foreground">
                   <Envelope className="size-5" />
                 </Modal.Icon>
-                <Modal.Heading>Invite Members to you workspace</Modal.Heading>
+                <Modal.Heading>{heading}</Modal.Heading>
               </Modal.Header>
               <Modal.Body className="px-1 py-4">
                 <Controller

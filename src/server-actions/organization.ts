@@ -2,7 +2,7 @@
 
 import { returnError } from "@/lib/utils";
 import { auth } from "@/server/better-auth";
-import { getUser } from "@/server/better-auth/server";
+import { getActiveOrgId, getUser } from "@/server/better-auth/server";
 import {
   organizationSchema,
   type OrganizationSchemaType,
@@ -216,5 +216,27 @@ export const updateOrganization = async (
     };
   } catch (error: any) {
     return returnError(error, "Unable to update organization");
+  }
+};
+
+export const removeMemberFromOrg = async (userId: string) => {
+  try {
+    const { orgId } = await getActiveOrgId();
+
+    const data = await auth.api.removeMember({
+      body: {
+        memberIdOrEmail: userId,
+        organizationId: orgId,
+      },
+      headers: await headers(),
+    });
+
+    return {
+      success: true,
+      message: "User removed",
+      data,
+    };
+  } catch (error) {
+    return returnError(error, "Unable to remove from org");
   }
 };

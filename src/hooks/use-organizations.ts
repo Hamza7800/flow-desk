@@ -4,6 +4,7 @@ import {
   deleteOrganization,
   getOrganization,
   getUserListOrganizations,
+  removeMemberFromOrg,
   setActiveOrganization,
   updateOrganization,
   type OrgType,
@@ -197,6 +198,29 @@ export const useUpdateOrganization = () => {
       router.replace(`/${data?.data?.slug}/settings/workspace`);
     },
     onError: (error) => {
+      toast.danger(error.message);
+    },
+  });
+};
+
+export const useRemoveMember = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async ({ userId }: { userId: string }) => {
+      const result = await removeMemberFromOrg(userId);
+      if (!result.success)
+        throw new Error(result.message || "Failed to remove from org");
+      return result;
+    },
+    onSuccess: (data) => {
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.organizations.all,
+      });
+
+      toast.success(data.message);
+    },
+    onError: (error: Error) => {
       toast.danger(error.message);
     },
   });

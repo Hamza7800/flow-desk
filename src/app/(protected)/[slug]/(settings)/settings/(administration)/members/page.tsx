@@ -2,16 +2,21 @@
 
 import { useParams } from "next/navigation";
 import { Loader2 } from "lucide-react";
-import { Card, Chip, Surface } from "@heroui/react";
+import { Button, Card, Chip, Surface } from "@heroui/react";
 import { useOrganization } from "@/hooks/use-organizations";
 import InviteMembers from "@/app/(protected)/[slug]/(settings)/_components/invite-members";
 import CancelInvitation from "@/app/(protected)/[slug]/(settings)/_components/invitations/cancel-invitation";
 import { authClient } from "@/server/better-auth/client";
+import { useState } from "react";
+import { useOrganizationContext } from "@/components/context/organization-client-context";
+import { RemoveMemberFromOrg } from "@/app/(protected)/[slug]/(dashboard)/_components/teams/remove-member-from-org";
 
 // TODO: WILL NEED TO ADD SERVER CHECKS
 export default function MembersPage() {
   const { slug } = useParams<{ slug: string }>();
+  const { org } = useOrganizationContext();
   const { data } = authClient.useSession();
+  const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
 
   // const slug = params.slug as string;
   const { data: organization, isLoading } = useOrganization(slug);
@@ -31,20 +36,28 @@ export default function MembersPage() {
 
   const canManageInvites = currentRole === "admin" || currentRole === "owner";
 
+  const handleOpenInvite = () => {
+    setIsInviteModalOpen(true);
+  };
+
   return (
-    <div className="min-h-screen">
-      <main className="flex-1">
+    <div className="flex h-full flex-col overflow-hidden bg-[#101012]">
+      <main className="scrollbar-thin min-h-0 flex-1 overflow-y-auto p-4 lg:p-6">
         {/* Header */}
         <div className="mb-8 flex items-center justify-between">
-          <div>
-            <h1 className="text-3xl font-bold text-white">Team Members</h1>
-            <p className="mt-2 text-slate-400">
-              Manage your team members and their roles
-            </p>
-          </div>
           <div className="max-w-xs">
-            <InviteMembers slug={slug} orgId={organization.id} />
+            <Button fullWidth size="sm" onPress={handleOpenInvite}>
+              Invite Members
+            </Button>
           </div>
+          <InviteMembers
+            isOpen={isInviteModalOpen}
+            onOpenChange={setIsInviteModalOpen}
+            orgId={org?.id ?? ""}
+            slug={slug ?? ""}
+            setOpen={setIsInviteModalOpen}
+            heading="Invite Members to your workspace"
+          />
         </div>
 
         {/* Members List */}
@@ -80,6 +93,9 @@ export default function MembersPage() {
                     {member?.role}
                   </Chip>
                 </div>
+                <div className="text-right">
+                  <RemoveMemberFromOrg userId={member.id} />
+                </div>
               </Surface>
             ))}
           </Card.Content>
@@ -104,7 +120,7 @@ export default function MembersPage() {
                 <Surface
                   variant="secondary"
                   key={invite.id}
-                  className="flex items-center justify-between p-4"
+                  className="grid grid-cols-3 items-center justify-between p-4"
                 >
                   <div className="flex items-center gap-3">
                     <div className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-600 font-semibold text-white">
@@ -112,9 +128,6 @@ export default function MembersPage() {
                     </div>
                     <div>
                       <p className="font-medium text-white">{invite?.email}</p>
-                      {/* <p className="text-sm text-slate-400">
-                      {invite?.user.email}
-                    </p> */}
                     </div>
                   </div>
                   <div className="space-x-2 text-right">
@@ -125,7 +138,7 @@ export default function MembersPage() {
                       {invite.status}
                     </Chip>
                   </div>
-                  <div className="space-x-2">
+                  <div className="ml-auto">
                     {showCancel && (
                       <CancelInvitation slug={slug} inviteId={invite.id} />
                     )}
