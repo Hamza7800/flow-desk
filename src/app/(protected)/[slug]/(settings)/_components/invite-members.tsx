@@ -18,9 +18,22 @@ import {
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Controller, useForm } from "react-hook-form";
 
-const InviteMembers = ({ orgId, slug }: { slug: string; orgId: string }) => {
-  const inviteMutation = useSendInvitation(orgId, slug);
-  const state = useOverlayState();
+const InviteMembers = ({
+  orgId,
+  slug,
+  teamId,
+  isOpen,
+  setOpen,
+  onOpenChange,
+}: {
+  slug: string;
+  orgId: string;
+  teamId?: string;
+  isOpen: boolean;
+  setOpen: (val: boolean) => void;
+  onOpenChange: (val: boolean) => void;
+}) => {
+  const inviteMutation = useSendInvitation(orgId, slug, teamId);
 
   const form = useForm<InviteType>({
     resolver: zodResolver(inviteSchema),
@@ -34,19 +47,28 @@ const InviteMembers = ({ orgId, slug }: { slug: string; orgId: string }) => {
   const onSubmit = async (values: InviteType) => {
     inviteMutation.mutate(values, {
       onSuccess: () => {
-        state.close();
+        // state.close();
+        setOpen(false);
       },
     });
   };
 
   return (
-    <Modal isOpen={state.isOpen} onOpenChange={state.setOpen}>
-      <Button fullWidth onPress={() => state.open()} variant="primary">
+    <Modal isOpen={isOpen} onOpenChange={(isOpen) => onOpenChange(isOpen)}>
+      {/* <Button
+        fullWidth
+        onPress={() => {
+          if (onOpenChange) {
+            onOpenChange();
+          }
+        }}
+        variant="primary"
+      >
         Invite Members
-      </Button>
+      </Button> */}
       <Modal.Backdrop>
         <Modal.Container placement="auto">
-          <Modal.Dialog className="sm:max-w-md">
+          <Modal.Dialog className="z-[999] sm:max-w-md">
             <Form
               onSubmit={handleSubmit(onSubmit)}
               className="flex flex-col gap-4"
@@ -79,7 +101,7 @@ const InviteMembers = ({ orgId, slug }: { slug: string; orgId: string }) => {
                 />
               </Modal.Body>
               <Modal.Footer>
-                <Button slot="close" variant="secondary">
+                <Button onPress={() => setOpen(false)} variant="secondary">
                   Cancel
                 </Button>
                 <Button isPending={inviteMutation.isPending} type="submit">

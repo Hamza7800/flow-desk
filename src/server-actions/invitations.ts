@@ -31,6 +31,7 @@ import { returnError } from "@/lib/utils";
 export const inviteUserToWorkspace = async (
   orgId: string,
   values: InviteType,
+  teamId?: string,
 ) => {
   try {
     await getUser();
@@ -45,6 +46,7 @@ export const inviteUserToWorkspace = async (
         organizationId: orgId,
         resend: true,
         role: "member",
+        teamId,
       },
       headers: await headers(),
     });

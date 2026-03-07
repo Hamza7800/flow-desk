@@ -10,12 +10,16 @@ import type { InviteType } from "@/zod-schema/invite-schema";
 import { toast } from "@heroui/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 
-export const useSendInvitation = (orgId: string, slug: string) => {
+export const useSendInvitation = (
+  orgId: string,
+  slug: string,
+  teamId?: string,
+) => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (values: InviteType) => {
-      const result = await inviteUserToWorkspace(orgId, values);
+      const result = await inviteUserToWorkspace(orgId, values, teamId);
       if (!result.success) {
         throw new Error(result.message);
       }

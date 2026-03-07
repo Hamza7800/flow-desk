@@ -1,4 +1,5 @@
 import { useOrganizationContext } from "@/components/context/organization-client-context";
+import { getInitials } from "@/lib/utils";
 import {
   Avatar,
   AvatarFallback,
@@ -18,11 +19,6 @@ type Props = {
   onChange: (values: string[]) => void;
   selection?: "multiple" | "single";
   label: string;
-};
-
-const getInitials = (email: string) => {
-  const name = email.split("@")[0];
-  return name?.slice(0, 2).toUpperCase();
 };
 
 const AssigneeSelect = ({

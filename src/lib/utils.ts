@@ -29,3 +29,8 @@ export const returnError = (error: any, message: string) => {
 export const wait = async (time: number) => {
   await new Promise((res) => setTimeout(res, time));
 };
+
+export const getInitials = (email: string) => {
+  const name = email.split("@")[0];
+  return name?.slice(0, 2).toUpperCase();
+};

@@ -57,21 +57,6 @@ export const createOrganization = async (values: OrganizationSchemaType) => {
     };
   } catch (error) {
     return returnError(error, "Error creating organization");
-    // console.error("Error creating organization:", error);
-    // if (error instanceof z.ZodError) {
-    //   return {
-    //     success: false,
-    //     error: "Validation failed",
-    //     details: error.message,
-    //   };
-    // }
-    // return {
-    //   success: false,
-    //   error:
-    //     error instanceof Error
-    //       ? error.message
-    //       : "Failed to create organization",
-    // };
   }
 };
 
@@ -100,15 +85,6 @@ export const getOrganization = async (slug: string) => {
     };
   } catch (error) {
     return returnError(error, "Error fetching organization");
-    // console.error("Error fetching organization:", error);
-
-    // return {
-    //   success: false,
-    //   error:
-    //     error instanceof Error
-    //       ? error.message
-    //       : "Failed to fetching organization",
-    // };
   }
 };
 
@@ -135,15 +111,6 @@ export const getUserListOrganizations = async () => {
     };
   } catch (error) {
     return returnError(error, "Unable to get organizations");
-    // console.error("Error fetch organizations:", error);
-
-    // return {
-    //   success: false,
-    //   error:
-    //     error instanceof Error
-    //       ? error.message
-    //       : "Failed to fetch organizations",
-    // };
   }
 };
 
@@ -175,15 +142,6 @@ export const setActiveOrganization = async (orgId: string, slug: string) => {
     };
   } catch (error) {
     return returnError(error, "Unable to set organization active");
-    // console.error("Error setting active organization:", error);
-
-    // return {
-    //   success: false,
-    //   error:
-    //     error instanceof Error
-    //       ? error.message
-    //       : "Failed to set organization active",
-    // };
   }
 };
 
@@ -214,15 +172,6 @@ export const deleteOrganization = async (slug: string) => {
     };
   } catch (error) {
     return returnError(error, "Unable to delete organization");
-    // console.error("Error delete  organization:", error);
-
-    // return {
-    //   success: false,
-    //   error:
-    //     error instanceof Error
-    //       ? error.message
-    //       : "Failed to delete organization ",
-    // };
   }
 };
 
@@ -267,19 +216,5 @@ export const updateOrganization = async (
     };
   } catch (error: any) {
     return returnError(error, "Unable to update organization");
-    // console.error("Error updating  organization:", error);
-
-    // let errorMessage = "Failed to update organization";
-
-    // if (error?.body?.message) {
-    //   errorMessage = error.body.message;
-    // } else if (error instanceof Error) {
-    //   errorMessage = error.message;
-    // }
-
-    // return {
-    //   success: false,
-    //   message: errorMessage,
-    // };
   }
 };

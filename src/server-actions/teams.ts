@@ -309,3 +309,22 @@ export const removeMemberFromTeam = async (teamId: string) => {
     return returnError(error, "Unable to leave team");
   }
 };
+
+export const getTeamMembers = async (teamId: string) => {
+  try {
+    const data = await auth.api.listTeamMembers({
+      headers: await headers(),
+      query: {
+        teamId,
+      },
+    });
+
+    return {
+      success: true,
+      data,
+      message: "Team members",
+    };
+  } catch (error) {
+    return returnError(error, "Unable to get team members");
+  }
+};

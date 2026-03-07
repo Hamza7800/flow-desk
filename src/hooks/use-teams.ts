@@ -4,6 +4,7 @@ import {
   createTeam,
   getOrgTeams,
   getTeam,
+  getTeamMembers,
   getUserTeams,
   getUserTeamsCurrentOrg,
   removeMemberFromTeam,
@@ -170,7 +171,7 @@ export const useSetActiveTeam = () => {
   });
 };
 
-export const useAddMemberToTeam = (orgId: string) => {
+export const useAddMemberToTeam = (teamId: string) => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -182,11 +183,11 @@ export const useAddMemberToTeam = (orgId: string) => {
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({
-        queryKey: queryKeys.teams.orgList(orgId),
+        queryKey: queryKeys.teams.members(teamId),
       });
-      queryClient.invalidateQueries({
-        queryKey: queryKeys.teams.userList(),
-      });
+      // queryClient.invalidateQueries({
+      //   queryKey: queryKeys.teams.userList(),
+      // });
       toast.success(data.message);
     },
     onError: (error: Error) => {
@@ -195,7 +196,7 @@ export const useAddMemberToTeam = (orgId: string) => {
   });
 };
 
-export const useRemoveMemberFromTeam = (orgId: string) => {
+export const useRemoveMemberFromTeam = (teamId: string) => {
   const queryClient = useQueryClient();
 
   return useMutation({
@@ -207,15 +208,28 @@ export const useRemoveMemberFromTeam = (orgId: string) => {
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({
-        queryKey: queryKeys.teams.orgList(orgId),
+        queryKey: queryKeys.teams.members(teamId),
       });
-      queryClient.invalidateQueries({
-        queryKey: queryKeys.teams.userList(),
-      });
+      // queryClient.invalidateQueries({
+      //   queryKey: queryKeys.teams.userList(),
+      // });
       toast.success(data.message);
     },
     onError: (error: Error) => {
       toast.danger(error.message);
+    },
+  });
+};
+
+export const useTeamMembers = (teamId: string) => {
+  return useQuery({
+    queryKey: queryKeys.teams.members(teamId),
+    queryFn: async () => {
+      const result = await getTeamMembers(teamId);
+      if (!result.success) {
+        throw new Error(result.message);
+      }
+      return result.data;
     },
   });
 };

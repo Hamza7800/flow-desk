@@ -34,6 +34,8 @@ export const queryKeys = {
     userList: () => [...queryKeys.teams.all, "user"] as const,
     detail: (teamId: string) =>
       [...queryKeys.teams.all, "detail", teamId] as const,
+    members: (teamId: string) =>
+      [...queryKeys.teams.all, "members", teamId] as const,
   },
 
   projects: {
