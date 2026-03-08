@@ -18,7 +18,7 @@ export const IssueBoard = ({ issues }: Props) => {
         issues={issues}
         renderCard={(issue) => (
           <div className="pointer-events-none">
-            <IssueView issue={issue} />
+            <IssueView isPlaceholder issue={issue} />
           </div>
         )}
       >

@@ -248,7 +248,10 @@ export const updateIssue = async (
     if (hasScalerFields) {
       await db
         .update(issue)
-        .set(scalerFields)
+        .set({
+          ...scalerFields,
+          updatedAt: new Date(),
+        })
         .where(and(eq(issue.organizationId, orgId), eq(issue.id, issueId)));
 
       if (scalerFields.status && scalerFields.status !== existing.status) {

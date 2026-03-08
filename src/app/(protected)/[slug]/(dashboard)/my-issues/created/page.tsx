@@ -1,6 +1,8 @@
 import { getUserCreatedIssues } from "@/server-actions/issues";
 import { Suspense } from "react";
 import UserCreatedIssues from "@/app/(protected)/[slug]/(dashboard)/_components/issues/user-created-issues";
+import { ErrorState } from "@/components/error-state";
+import { LoadingState } from "@/components/loading-state";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -15,7 +17,7 @@ const Content = async ({ teamId }: { teamId: string }) => {
 
     return <UserCreatedIssues teamId={teamId} initialData={issues.data} />;
   } catch (error: any) {
-    return <h2>No Issues: {error.message}</h2>;
+    return <ErrorState title="No Issues" message={error.message} />;
   }
 };
 
@@ -23,7 +25,7 @@ const MyCreatedIssues = async ({ params }: Props) => {
   const { id: teamId } = await params;
 
   return (
-    <Suspense fallback={<h2>Loading issues....</h2>}>
+    <Suspense fallback={<LoadingState label="Loading Issues" />}>
       <Content teamId={teamId} />
     </Suspense>
   );

@@ -243,9 +243,7 @@ export const IssueDndContext = ({ issues, renderCard, children }: Props) => {
         }}
       >
         {activeId ? (
-          <div className="scale-[1.02] rotate-[0.5deg] cursor-grabbing rounded-md shadow-2xl ring-1 ring-indigo-500/40">
-            {renderCard(getActiveIssue()!)}
-          </div>
+          <div className="cursor-grabbing">{renderCard(getActiveIssue()!)}</div>
         ) : null}
       </DragOverlay>
     </DndContext>

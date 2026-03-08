@@ -18,13 +18,11 @@ type Props = {
   value: string[];
   onChange: (values: string[]) => void;
   selection?: "multiple" | "single";
-  label: string;
   isDisabled?: boolean;
 };
 
 const AssigneeSelect = ({
   value,
-  label,
   onChange,
   isDisabled = false,
   selection = "multiple",
@@ -37,7 +35,6 @@ const AssigneeSelect = ({
     <Select
       isDisabled={isDisabled}
       placeholder="Select"
-      className={"w-full"}
       selectionMode={selection}
       value={selected}
       onChange={(keys) => {
@@ -46,9 +43,8 @@ const AssigneeSelect = ({
         onChange(keys as string[]);
       }}
     >
-      <Label>{label}</Label>
       <Select.Trigger>
-        <Select.Value>
+        <Select.Value className={"w-fit p-0"}>
           {({ state, isPlaceholder, defaultChildren }) => {
             if (isPlaceholder || state.selectedItems.length === 0) {
               return defaultChildren;
@@ -70,7 +66,7 @@ const AssigneeSelect = ({
                   return (
                     <Avatar
                       key={item.key}
-                      className="size-6 border border-white"
+                      className="size-4 border border-white"
                       size="sm"
                     >
                       <AvatarFallback>
@@ -90,10 +86,13 @@ const AssigneeSelect = ({
           }}
         </Select.Value>
 
-        <Select.Indicator />
+        {/* <Select.Indicator /> */}
       </Select.Trigger>
 
-      <Select.Popover>
+      <Select.Popover
+        className={"w-full max-w-[300px]"}
+        placement="bottom right"
+      >
         <ListBox selectionMode="multiple">
           {members?.map((member) => (
             <ListBox.Item

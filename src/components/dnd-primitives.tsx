@@ -15,22 +15,39 @@ export const DroppableGroup = ({
   items,
   children,
   className,
+  headerOnly = false,
 }: {
   containerId: string;
   items: Issues | Projects;
   children: React.ReactNode;
   className?: string;
+  headerOnly?: boolean;
 }) => {
   const { setNodeRef, isOver } = useDroppable({ id: containerId });
+
+  if (headerOnly) {
+    return (
+      <div
+        ref={setNodeRef}
+        className={cn(
+          "rounded-lg transition-colors duration-150",
+          isOver && "bg-indigo-500/10 ring-1 ring-indigo-100/10 ring-inset",
+          className,
+        )}
+      >
+        {children}
+      </div>
+    );
+  }
 
   return (
     <div
       ref={setNodeRef}
       className={cn(
         className,
-        "min-h-10 transition-colors duration-150",
+        "min-h-2 transition-colors duration-150",
         isOver &&
-          "rounded-lg bg-indigo-500/5 ring-1 ring-indigo-500/20 ring-inset",
+          "rounded-lg bg-indigo-500/5 ring-1 ring-indigo-100/10 ring-inset",
       )}
     >
       <SortableContext
@@ -41,13 +58,10 @@ export const DroppableGroup = ({
         {items.length === 0 && (
           <div
             className={cn(
-              "h-16 rounded border border-dashed border-zinc-700/50",
-              "flex items-center justify-center text-xs text-zinc-600",
-              isOver && "border-indigo-500/40 text-indigo-400/60",
+              "mx-1 my-1 h-0.5 rounded-full transition-all duration-150",
+              isOver ? "bg-indigo-100/20" : "bg-transparent",
             )}
-          >
-            Drop here
-          </div>
+          />
         )}
       </SortableContext>
     </div>
@@ -76,7 +90,7 @@ export const Draggable = ({
       style={{
         transform: CSS.Transform.toString(transform),
         transition,
-        opacity: isDragging ? 0.5 : 1,
+        opacity: isDragging ? 0 : 1,
       }}
       {...attributes}
       {...listeners}

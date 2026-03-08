@@ -23,18 +23,19 @@ const ProjectSelect = ({ orgId, teamId, value, onChange }: Props) => {
   return (
     <Select
       placeholder="Project"
-      className={"w-full"}
       value={currentProject?.id}
       onChange={(value) => {
         onChange(value as string);
       }}
     >
-      <Label>Project</Label>
       <Select.Trigger>
         <Select.Value />
         <Select.Indicator />
       </Select.Trigger>
-      <Select.Popover>
+      <Select.Popover
+        className={"w-full max-w-[300px]"}
+        placement="bottom left"
+      >
         <ListBox>
           {projects && projects?.length > 0 ? (
             projects?.map((project) => (

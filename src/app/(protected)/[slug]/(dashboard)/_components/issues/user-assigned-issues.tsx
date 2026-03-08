@@ -4,6 +4,7 @@ import { useUserAssignedIssues } from "@/hooks/use-issues";
 
 import type { IssuesType } from "@/server-actions/issues";
 import { IssueBoard } from "@/app/(protected)/[slug]/(dashboard)/_components/issues/issue-board";
+import { ErrorState } from "@/components/error-state";
 
 const UserAssignedIssues = ({
   initialData,
@@ -12,10 +13,22 @@ const UserAssignedIssues = ({
   teamId?: string;
   initialData: IssuesType["data"];
 }) => {
-  const { data: issues, isError, error } = useUserAssignedIssues(initialData);
+  const {
+    data: issues,
+    isError,
+    error,
+    refetch,
+  } = useUserAssignedIssues(initialData);
 
   if (isError) {
-    return <h2>Error : {error.message}</h2>;
+    return (
+      <ErrorState
+        title="Failed to load issues"
+        message={error?.message}
+        onRetry={() => refetch()}
+        homeHref="/"
+      />
+    );
   }
 
   return (

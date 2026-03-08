@@ -10,7 +10,8 @@ export type DisplayProperties = {
   showAssignee: boolean;
   showProject: boolean;
   showLabels: boolean;
-  showDueDate: boolean;
+  showCreatedAt: boolean;
+  showUpdatedAt: boolean;
 };
 
 type IssueViewState = {
@@ -33,7 +34,8 @@ export const useIssueViewStore = create<IssueViewState>()(
         showAssignee: true,
         showProject: true,
         showLabels: true,
-        showDueDate: false,
+        showCreatedAt: true,
+        showUpdatedAt: true,
       },
 
       setViewMode: (viewMode) => set({ viewMode }),

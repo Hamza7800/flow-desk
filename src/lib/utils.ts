@@ -32,5 +32,5 @@ export const wait = async (time: number) => {
 
 export const getInitials = (email: string) => {
   const name = email.split("@")[0];
-  return name?.slice(0, 2).toUpperCase();
+  return name?.slice(0, 1).toUpperCase();
 };
