@@ -33,7 +33,7 @@ const ProjectDetails = ({
   }
 
   return (
-    <div className="scrollbar-thin h-full overflow-y-auto p-2 pb-28">
+    <div className="scrollbar-thin h-screen overflow-y-auto p-2 pb-28">
       <InlineInput
         initialValue={project.name}
         onSave={(val) =>

@@ -1,11 +1,12 @@
 import { useProjectDetails, useUpdateProjects } from "@/hooks/use-projects";
 import type { Priority, Status } from "@/lib/contants";
 import { useParams } from "next/navigation";
-import AssigneeSelect from "../input-fields/assignee-select";
-import PrioritySelect from "../input-fields/priority-select";
-import StatusSelect from "../input-fields/status-select";
-import DateSelect from "../input-fields/date-picker";
-import DeleteProject from "./delete-project";
+import AssigneeSelect from "@/app/(protected)/[slug]/(dashboard)/_components/input-fields/assignee-select";
+import PrioritySelect from "@/app/(protected)/[slug]/(dashboard)/_components/input-fields/priority-select";
+import StatusSelect from "@/app/(protected)/[slug]/(dashboard)/_components/input-fields/status-select";
+import DateSelect from "@/app/(protected)/[slug]/(dashboard)/_components/input-fields/date-picker";
+import DeleteProject from "@/app/(protected)/[slug]/(dashboard)/_components/projects/delete-project";
+import PermissionGate from "@/components/permission-gate";
 
 const ProjectProperties = () => {
   const { projectId } = useParams<{ projectId: string }>();
@@ -104,12 +105,13 @@ const ProjectProperties = () => {
             })
           }
         />
-
-        <DeleteProject
-          orgId={project.organizationId}
-          projectId={project.id}
-          teamId={project?.teamId ?? ""}
-        />
+        <PermissionGate permission="canDeleteProject">
+          <DeleteProject
+            orgId={project.organizationId}
+            projectId={project.id}
+            teamId={project?.teamId ?? ""}
+          />
+        </PermissionGate>
       </div>
     </div>
   );

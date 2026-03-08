@@ -4,6 +4,7 @@ import type z from "zod";
 export type SelectProps = {
   value: string;
   onChange: (value: string) => void;
+  isDisabled?: boolean;
 };
 
 export type InputType = {

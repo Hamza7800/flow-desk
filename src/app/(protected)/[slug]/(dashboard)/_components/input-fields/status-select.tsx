@@ -3,12 +3,13 @@ import type { SelectProps } from "@/lib/types";
 import { Label, ListBox, Select } from "@heroui/react";
 
 // TODO: MAY BE MAKE THIS REUSABLE SELECT
-const StatusSelect = ({ value, onChange }: SelectProps) => {
+const StatusSelect = ({ value, onChange, isDisabled = false }: SelectProps) => {
   const currentStatus = STATUS_OPTIONS.find((s) => s.key === value);
 
   return (
     <Select
       className={"w-full"}
+      isDisabled={isDisabled}
       placeholder="Select Status"
       value={currentStatus?.key}
       onChange={(value) => {

@@ -2,11 +2,16 @@ import { PRIORITY_OPTIONS } from "@/lib/contants";
 import type { SelectProps } from "@/lib/types";
 import { Label, ListBox, Select } from "@heroui/react";
 
-const PrioritySelect = ({ value, onChange }: SelectProps) => {
+const PrioritySelect = ({
+  value,
+  onChange,
+  isDisabled = false,
+}: SelectProps) => {
   const currentStatus = PRIORITY_OPTIONS.find((s) => s.key === value);
 
   return (
     <Select
+      isDisabled={isDisabled}
       placeholder="Priority"
       className={"w-full"}
       value={currentStatus?.key}

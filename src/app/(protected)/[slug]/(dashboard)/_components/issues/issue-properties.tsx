@@ -5,11 +5,13 @@ import PrioritySelect from "../input-fields/priority-select";
 import StatusSelect from "../input-fields/status-select";
 import DeleteIssue from "./delete-issue";
 import { useIssueDetails, useUpdateIssue } from "@/hooks/use-issues";
+import PermissionGate from "@/components/permission-gate";
+import { usePermissions } from "@/hooks/use-permissions";
 
 const IssueProperties = () => {
   const { issueId } = useParams<{ issueId: string }>();
   const { data: issue, isError, error } = useIssueDetails(issueId);
-
+  const { canEditIssue } = usePermissions();
   const updateIssue = useUpdateIssue({ projectId: issue?.projectId });
 
   if (isError) {
@@ -24,6 +26,7 @@ const IssueProperties = () => {
     <div>
       <div className="p-2">
         <PrioritySelect
+          isDisabled={!canEditIssue}
           onChange={(value) =>
             updateIssue.mutate({
               issueId: issue.id,
@@ -34,6 +37,7 @@ const IssueProperties = () => {
           value={issue.priority ?? ""}
         />
         <StatusSelect
+          isDisabled={!canEditIssue}
           onChange={(value) =>
             updateIssue.mutate({
               issueId: issue.id,
@@ -45,6 +49,7 @@ const IssueProperties = () => {
         />
 
         <AssigneeSelect
+          isDisabled={!canEditIssue}
           label="Members"
           value={issue.assignees.map((user) => user.userId) ?? []}
           onChange={(values) =>
@@ -56,11 +61,13 @@ const IssueProperties = () => {
           }
         />
 
-        <DeleteIssue
-          teamId={issue.teamId ?? ""}
-          projectId={issue.projectId ?? ""}
-          issueId={issue.id}
-        />
+        <PermissionGate permission="canDeleteIssue">
+          <DeleteIssue
+            teamId={issue.teamId ?? ""}
+            projectId={issue.projectId ?? ""}
+            issueId={issue.id}
+          />
+        </PermissionGate>
       </div>
     </div>
   );

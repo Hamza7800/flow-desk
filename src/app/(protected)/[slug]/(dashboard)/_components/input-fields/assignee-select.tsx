@@ -19,12 +19,14 @@ type Props = {
   onChange: (values: string[]) => void;
   selection?: "multiple" | "single";
   label: string;
+  isDisabled?: boolean;
 };
 
 const AssigneeSelect = ({
   value,
   label,
   onChange,
+  isDisabled = false,
   selection = "multiple",
 }: Props) => {
   const { org: organization } = useOrganizationContext();
@@ -33,6 +35,7 @@ const AssigneeSelect = ({
 
   return (
     <Select
+      isDisabled={isDisabled}
       placeholder="Select"
       className={"w-full"}
       selectionMode={selection}
