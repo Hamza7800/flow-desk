@@ -112,36 +112,34 @@ const ListCard = ({
 
       <span className="shrink-0 text-sm">{issue.title}</span>
 
-      {!isPlaceholder && (
-        <div className="ml-auto flex items-center justify-end gap-3">
-          {displayProperties.showAssignee && (
-            <AssigneeSelect
-              value={issue.assignees?.map((a) => a.userId) ?? []}
-              onChange={(values) =>
-                updateIssue.mutate({
-                  values: {
-                    assigneeIds: values,
-                  },
-                  teamId: issue.teamId ?? "",
-                  issueId: issue.id,
-                })
-              }
-            />
-          )}
+      <div className="ml-auto flex items-center justify-end gap-3">
+        {displayProperties.showAssignee && (
+          <AssigneeSelect
+            value={issue.assignees?.map((a) => a.userId) ?? []}
+            onChange={(values) =>
+              updateIssue.mutate({
+                values: {
+                  assigneeIds: values,
+                },
+                teamId: issue.teamId ?? "",
+                issueId: issue.id,
+              })
+            }
+          />
+        )}
 
-          {displayProperties.showCreatedAt && (
-            <div>
-              <span>{format(new Date(issue.createdAt), "MMM d")}</span>
-            </div>
-          )}
+        {displayProperties.showCreatedAt && (
+          <div>
+            <span>{format(new Date(issue.createdAt), "MMM d")}</span>
+          </div>
+        )}
 
-          {displayProperties.showUpdatedAt && (
-            <div>
-              <span>{format(new Date(issue.updatedAt), "MMM d")}</span>
-            </div>
-          )}
-        </div>
-      )}
+        {displayProperties.showUpdatedAt && (
+          <div>
+            <span>{format(new Date(issue.updatedAt), "MMM d")}</span>
+          </div>
+        )}
+      </div>
     </Card>
   );
 };

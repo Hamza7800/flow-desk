@@ -6,7 +6,7 @@ import type { IssueContainer } from "@/components/context/issue-dnd-context";
 import { Button } from "@heroui/react";
 
 export const ListView = ({ containers }: { containers: IssueContainer[] }) => (
-  <div className="scrollbar-thin mb-14 h-full overflow-y-auto px-2">
+  <div className="scrollbar-thin h-full overflow-y-auto px-2 pb-10">
     {containers.map((container) => (
       <CollapsibleListGroup key={container.id} container={container} />
     ))}

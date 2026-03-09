@@ -32,7 +32,11 @@ const DeleteIssue = ({
           },
         });
       }}
-      trigger={<Button variant="danger-soft">Delete Issue</Button>}
+      trigger={
+        <Button fullWidth variant="danger-soft">
+          Delete Issue
+        </Button>
+      }
     />
   );
 };

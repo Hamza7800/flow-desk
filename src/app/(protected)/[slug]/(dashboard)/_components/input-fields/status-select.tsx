@@ -14,7 +14,12 @@ const StatusIcon = ({
   </span>
 );
 
-const StatusSelect = ({ value, onChange, isDisabled = false }: SelectProps) => {
+const StatusSelect = ({
+  value,
+  onChange,
+  isDisabled = false,
+  mode = "edit",
+}: SelectProps) => {
   const current =
     STATUS_OPTIONS.find((s) => s.key === value) ?? STATUS_OPTIONS[0];
 
@@ -28,8 +33,9 @@ const StatusSelect = ({ value, onChange, isDisabled = false }: SelectProps) => {
         onChange(value as string);
       }}
     >
-      <Select.Trigger className="flex items-center justify-center rounded-md border-0 bg-transparent hover:bg-zinc-800 data-[pressed]:bg-zinc-800">
+      <Select.Trigger className="flex items-center rounded-md border-0 bg-transparent hover:bg-zinc-800 data-[pressed]:bg-zinc-800">
         <StatusIcon option={current!} />
+        {mode === "create" && <span className="ml-1">{current?.label}</span>}
       </Select.Trigger>
       <Select.Popover
         placement="bottom left"

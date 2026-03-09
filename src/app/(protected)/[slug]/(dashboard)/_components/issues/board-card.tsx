@@ -32,34 +32,40 @@ const BoardCard = ({
   return (
     <Card
       onClick={() => router.push(`/${slug}/issue/${issue.id}`)}
-      className="rounded-lg p-4"
-      variant="secondary"
+      className="gap-1 rounded-lg bg-[#17181b] p-1 px-2"
+      // variant="secondary"
     >
-      {/* Header with icon and priority */}
-      <div className="flex items-start justify-between">
-        {issue.priority === "high" && (
-          <span className="rounded border border-yellow-500/30 bg-yellow-500/20 px-2 py-0.5 text-xs font-semibold text-yellow-400">
-            HP
-          </span>
-        )}
-      </div>
-
-      {/* Task ID and title */}
-      <div className="space-y-1">
+      <div className="flex items-center justify-between">
         <p className="text-xs text-gray-500">{issue.identifier}</p>
-        <h3 className="text-sm font-medium text-white">{issue.title}</h3>
-      </div>
-      {/* <div className="space-y-1">
-            <InlineBlockNote
-              schema={issueSchema.shape.description}
-              initialValue={issue.description ?? ""}
-              onSave={(val) => console.log(val)}
-              debounceMs={700}
-              placeholder="Issue Description"
+        <div className="flex gap-1">
+          <div className="flex items-center justify-between">
+            {issue.priority === "high" && (
+              <span className="rounded border border-yellow-500/30 bg-yellow-500/20 px-2 py-0.5 text-xs font-semibold text-yellow-400">
+                HP
+              </span>
+            )}
+          </div>{" "}
+          {displayProperties.showAssignee && (
+            <AssigneeSelect
+              value={issue.assignees?.map((a) => a.userId) ?? []}
+              onChange={(values) =>
+                updateIssue.mutate({
+                  values: {
+                    assigneeIds: values,
+                  },
+                  teamId: issue.teamId ?? "",
+                  issueId: issue.id,
+                })
+              }
             />
-          </div> */}
+          )}
+        </div>
+      </div>
+      {/* Header with icon and priority */}
 
-      <div className="flex flex-col gap-2 pt-1">
+      <h3 className="text-sm font-medium text-white">{issue.title}</h3>
+
+      <div className="flex">
         {displayProperties.showPriority && (
           <PrioritySelect
             onChange={(value) =>
@@ -102,20 +108,6 @@ const BoardCard = ({
               {l.label.name}
             </span>
           ))} */}
-        {displayProperties.showAssignee && (
-          <AssigneeSelect
-            value={issue.assignees?.map((a) => a.userId) ?? []}
-            onChange={(values) =>
-              updateIssue.mutate({
-                values: {
-                  assigneeIds: values,
-                },
-                teamId: issue.teamId ?? "",
-                issueId: issue.id,
-              })
-            }
-          />
-        )}
 
         {/* {displayProperties.showProject && (
               <ProjectSelect
@@ -135,7 +127,22 @@ const BoardCard = ({
             )} */}
       </div>
 
-      {/* <p className="text-xs text-gray-500">Created {new Date(issue.createdAt)}</p> */}
+      <div className="flex gap-3">
+        {displayProperties.showCreatedAt && (
+          <div>
+            <span className="text-xs">
+              Created {format(new Date(issue.createdAt), "MMM d")}
+            </span>
+          </div>
+        )}
+        {displayProperties.showUpdatedAt && (
+          <div>
+            <span className="text-xs">
+              Updated {format(new Date(issue.updatedAt), "MMM d")}
+            </span>
+          </div>
+        )}
+      </div>
     </Card>
   );
 };

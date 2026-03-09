@@ -1,62 +1,96 @@
 import { useTeamProjects } from "@/hooks/use-projects";
 import type { SelectProps } from "@/lib/types";
 import { Label, ListBox, Select, Spinner } from "@heroui/react";
+import { FolderOpen } from "lucide-react";
 
 interface Props extends SelectProps {
   orgId: string;
   teamId: string;
+  mode?: "create" | "edit";
 }
 
-const ProjectSelect = ({ orgId, teamId, value, onChange }: Props) => {
+const NO_PROJECT = "no-project";
+const ProjectSelect = ({
+  orgId,
+  teamId,
+  value,
+  mode = "edit",
+  onChange,
+}: Props) => {
   const { data: projects, isError, isPending } = useTeamProjects(orgId, teamId);
 
-  if (isPending) {
-    return <Spinner />;
-  }
-
-  if (isError) {
-    return <h2>Unable to get team projects</h2>;
-  }
+  if (isPending) return <Spinner />;
+  if (isError)
+    return <h2 className="text-red-500">Unable to get team projects</h2>;
 
   const currentProject = projects?.find((p) => p.id === value);
 
   return (
     <Select
-      placeholder="Project"
-      value={currentProject?.id}
-      onChange={(value) => {
-        onChange(value as string);
+      value={currentProject?.id ?? NO_PROJECT}
+      aria-label="project"
+      onChange={(key) => {
+        onChange(key === NO_PROJECT ? "" : (key as string));
       }}
     >
-      <Select.Trigger>
-        <Select.Value />
-        <Select.Indicator />
+      <Select.Trigger className="flex items-center justify-center rounded-md border-0 bg-transparent hover:bg-zinc-800 data-[pressed]:bg-zinc-800">
+        <Select.Value>
+          {({ isPlaceholder }) => {
+            if (isPlaceholder || !currentProject) {
+              return (
+                <div className="flex items-center gap-2">
+                  <FolderOpen size={16} />
+                  {mode === "create" && <span>No Project</span>}
+                </div>
+              );
+            }
+            return (
+              <span className="flex items-center gap-2 text-sm">
+                <FolderOpen size={14} />
+                {currentProject.name}
+              </span>
+            );
+          }}
+        </Select.Value>
       </Select.Trigger>
-      <Select.Popover
-        className={"w-full max-w-[300px]"}
-        placement="bottom left"
-      >
+
+      <Select.Popover className="w-full max-w-[300px]" placement="bottom left">
         <ListBox>
-          {projects && projects?.length > 0 ? (
-            projects?.map((project) => (
+          <ListBox.Item
+            key={NO_PROJECT}
+            id={NO_PROJECT}
+            textValue="No Project"
+            className="text-zinc-500 italic"
+          >
+            <span className="flex items-center gap-2">
+              <FolderOpen size={14} />
+              No Project
+            </span>
+            <ListBox.ItemIndicator />
+          </ListBox.Item>
+
+          {projects && projects.length > 0 ? (
+            projects.map((project) => (
               <ListBox.Item
                 key={project.id}
                 id={project.id}
                 textValue={project.name}
               >
-                {project.name}
+                <span className="flex items-center gap-2">
+                  <FolderOpen size={14} />
+                  {project.name}
+                </span>
                 <ListBox.ItemIndicator />
               </ListBox.Item>
             ))
           ) : (
             <ListBox.Item
-              key={"no-project"}
+              key="empty"
               isDisabled
-              id={"no-project"}
-              textValue={"No Projects"}
+              id="empty"
+              textValue="No Projects"
             >
-              No Projects
-              <ListBox.ItemIndicator />
+              No Projects available
             </ListBox.Item>
           )}
         </ListBox>

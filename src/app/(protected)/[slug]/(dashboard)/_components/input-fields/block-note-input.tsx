@@ -38,19 +38,10 @@ const InlineBlockNote = ({
 
   return (
     <div className={`w-full ${className}`}>
-      <Label className="text-xs">{label}</Label>
-      <div
-        className={`rounded-md border p-1 transition-colors ${
-          error
-            ? "border-red-500 bg-red-50/10"
-            : "border-transparent hover:border-gray-200"
-        }`}
-      >
-        <Editor
-          initialContent={initialValue}
-          onChange={(val) => setBlocksJson(val)}
-        />
-      </div>
+      <Editor
+        initialContent={initialValue}
+        onChange={(val) => setBlocksJson(val)}
+      />
       {error && <p className="mt-1 text-xs text-red-500">{error}</p>}
     </div>
   );

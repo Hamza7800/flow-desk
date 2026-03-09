@@ -45,7 +45,7 @@ export function CreateIssueModal({
     mode: "onChange",
     defaultValues: {
       status: "backlog",
-      priority: "no-priority",
+      priority: "low",
       assigneeIds: [],
       labelIds: [],
     },
@@ -73,8 +73,7 @@ export function CreateIssueModal({
       heading="Create Issue"
       triggerText={triggerText}
     >
-      <Form className="flex flex-col gap-6" onSubmit={handleSubmit(onSubmit)}>
-        {/* TITLE */}
+      <Form className="flex flex-col" onSubmit={handleSubmit(onSubmit)}>
         <Controller
           control={control}
           name="title"
@@ -89,7 +88,6 @@ export function CreateIssueModal({
           )}
         />
 
-        {/* DESCRIPTION */}
         <Controller
           control={control}
           name="description"
@@ -104,48 +102,57 @@ export function CreateIssueModal({
           )}
         />
 
-        {/* STATUS DROPDOWN */}
-        <Controller
-          control={control}
-          name="status"
-          render={({ field }) => (
-            <StatusSelect value={field.value} onChange={field.onChange} />
-          )}
-        />
+        <div className="mt-2 flex">
+          <Controller
+            control={control}
+            name="status"
+            render={({ field }) => (
+              <StatusSelect
+                mode="create"
+                value={field.value}
+                onChange={field.onChange}
+              />
+            )}
+          />
 
-        {/* PRIORITY DROPDOWN */}
-        <Controller
-          control={control}
-          name="priority"
-          render={({ field }) => (
-            <PrioritySelect value={field.value} onChange={field.onChange} />
-          )}
-        />
+          <Controller
+            control={control}
+            name="priority"
+            render={({ field }) => (
+              <PrioritySelect
+                mode="create"
+                value={field.value}
+                onChange={field.onChange}
+              />
+            )}
+          />
 
-        <Controller
-          control={control}
-          name="projectId"
-          render={({ field }) => (
-            <ProjectSelect
-              orgId={organization?.id ?? ""}
-              teamId={teamId}
-              value={field.value ?? ""}
-              onChange={field.onChange}
-            />
-          )}
-        />
+          <Controller
+            control={control}
+            name="projectId"
+            render={({ field }) => (
+              <ProjectSelect
+                mode="create"
+                orgId={organization?.id ?? ""}
+                teamId={teamId}
+                value={field.value ?? ""}
+                onChange={field.onChange}
+              />
+            )}
+          />
 
-        <Controller
-          control={control}
-          name="assigneeIds"
-          render={({ field }) => (
-            <AssigneeSelect
-              label="Assignee"
-              value={field.value || []}
-              onChange={field.onChange}
-            />
-          )}
-        />
+          <Controller
+            control={control}
+            name="assigneeIds"
+            render={({ field }) => (
+              <AssigneeSelect
+                mode="create"
+                value={field.value || []}
+                onChange={field.onChange}
+              />
+            )}
+          />
+        </div>
         <Button
           type="submit"
           variant="secondary"

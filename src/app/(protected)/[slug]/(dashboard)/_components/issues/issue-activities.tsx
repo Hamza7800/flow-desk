@@ -47,7 +47,7 @@ export const IssueActivities = ({
             </div>
 
             <div className="flex flex-1 flex-col gap-y-1">
-              <div className="flex items-center gap-x-2 text-sm">
+              <div className="flex items-center gap-x-2 text-xs">
                 <span className="font-medium text-zinc-200">
                   {actor?.user.name || "System"}
                 </span>

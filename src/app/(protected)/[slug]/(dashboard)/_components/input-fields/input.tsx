@@ -1,15 +1,13 @@
 import type { InputType } from "@/lib/types";
-import { Input, Label, TextField } from "@heroui/react";
+import { Input, TextField } from "@heroui/react";
 import { useEffect, useRef, useState } from "react";
 import { useDebounce } from "use-debounce";
-import type z from "zod";
 
 const InlineInput = ({
   initialValue,
   onSave,
   schema,
   placeholder,
-  label,
   className,
   debounceMs = 700,
 }: InputType) => {
@@ -41,10 +39,9 @@ const InlineInput = ({
   }, [debouncedText, initialValue]);
 
   return (
-    <TextField isInvalid={!!error} className={className}>
-      <Label className="text-xs">{label}</Label>
+    <TextField className={className}>
       <Input
-        className={"w-full"}
+        className="w-full border-none bg-transparent px-1 text-xl shadow-none ring-0 outline-none placeholder:text-zinc-500 focus:ring-0 focus:outline-none focus-visible:ring-0"
         value={text}
         onChange={(e) => {
           const val = e.target.value;
@@ -58,7 +55,7 @@ const InlineInput = ({
         }}
         placeholder={placeholder}
       />
-      {error && <p className="mt-1 text-xs text-red-500">{error}</p>}
+      {error && <p className="mb-1 text-xs text-red-500">{error}</p>}
     </TextField>
   );
 };

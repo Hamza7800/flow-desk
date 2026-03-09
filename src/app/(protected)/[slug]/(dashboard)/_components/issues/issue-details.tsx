@@ -15,6 +15,11 @@ import DeleteIssue from "./delete-issue";
 import { issueSchema } from "@/zod-schema/issue-schema";
 import type { project } from "@/server/db/schema";
 import { IssueActivities } from "./issue-activities";
+import { ErrorState } from "@/components/error-state";
+import { TicketX } from "lucide-react";
+import { EmptyState } from "@/components/empty-state";
+import { useParams, useRouter } from "next/navigation";
+import { Separator } from "@heroui/react";
 
 const IssueDetails = ({
   initialData,
@@ -23,24 +28,44 @@ const IssueDetails = ({
   issueId: string;
   initialData: IssueType["data"];
 }) => {
-  const { data: issue, isError, error } = useIssueDetails(issueId, initialData);
+  const router = useRouter();
+  const { slug } = useParams<{ slug: string }>();
+  const {
+    data: issue,
+    isError,
+    error,
+    refetch,
+  } = useIssueDetails(issueId, initialData);
 
   const updateIssue = useUpdateIssue({ projectId: issue?.projectId });
 
   if (isError) {
-    return <h2>Error : {error.message}</h2>;
+    return (
+      <ErrorState
+        title="Failed to load issue"
+        message={error?.message}
+        onRetry={() => refetch()}
+        homeHref="/"
+      />
+    );
   }
 
   if (!issue) {
-    return <h2>No Issue available</h2>;
+    return (
+      <EmptyState
+        icon={TicketX}
+        title="No Issue Found"
+        description="The issue you're looking for doesn't exist."
+        action={{
+          label: "My Issues",
+          onClick: () => router.push(`/${slug}/my-issues/assigned`),
+        }}
+      />
+    );
   }
 
   return (
-    <div className="scrollbar-thin h-screen overflow-y-auto p-2 pb-28">
-      {/* <pre className="max-h-92 overflow-auto rounded bg-zinc-900 p-2 text-zinc-400">
-        {JSON.stringify(issue, null, 2)}
-      </pre> */}
-
+    <div className="scrollbar-thin h-screen overflow-y-auto p-8 py-4 pb-28">
       <InlineInput
         initialValue={issue.title}
         onSave={(value) =>
@@ -64,40 +89,8 @@ const IssueDetails = ({
         }
         schema={issueSchema.shape.description}
       />
-
-      <PrioritySelect
-        onChange={(value) =>
-          updateIssue.mutate({
-            issueId: issue.id,
-            values: { priority: value as Priority },
-            teamId: issue.teamId ?? "",
-          })
-        }
-        value={issue.priority ?? ""}
-      />
-      <StatusSelect
-        onChange={(value) =>
-          updateIssue.mutate({
-            issueId: issue.id,
-            values: { status: value as Status },
-            teamId: issue.teamId ?? "",
-          })
-        }
-        value={issue.status ?? ""}
-      />
-
-      <AssigneeSelect
-        label="Members"
-        value={issue.assignees.map((user) => user.userId) ?? []}
-        onChange={(values) =>
-          updateIssue.mutate({
-            issueId: issue.id,
-            values: { assigneeIds: values },
-            teamId: issue.teamId ?? "",
-          })
-        }
-      />
-
+      <Separator className="my-2" />
+      <h2>Activity</h2>
       <IssueActivities activities={issue.activities} />
     </div>
   );

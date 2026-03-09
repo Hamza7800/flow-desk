@@ -5,6 +5,7 @@ export type SelectProps = {
   value: string;
   onChange: (value: string) => void;
   isDisabled?: boolean;
+  mode?: "create" | "edit";
 };
 
 export type InputType = {

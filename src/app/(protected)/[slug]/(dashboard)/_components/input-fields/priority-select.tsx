@@ -6,6 +6,7 @@ const PrioritySelect = ({
   value,
   onChange,
   isDisabled = false,
+  mode = "edit",
 }: SelectProps) => {
   const current =
     PRIORITY_OPTIONS.find((p) => p.key === value) ?? PRIORITY_OPTIONS[0];
@@ -21,9 +22,10 @@ const PrioritySelect = ({
         onChange(value as string);
       }}
     >
-      <Select.Trigger className="flex items-center justify-center rounded-md border-0 bg-transparent hover:bg-zinc-800 data-[pressed]:bg-zinc-800">
+      <Select.Trigger className="flex items-center rounded-md border-0 bg-transparent hover:bg-zinc-800 data-[pressed]:bg-zinc-800">
         {/* <Select.Value /> */}
         {CurrentIcon && <CurrentIcon className={`h-4 w-4 ${current.color}`} />}
+        {mode === "create" && <span className="ml-1">{current?.label}</span>}
         {/* <Select.Indicator /> */}
       </Select.Trigger>
       <Select.Popover

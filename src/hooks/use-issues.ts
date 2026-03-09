@@ -29,13 +29,13 @@ export const useCreateIssue = (organizationId: string, teamId: string) => {
       return result;
     },
     onSuccess: (data) => {
-      // queryClient.invalidateQueries({ queryKey: ["issues", "list", organizationId] });
-      queryClient.invalidateQueries({
-        queryKey: queryKeys.issues.orgList(organizationId),
-      });
-      queryClient.invalidateQueries({
-        queryKey: queryKeys.issues.byTeam(teamId),
-      });
+      queryClient.invalidateQueries({ queryKey: queryKeys.issues.all });
+      // queryClient.invalidateQueries({
+      //   queryKey: queryKeys.issues.orgList(organizationId),
+      // });
+      // queryClient.invalidateQueries({
+      //   queryKey: queryKeys.issues.byTeam(teamId),
+      // });
       toast.success(data.message);
     },
     onError: (error) => {

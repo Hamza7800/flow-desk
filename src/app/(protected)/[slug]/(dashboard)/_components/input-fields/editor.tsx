@@ -13,7 +13,13 @@ interface EditorProps {
 export default function Editor({ initialContent, onChange }: EditorProps) {
   const editor = useCreateBlockNote({
     initialContent: (() => {
-      if (!initialContent) return undefined;
+      if (!initialContent)
+        return [
+          { type: "paragraph" },
+          { type: "paragraph" },
+          { type: "paragraph" },
+          { type: "paragraph" },
+        ];
 
       try {
         // Try to parse as JSON (new format)

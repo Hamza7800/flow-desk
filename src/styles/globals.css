@@ -105,6 +105,7 @@
     @apply border-border outline-ring/50;
   }
   body {
+    font-family: var(--font-sans);
     background-color: #090909;
   }
 }
@@ -113,7 +114,33 @@
   padding-inline: 2px !important;
 }
 
-/* Optional: If you want to move the text even further left */
 .bn-block-content {
   margin-left: 2px !important;
+  background-color: transparent;
+}
+
+.bn-container,
+.bn-editor {
+  background-color: transparent !important;
+  --bn-colors-editor-background: transparent !important;
+}
+
+.bn-block-content {
+  border: none !important;
+  background-color: transparent !important;
+  margin-left: 2px !important;
+}
+
+.bn-block-outer:hover {
+  border: 0 !important;
+  outline: none !important;
+}
+
+.bn-block-content[data-selected="true"] {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.bn-editor {
+  padding-inline: 2px !important;
 }

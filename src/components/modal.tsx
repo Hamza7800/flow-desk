@@ -22,14 +22,14 @@ const PopupModal = ({
 
       <Modal.Backdrop>
         <Modal.Container>
-          <Modal.Dialog className="sm:max-w-[600px]">
+          <Modal.Dialog className="w-[90%] max-w-[800px]">
             <Modal.CloseTrigger />
 
             <Modal.Header>
               <Modal.Heading>{heading}</Modal.Heading>
             </Modal.Header>
 
-            <Modal.Body className="px-2">{children}</Modal.Body>
+            <Modal.Body className="px-1">{children}</Modal.Body>
           </Modal.Dialog>
         </Modal.Container>
       </Modal.Backdrop>

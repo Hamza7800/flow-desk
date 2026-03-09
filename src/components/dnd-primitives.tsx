@@ -46,8 +46,8 @@ export const DroppableGroup = ({
       className={cn(
         className,
         "min-h-2 transition-colors duration-150",
-        isOver &&
-          "rounded-lg bg-indigo-500/5 ring-1 ring-indigo-100/10 ring-inset",
+        // isOver &&
+        // "rounded-lg bg-indigo-500/5 ring-1 ring-indigo-100/10 ring-inset",
       )}
     >
       <SortableContext
@@ -90,7 +90,7 @@ export const Draggable = ({
       style={{
         transform: CSS.Transform.toString(transform),
         transition,
-        opacity: isDragging ? 0 : 1,
+        opacity: isDragging ? 0.2 : 1,
       }}
       {...attributes}
       {...listeners}
