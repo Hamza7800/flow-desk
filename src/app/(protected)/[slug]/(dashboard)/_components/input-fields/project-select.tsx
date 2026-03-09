@@ -19,9 +19,8 @@ const ProjectSelect = ({
 }: Props) => {
   const { data: projects, isError, isPending } = useTeamProjects(orgId, teamId);
 
-  if (isPending) return <Spinner />;
-  if (isError)
-    return <h2 className="text-red-500">Unable to get team projects</h2>;
+  if (isPending) return null;
+  if (isError) return null;
 
   const currentProject = projects?.find((p) => p.id === value);
 

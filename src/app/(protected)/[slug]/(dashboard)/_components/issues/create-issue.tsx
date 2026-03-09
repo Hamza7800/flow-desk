@@ -14,31 +14,31 @@ import StatusSelect from "../input-fields/status-select";
 import PrioritySelect from "../input-fields/priority-select";
 import AssigneeSelect from "../input-fields/assignee-select";
 import InlineInput from "../input-fields/input";
-import { useTeamProjects } from "@/hooks/use-projects";
 import ProjectSelect from "../input-fields/project-select";
 import InlineBlockNote from "../input-fields/block-note-input";
 
 type Props = {
   teamId: string;
   defaultValues?: Partial<IssueSchemaType>;
-  triggerText?: string;
+  isOpen: boolean;
+  onOpenChange: (isOpen: boolean) => void;
 };
 
 // TODO: ADD LABELS and PROJECTS
 // TODO NEED TO FIX UI AND COMPONENTS
 export function CreateIssueModal({
   teamId,
+  isOpen,
+  onOpenChange,
   defaultValues,
-  triggerText = "Create Issue",
 }: Props) {
-  const [isOpen, setIsOpen] = useState(false);
   const { org: organization } = useOrganizationContext();
   const { mutate, isPending } = useCreateIssue(organization?.id ?? "", teamId);
 
   const {
     control,
     handleSubmit,
-    formState: { isValid },
+    formState: { isValid, errors },
     reset,
   } = useForm<IssueSchemaType>({
     resolver: zodResolver(issueSchema),
@@ -51,6 +51,9 @@ export function CreateIssueModal({
     },
   });
 
+  console.log(isValid);
+  console.log(errors);
+
   useEffect(() => {
     if (defaultValues) {
       reset(defaultValues);
@@ -61,7 +64,7 @@ export function CreateIssueModal({
     mutate(data, {
       onSuccess: () => {
         reset();
-        setIsOpen(false);
+        onOpenChange(false);
       },
     });
   };
@@ -69,9 +72,8 @@ export function CreateIssueModal({
   return (
     <PopupModal
       isOpen={isOpen}
-      onOpenChange={setIsOpen}
+      onOpenChange={onOpenChange}
       heading="Create Issue"
-      triggerText={triggerText}
     >
       <Form className="flex flex-col" onSubmit={handleSubmit(onSubmit)}>
         <Controller
@@ -80,7 +82,7 @@ export function CreateIssueModal({
           render={({ field }) => (
             <InlineInput
               initialValue={field.value}
-              onSave={(val) => field.onChange(val)}
+              onSave={(val) => field.onChange(val.trim())}
               schema={issueSchema.shape.title}
               debounceMs={0}
               placeholder="Issue title"
@@ -129,6 +131,18 @@ export function CreateIssueModal({
 
           <Controller
             control={control}
+            name="assigneeIds"
+            render={({ field }) => (
+              <AssigneeSelect
+                mode="create"
+                value={field.value || []}
+                onChange={field.onChange}
+              />
+            )}
+          />
+
+          <Controller
+            control={control}
             name="projectId"
             render={({ field }) => (
               <ProjectSelect
@@ -140,24 +154,12 @@ export function CreateIssueModal({
               />
             )}
           />
-
-          <Controller
-            control={control}
-            name="assigneeIds"
-            render={({ field }) => (
-              <AssigneeSelect
-                mode="create"
-                value={field.value || []}
-                onChange={field.onChange}
-              />
-            )}
-          />
         </div>
         <Button
           type="submit"
           variant="secondary"
           isPending={isPending}
-          isDisabled={!isValid}
+          isDisabled={!isValid || !!errors.title?.message}
           className="ml-auto"
         >
           {({ isPending }) => (

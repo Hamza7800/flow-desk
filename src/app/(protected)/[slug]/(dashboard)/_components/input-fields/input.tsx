@@ -39,7 +39,7 @@ const InlineInput = ({
   }, [debouncedText, initialValue]);
 
   return (
-    <TextField className={className}>
+    <TextField aria-label="Text Field" className={className}>
       <Input
         className="w-full border-none bg-transparent px-1 text-xl shadow-none ring-0 outline-none placeholder:text-zinc-500 focus:ring-0 focus:outline-none focus-visible:ring-0"
         value={text}

@@ -19,7 +19,11 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html data-theme="dark" lang="en" className={`dark ${inter.variable}`}>
+    <html
+      data-theme="dark"
+      lang="en"
+      className={`dark text-white ${inter.variable}`}
+    >
       <body cz-shortcut-listen="true" className="overflow-hidden">
         <Providers>{children}</Providers>
       </body>

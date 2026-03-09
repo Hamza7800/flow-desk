@@ -3,7 +3,8 @@ import { Draggable, DroppableGroup } from "@/components/dnd-primitives";
 import IssueView from "./issue-view";
 
 import type { IssueContainer } from "@/components/context/issue-dnd-context";
-import { Button } from "@heroui/react";
+import { Button, Card } from "@heroui/react";
+import CreateIssueButton from "./create-issue-button";
 
 export const ListView = ({ containers }: { containers: IssueContainer[] }) => (
   <div className="scrollbar-thin h-full overflow-y-auto px-2 pb-10">
@@ -14,8 +15,6 @@ export const ListView = ({ containers }: { containers: IssueContainer[] }) => (
 );
 
 const CollapsibleListGroup = ({ container }: { container: IssueContainer }) => {
-  // const [collapsed, setCollapsed] = useState(false);
-
   return (
     <div>
       <DroppableGroup
@@ -23,11 +22,9 @@ const CollapsibleListGroup = ({ container }: { container: IssueContainer }) => {
         items={container.items}
         headerOnly
       >
-        <Button
-          variant="tertiary"
-          // isDisabled
-          // onClick={() => setCollapsed((c) => !c)}
-          className="group flex w-full items-center justify-start text-white"
+        <Card
+          variant="default"
+          className="group flex w-full flex-row items-center justify-start p-2 px-4 text-white"
         >
           <span className={cn("text-sm", container.color)}>
             {container.icon}
@@ -38,17 +35,12 @@ const CollapsibleListGroup = ({ container }: { container: IssueContainer }) => {
           <span className="ml-1 text-xs text-zinc-500">
             {container.items.length}
           </span>
-          {/* <ChevronDown
-            size={13}
-            className={cn(
-              "ml-auto text-zinc-600 transition-transform duration-200 group-hover:text-zinc-400",
-              collapsed && "-rotate-90",
-            )}
-          /> */}
-        </Button>
+          <div className="ml-auto">
+            <CreateIssueButton container={container} />
+          </div>
+        </Card>
       </DroppableGroup>
 
-      {/* {!collapsed && ( */}
       <DroppableGroup containerId={container.id} items={container.items}>
         {container.items.map((issue) => (
           <Draggable key={issue.id} id={issue.id}>
@@ -56,7 +48,6 @@ const CollapsibleListGroup = ({ container }: { container: IssueContainer }) => {
           </Draggable>
         ))}
       </DroppableGroup>
-      {/* )} */}
     </div>
   );
 };

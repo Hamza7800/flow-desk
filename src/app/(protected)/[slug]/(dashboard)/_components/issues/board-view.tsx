@@ -11,7 +11,10 @@ import {
   type Priority,
   type Status,
 } from "@/lib/contants";
-import { Card } from "@heroui/react";
+import { Button, Card } from "@heroui/react";
+import { useState } from "react";
+import { PlusIcon } from "lucide-react";
+import CreateIssueButton from "./create-issue-button";
 
 export const BoardView = ({ containers }: { containers: IssueContainer[] }) => (
   <div className="scrollbar-thin flex h-full min-h-0 w-full flex-1 gap-2 overflow-x-auto overflow-y-hidden px-2">
@@ -44,37 +47,18 @@ export const BoardColumnHeader = ({
 }: {
   container: IssueContainer;
 }) => {
-  const { teamId } = useParams<{ teamId: string }>();
-  const { groupBy } = useIssueViewStore();
-
-  const getDefaultValue = () => {
-    switch (groupBy) {
-      case "priority":
-        return {
-          priority: PRIORITY_OPTIONS.find((p) => p.label === container.label)
-            ?.key! as Priority,
-        };
-      case "status":
-        return {
-          status: STATUS_OPTIONS.find((s) => s.label === container.label)
-            ?.key! as Status,
-        };
-    }
-  };
   return (
-    <div className="flex items-center gap-2 p-1">
-      <span className={cn("text-sm", container.color)}>{container.icon}</span>
-      <span className="text-sm font-medium text-zinc-200">
-        {container.label}
-      </span>
-      <span className="ml-auto rounded-full bg-zinc-800/80 px-1.5 py-0.5 text-xs text-zinc-500">
-        {container.items.length}
-      </span>
-      <CreateIssueModal
-        defaultValues={getDefaultValue()}
-        triggerText="+"
-        teamId={teamId}
-      />
-    </div>
+    <>
+      <div className="flex items-center gap-2 p-1">
+        <span className={cn("text-sm", container.color)}>{container.icon}</span>
+        <span className="text-sm font-medium text-zinc-200">
+          {container.label}
+        </span>
+        <span className="ml-auto rounded-full bg-zinc-800/80 px-1.5 py-0.5 text-xs text-zinc-500">
+          {container.items.length}
+        </span>
+        <CreateIssueButton container={container} />
+      </div>
+    </>
   );
 };

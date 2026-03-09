@@ -48,6 +48,7 @@ const DateSelect = ({ value, onChange, label }: DateSelectProps) => {
       className="w-full"
       value={toCalendarDate(value)}
       onChange={handleChange}
+      aria-label="Date select"
     >
       {label && <Label className="text-xs">{label}</Label>}
       <DateField.Group className="flex items-center gap-2 rounded-md border bg-transparent px-2 py-1">

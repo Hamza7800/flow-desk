@@ -5,6 +5,10 @@ import { useTeamIssues } from "@/hooks/use-issues";
 import type { IssuesType } from "@/server-actions/issues";
 import { IssueBoard } from "@/app/(protected)/[slug]/(dashboard)/_components/issues/issue-board";
 import { Separator } from "@heroui/react";
+import { ErrorState } from "@/components/error-state";
+import { useParams, useRouter } from "next/navigation";
+import { EmptyState } from "@/components/empty-state";
+import { TicketX } from "lucide-react";
 
 const TeamIssues = ({
   initialData,
@@ -13,10 +17,38 @@ const TeamIssues = ({
   teamId: string;
   initialData: IssuesType["data"];
 }) => {
-  const { data: issues, isError, error } = useTeamIssues(teamId, initialData);
+  const { slug } = useParams<{ slug: string }>();
+  const router = useRouter();
+  const {
+    data: issues,
+    isError,
+    error,
+    refetch,
+  } = useTeamIssues(teamId, initialData);
 
   if (isError) {
-    return <h2>Error : {error.message}</h2>;
+    return (
+      <ErrorState
+        title="Failed to load issues"
+        message={error?.message}
+        onRetry={() => refetch()}
+        homeHref={`${slug}`}
+      />
+    );
+  }
+
+  if (!issues?.length) {
+    return (
+      <EmptyState
+        icon={TicketX}
+        title="No Issues for team"
+        description="Team have no issues yet."
+        action={{
+          label: "My Issues",
+          onClick: () => router.push(`/${slug}/my-issues/assigned`),
+        }}
+      />
+    );
   }
 
   return (
