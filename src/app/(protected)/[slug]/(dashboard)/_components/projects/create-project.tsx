@@ -20,11 +20,13 @@ import DateSelect from "../input-fields/date-picker";
 
 type Props = {
   teamId: string;
+  isOpen: boolean;
+  onOpenChange: (isOpen: boolean) => void;
 };
 
-export function CreateProjectModal({ teamId }: Props) {
+export function CreateProjectModal({ teamId, isOpen, onOpenChange }: Props) {
   const { org: organization } = useOrganizationContext();
-  const [isOpen, setIsOpen] = useState(false);
+  // const [isOpen, setIsOpen] = useState(false);
   const { mutate, isPending } = useCreateProject(
     organization?.id ?? "",
     teamId,
@@ -52,19 +54,16 @@ export function CreateProjectModal({ teamId }: Props) {
     mutate(data, {
       onSuccess: () => {
         reset();
-        setIsOpen(false);
+        onOpenChange(false);
       },
     });
   };
 
-  console.log(errors);
-
   return (
     <PopupModal
       isOpen={isOpen}
-      onOpenChange={setIsOpen}
+      onOpenChange={onOpenChange}
       heading="Create Project"
-      triggerText="New Project"
     >
       <Form className="flex flex-col gap-6" onSubmit={handleSubmit(onSubmit)}>
         {/* PROJECT NAME */}
@@ -129,7 +128,6 @@ export function CreateProjectModal({ teamId }: Props) {
             render={({ field }) => {
               return (
                 <AssigneeSelect
-                  label="Lead"
                   value={field.value || []}
                   onChange={field.onChange}
                 />
@@ -144,7 +142,6 @@ export function CreateProjectModal({ teamId }: Props) {
             render={({ field }) => {
               return (
                 <AssigneeSelect
-                  label="Members"
                   value={field.value || []}
                   onChange={field.onChange}
                 />

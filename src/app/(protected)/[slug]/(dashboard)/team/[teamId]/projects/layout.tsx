@@ -1,12 +1,12 @@
 import { type ReactNode } from "react";
 import { SiteHeader } from "@/components/site-header";
-import { DisplayControls } from "@/app/(protected)/[slug]/(dashboard)/_components/issues/issues-display-controls";
+import { DisplayControls } from "@/app/(protected)/[slug]/(dashboard)/_components/projects/project-display-controls";
 import { Separator } from "@heroui/react";
 
 export default function Layout({ children }: { children: ReactNode }) {
   return (
     <div className="flex h-full flex-col overflow-hidden">
-      <SiteHeader heading="Team Issues"></SiteHeader>
+      <SiteHeader heading="Team Projects"></SiteHeader>
       <div className="ml-auto p-1">
         <DisplayControls />
       </div>

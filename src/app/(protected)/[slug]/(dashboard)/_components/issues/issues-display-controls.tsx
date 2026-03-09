@@ -58,7 +58,7 @@ export const DisplayControls = () => {
             />
           </div>
           {/* Grouping */}
-          <div className="">
+          <div className="pt-2">
             <p className="mb-2 text-xs text-zinc-500">Grouping</p>
             <div className="flex">
               {GROUPBY_OPTIONS.map((opt) => (
@@ -76,7 +76,7 @@ export const DisplayControls = () => {
 
           {/* Display properties */}
           <div>
-            <p className="mb-2 px-3 text-xs text-zinc-500">Properties</p>
+            <p className="mb-2 py-2 text-xs text-zinc-500">Properties</p>
             <div className="">
               {Object.entries(DISPLAY_PROPERTY_LABELS).map(([key, label]) => (
                 <Checkbox

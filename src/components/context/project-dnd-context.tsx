@@ -263,7 +263,7 @@ export const ProjectDndContext = ({
         }}
       >
         {activeId ? (
-          <div className="scale-[1.02] rotate-[0.5deg] cursor-grabbing rounded-md shadow-2xl ring-1 ring-indigo-500/40">
+          <div className="cursor-grabbing">
             {renderCard(getActiveProject()!)}
           </div>
         ) : null}

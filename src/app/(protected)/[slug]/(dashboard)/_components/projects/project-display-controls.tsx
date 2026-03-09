@@ -2,6 +2,7 @@
 import { useProjectViewStore } from "@/store/project-view-store";
 import { Dropdown, Button, Label, Checkbox } from "@heroui/react";
 import { LayoutList, LayoutGrid, Settings2 } from "lucide-react";
+import ViewChangeButton from "../view-change-button";
 
 const DISPLAY_PROPERTY_LABELS = {
   showStatus: "Status",
@@ -9,6 +10,8 @@ const DISPLAY_PROPERTY_LABELS = {
   showAssignee: "Assignee",
   showLead: "Lead",
   showMembers: "Members",
+  showCreatedAt: "Created",
+  showUpdatedAt: "Updated",
 } as const;
 
 const GROUPBY_OPTIONS = [
@@ -27,35 +30,36 @@ export const DisplayControls = () => {
   } = useProjectViewStore();
 
   return (
-    <div className="flex items-center gap-2">
-      {/* View mode toggle */}
-      <div className="flex gap-2">
-        <Button
-          onClick={() => setViewMode("list")}
-          variant={viewMode === "list" ? "danger" : "ghost"}
-        >
-          <LayoutList size={16} />
-        </Button>
-        <Button
-          onClick={() => setViewMode("board")}
-          variant={viewMode === "board" ? "danger" : "ghost"}
-        >
-          <LayoutGrid size={16} />
-        </Button>
-      </div>
-
+    <div className="flex">
       {/* Display options popover */}
       <Dropdown>
-        <Button variant="ghost" size="sm" className="gap-1.5">
-          <Settings2 size={14} />
+        <Button variant="ghost" size="sm">
+          <Settings2 />
           Display
         </Button>
 
-        <Dropdown.Popover className="w-64 space-y-4">
+        <Dropdown.Popover className="w-full max-w-[300px] overflow-hidden p-2">
+          <div className="flex">
+            <ViewChangeButton
+              icon={<LayoutList />}
+              label="List"
+              mode="list"
+              currentMode={viewMode}
+              setMode={setViewMode}
+            />
+
+            <ViewChangeButton
+              icon={<LayoutGrid />}
+              label="Board"
+              mode="board"
+              currentMode={viewMode}
+              setMode={setViewMode}
+            />
+          </div>
           {/* Grouping */}
-          <div className="p-3">
+          <div className="pt-2">
             <p className="mb-2 text-xs text-zinc-500">Grouping</p>
-            <div className="flex gap-1">
+            <div className="flex">
               {GROUPBY_OPTIONS.map((opt) => (
                 <Button
                   fullWidth
@@ -71,7 +75,7 @@ export const DisplayControls = () => {
 
           {/* Display properties */}
           <div>
-            <p className="mb-2 px-3 text-xs text-zinc-500">Properties</p>
+            <p className="mb-2 pt-2 text-xs text-zinc-500">Properties</p>
             <div className="">
               {Object.entries(DISPLAY_PROPERTY_LABELS).map(([key, label]) => (
                 <Checkbox

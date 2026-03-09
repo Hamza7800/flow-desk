@@ -9,6 +9,8 @@ export type DisplayProperties = {
   showPriority: boolean;
   showLead: boolean;
   showMembers: boolean;
+  showCreatedAt: boolean;
+  showUpdatedAt: boolean;
 };
 
 type ProjectViewState = {
@@ -30,6 +32,8 @@ export const useProjectViewStore = create<ProjectViewState>()(
         showPriority: true,
         showLead: true,
         showMembers: true,
+        showCreatedAt: true,
+        showUpdatedAt: true,
       },
 
       setViewMode: (viewMode) => set({ viewMode }),

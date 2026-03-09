@@ -13,12 +13,12 @@ export const ProjectBoard = ({ projects }: Props) => {
   const { viewMode } = useProjectViewStore();
 
   return (
-    <div className="flex h-[81vh] flex-col select-none">
+    <div className="flex h-full min-h-0 flex-1 flex-col select-none">
       <ProjectDndContext
         projects={projects}
         renderCard={(project) => (
           <div className="pointer-events-none">
-            <ProjectView project={project} />
+            <ProjectView project={project} isPlaceholder />
           </div>
         )}
       >

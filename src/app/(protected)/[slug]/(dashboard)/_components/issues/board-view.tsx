@@ -2,19 +2,8 @@ import { cn } from "@/lib/utils";
 import { Draggable, DroppableGroup } from "@/components/dnd-primitives";
 import IssueView from "./issue-view";
 import type { IssueContainer } from "@/components/context/issue-dnd-context";
-import { CreateIssueModal } from "./create-issue";
-import { useParams } from "next/navigation";
-import { useIssueViewStore } from "@/store/issue-view-store";
-import {
-  PRIORITY_OPTIONS,
-  STATUS_OPTIONS,
-  type Priority,
-  type Status,
-} from "@/lib/contants";
-import { Button, Card } from "@heroui/react";
-import { useState } from "react";
-import { PlusIcon } from "lucide-react";
 import CreateIssueButton from "./create-issue-button";
+import { Card } from "@heroui/react";
 
 export const BoardView = ({ containers }: { containers: IssueContainer[] }) => (
   <div className="scrollbar-thin flex h-full min-h-0 w-full flex-1 gap-2 overflow-x-auto overflow-y-hidden px-2">

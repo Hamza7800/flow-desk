@@ -32,7 +32,7 @@ const TeamIssues = ({
         title="Failed to load issues"
         message={error?.message}
         onRetry={() => refetch()}
-        homeHref={`${slug}`}
+        homeHref={`/${slug}`}
       />
     );
   }
