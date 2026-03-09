@@ -7,6 +7,7 @@ import StatusSelect from "@/app/(protected)/[slug]/(dashboard)/_components/input
 import DateSelect from "@/app/(protected)/[slug]/(dashboard)/_components/input-fields/date-picker";
 import DeleteProject from "@/app/(protected)/[slug]/(dashboard)/_components/projects/delete-project";
 import PermissionGate from "@/components/permission-gate";
+import { Label, Separator } from "@heroui/react";
 
 const ProjectProperties = () => {
   const { projectId } = useParams<{ projectId: string }>();
@@ -23,96 +24,129 @@ const ProjectProperties = () => {
   }
 
   return (
-    <div>
-      <div className="p-2">
-        <PrioritySelect
-          onChange={(value) =>
-            updateProject.mutate({
-              values: {
-                priority: value as Priority,
-              },
-              teamId: project.teamId ?? "",
-              projectId: project.id,
-            })
-          }
-          value={project.priority ?? ""}
-        />
-        <StatusSelect
-          onChange={(value) =>
-            updateProject.mutate({
-              values: {
-                status: value as Status,
-              },
-              teamId: project.teamId ?? "",
-              projectId: project.id,
-            })
-          }
-          value={project.status ?? ""}
-        />
-        <AssigneeSelect
-          label="Lead"
-          value={[project.leadId ?? ""]}
-          onChange={(values) =>
-            updateProject.mutate({
-              values: {
-                leadId: values,
-              },
-              teamId: project.teamId ?? "",
-              projectId: project.id,
-            })
-          }
-        />
-
-        {/* Project Members */}
-        <AssigneeSelect
-          label="Members"
-          value={project.members.map((user) => user.userId) ?? []}
-          onChange={(values) =>
-            updateProject.mutate({
-              values: {
-                members: values,
-              },
-              teamId: project.teamId ?? "",
-              projectId: project.id,
-            })
-          }
-        />
-
-        <DateSelect
-          label="Start Date"
-          value={project.startDate}
-          onChange={(value) =>
-            updateProject.mutate({
-              values: {
-                startDate: value,
-              },
-              teamId: project.teamId ?? "",
-              projectId: project.id,
-            })
-          }
-        />
-
-        <DateSelect
-          label="End Date"
-          value={project.endDate}
-          onChange={(value) =>
-            updateProject.mutate({
-              values: {
-                endDate: value,
-              },
-              teamId: project.teamId ?? "",
-              projectId: project.id,
-            })
-          }
-        />
-        <PermissionGate permission="canDeleteProject">
-          <DeleteProject
-            orgId={project.organizationId}
-            projectId={project.id}
-            teamId={project?.teamId ?? ""}
+    <div className="space-y-2 p-1">
+      <div className="flex items-center gap-4">
+        <Label className="w-[100px]">Priority</Label>
+        <div className="w-full">
+          <PrioritySelect
+            mode="create"
+            onChange={(value) =>
+              updateProject.mutate({
+                values: {
+                  priority: value as Priority,
+                },
+                teamId: project.teamId ?? "",
+                projectId: project.id,
+              })
+            }
+            value={project.priority ?? ""}
           />
-        </PermissionGate>
+        </div>
       </div>
+
+      <div className="flex items-center gap-4">
+        <Label className="w-[100px]">Status</Label>
+        <div className="w-full">
+          <StatusSelect
+            mode="create"
+            onChange={(value) =>
+              updateProject.mutate({
+                values: {
+                  status: value as Status,
+                },
+                teamId: project.teamId ?? "",
+                projectId: project.id,
+              })
+            }
+            value={project.status ?? ""}
+          />
+        </div>
+      </div>
+
+      <div className="flex items-center gap-4">
+        <Label className="w-[100px]">Lead</Label>
+        <div className="w-full">
+          <AssigneeSelect
+            mode="create"
+            value={[project.leadId ?? ""]}
+            onChange={(values) =>
+              updateProject.mutate({
+                values: {
+                  leadId: values,
+                },
+                teamId: project.teamId ?? "",
+                projectId: project.id,
+              })
+            }
+          />
+        </div>
+      </div>
+
+      <div className="flex items-center gap-4">
+        <Label className="w-[100px]">Members</Label>
+        <div className="w-full">
+          <AssigneeSelect
+            mode="create"
+            selection="multiple"
+            value={project.members.map((user) => user.userId) ?? []}
+            onChange={(values) =>
+              updateProject.mutate({
+                values: {
+                  members: values,
+                },
+                teamId: project.teamId ?? "",
+                projectId: project.id,
+              })
+            }
+          />
+        </div>
+      </div>
+
+      <div className="flex items-center gap-4">
+        <Label className="w-[100px]">Start Date</Label>
+        <div className="w-full">
+          <DateSelect
+            value={project.startDate}
+            onChange={(value) =>
+              updateProject.mutate({
+                values: {
+                  startDate: value,
+                },
+                teamId: project.teamId ?? "",
+                projectId: project.id,
+              })
+            }
+          />
+        </div>
+      </div>
+
+      <div className="flex items-center gap-4">
+        <Label className="w-[100px]">End Date</Label>
+        <div className="w-full">
+          <DateSelect
+            value={project.endDate}
+            onChange={(value) =>
+              updateProject.mutate({
+                values: {
+                  endDate: value,
+                },
+                teamId: project.teamId ?? "",
+                projectId: project.id,
+              })
+            }
+          />
+        </div>
+      </div>
+
+      <Separator className="my-4 mb-2" />
+
+      <PermissionGate permission="canDeleteProject">
+        <DeleteProject
+          orgId={project.organizationId}
+          projectId={project.id}
+          teamId={project?.teamId ?? ""}
+        />
+      </PermissionGate>
     </div>
   );
 };

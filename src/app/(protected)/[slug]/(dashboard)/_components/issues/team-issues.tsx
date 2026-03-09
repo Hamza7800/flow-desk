@@ -53,7 +53,7 @@ const TeamIssues = ({
 
   return (
     <div className="relative min-h-0 w-full flex-1">
-      <div className="absolute inset-0 flex flex-col">
+      <div className="absolute inset-0 flex flex-col pt-2">
         <IssueBoard issues={issues ?? []} />
       </div>
     </div>

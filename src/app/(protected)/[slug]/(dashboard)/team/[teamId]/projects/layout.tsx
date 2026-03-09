@@ -6,11 +6,11 @@ import { Separator } from "@heroui/react";
 export default function Layout({ children }: { children: ReactNode }) {
   return (
     <div className="flex h-full flex-col overflow-hidden">
-      <SiteHeader heading="Team Projects"></SiteHeader>
-      <div className="ml-auto p-1">
-        <DisplayControls />
-      </div>
-      <Separator className="mb-2" />
+      <SiteHeader heading="Team Projects">
+        <div className="pr-2">
+          <DisplayControls />
+        </div>
+      </SiteHeader>
       <div className="flex min-h-0 flex-1">
         <div className="flex h-full min-h-0 flex-1 flex-col overflow-hidden">
           {children}

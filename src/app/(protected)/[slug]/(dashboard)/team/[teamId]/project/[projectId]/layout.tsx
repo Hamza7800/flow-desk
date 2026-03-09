@@ -2,12 +2,13 @@
 
 import { useState, type ReactNode } from "react";
 import { cn } from "@/lib/utils";
-import { DetailsSidebarContent } from "../../../../_components/details-sidebar";
+import { DetailsSidebarContent } from "@/app/(protected)/[slug]/(dashboard)/_components/details-sidebar";
 import { SiteHeader } from "@/components/site-header";
 import { Button, Chip, Separator } from "@heroui/react";
 import { SidebarIcon } from "lucide-react";
 import Link from "next/link";
 import { useParams } from "next/navigation";
+import { DisplayControls } from "@/app/(protected)/[slug]/(dashboard)/_components/issues/issues-display-controls";
 
 export default function DetailsLayout({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(true);
@@ -41,7 +42,7 @@ export default function DetailsLayout({ children }: { children: ReactNode }) {
               <Chip>Issues</Chip>
             </Link>
           </div>
-          {/* <DisplayControls /> */}
+          <DisplayControls />
         </div>
         <Separator />
       </div>

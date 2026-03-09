@@ -1,6 +1,8 @@
 import { Suspense } from "react";
 import { getProject } from "@/server-actions/projects";
 import ProjectDetails from "@/app/(protected)/[slug]/(dashboard)/_components/projects/project-details";
+import { LoadingState } from "@/components/loading-state";
+import { ErrorState } from "@/components/error-state";
 
 type Props = {
   params: Promise<{ projectId: string }>;
@@ -15,7 +17,7 @@ const Content = async ({ projectId }: { projectId: string }) => {
 
     return <ProjectDetails projectId={projectId} initialData={project.data} />;
   } catch (error: any) {
-    return <h2>No Project: {error.message}</h2>;
+    return <ErrorState title="No Project" message={error.message} />;
   }
 };
 
@@ -23,7 +25,7 @@ const ProjectDetailsPage = async ({ params }: Props) => {
   const { projectId } = await params;
 
   return (
-    <Suspense fallback={<h2>Loading Project....</h2>}>
+    <Suspense fallback={<LoadingState label="Loading Project" />}>
       <Content projectId={projectId} />
     </Suspense>
   );

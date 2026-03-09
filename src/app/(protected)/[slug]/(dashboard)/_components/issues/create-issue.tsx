@@ -46,13 +46,11 @@ export function CreateIssueModal({
     defaultValues: {
       status: "backlog",
       priority: "low",
+      projectId: "",
       assigneeIds: [],
       labelIds: [],
     },
   });
-
-  console.log(isValid);
-  console.log(errors);
 
   useEffect(() => {
     if (defaultValues) {

@@ -30,12 +30,6 @@ export const useCreateIssue = (organizationId: string, teamId: string) => {
     },
     onSuccess: (data) => {
       queryClient.invalidateQueries({ queryKey: queryKeys.issues.all });
-      // queryClient.invalidateQueries({
-      //   queryKey: queryKeys.issues.orgList(organizationId),
-      // });
-      // queryClient.invalidateQueries({
-      //   queryKey: queryKeys.issues.byTeam(teamId),
-      // });
       toast.success(data.message);
     },
     onError: (error) => {
@@ -53,7 +47,6 @@ export const useOrgIssues = (orgId: string | undefined) => {
 
       return result.data;
     },
-    enabled: !!orgId,
   });
 };
 
@@ -69,7 +62,6 @@ export const useIssueDetails = (
 
       return result.data;
     },
-    enabled: !!issueId,
     initialData,
   });
 };
@@ -87,7 +79,6 @@ export const useTeamIssues = (
       return result.data;
     },
     initialData,
-    enabled: !!teamId,
   });
 };
 
@@ -105,7 +96,6 @@ export const useProjectIssues = (
       return result.data;
     },
     initialData,
-    enabled: !!teamId,
   });
 };
 

@@ -15,7 +15,10 @@ import { CreateIssueModal } from "./create-issue";
 const CreateIssueButton = ({ container }: { container: IssueContainer }) => {
   const [isOpen, setIsOpen] = useState(false);
 
-  const { teamId } = useParams<{ teamId: string }>();
+  const { teamId, projectId } = useParams<{
+    teamId: string;
+    projectId?: string;
+  }>();
   const { groupBy } = useIssueViewStore();
 
   const getDefaultValue = () => {
@@ -60,7 +63,10 @@ const CreateIssueButton = ({ container }: { container: IssueContainer }) => {
       <CreateIssueModal
         isOpen={isOpen}
         onOpenChange={setIsOpen}
-        defaultValues={getDefaultValue()}
+        defaultValues={{
+          ...getDefaultValue(),
+          projectId,
+        }}
         teamId={teamId}
       />
     </>

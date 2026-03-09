@@ -14,7 +14,11 @@ const MyIssuesLayout = async ({
   const { slug } = await params;
   return (
     <div className="flex h-full flex-col overflow-hidden">
-      <SiteHeader heading="My Issues"></SiteHeader>
+      <SiteHeader heading="My Issues">
+        <div className="pr-2">
+          <DisplayControls />
+        </div>
+      </SiteHeader>
       <div className="shrink-0 gap-2">
         <div className="flex items-center justify-between p-1">
           <div className="flex">
@@ -25,7 +29,6 @@ const MyIssuesLayout = async ({
               <Chip>Created</Chip>
             </Link>
           </div>
-          <DisplayControls />
         </div>
         <Separator />
       </div>

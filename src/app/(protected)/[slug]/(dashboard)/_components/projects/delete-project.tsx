@@ -26,7 +26,11 @@ const DeleteProject = ({
           },
         });
       }}
-      trigger={<Button variant="danger-soft">Delete Team</Button>}
+      trigger={
+        <Button fullWidth variant="danger-soft">
+          Delete Team
+        </Button>
+      }
     />
   );
 };

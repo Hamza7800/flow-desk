@@ -85,20 +85,18 @@ export const getIssues = async (teamId?: string, projectId?: string) => {
       filters.push(eq(issue.projectId, projectId));
     }
 
-    let isMember;
-    if (teamId) {
-      isMember = await isTeamMember(userId, teamId);
-    }
+    // let isMember;
+    // if (teamId) {
+    //   isMember = await isTeamMember(userId, teamId);
+    // }
 
-    console.log(isMember);
-
-    if (!isMember) {
-      return {
-        success: false,
-        data: null,
-        message: "You are not member of this team",
-      };
-    }
+    // if (!isMember) {
+    //   return {
+    //     success: false,
+    //     data: null,
+    //     message: "You are not member of this team",
+    //   };
+    // }
 
     const issues = await db.query.issue.findMany({
       where: and(...filters),

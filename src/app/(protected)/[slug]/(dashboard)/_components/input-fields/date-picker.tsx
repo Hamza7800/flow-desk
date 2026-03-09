@@ -12,10 +12,9 @@ import { format } from "date-fns";
 type DateSelectProps = {
   value?: string | Date | null;
   onChange: (date: string | undefined) => void;
-  label?: string;
 };
 
-const DateSelect = ({ value, onChange, label }: DateSelectProps) => {
+const DateSelect = ({ value, onChange }: DateSelectProps) => {
   const toCalendarDate = (val?: string | Date | null): CalendarDate | null => {
     if (!val) return null;
     try {
@@ -50,7 +49,6 @@ const DateSelect = ({ value, onChange, label }: DateSelectProps) => {
       onChange={handleChange}
       aria-label="Date select"
     >
-      {label && <Label className="text-xs">{label}</Label>}
       <DateField.Group className="flex items-center gap-2 rounded-md border bg-transparent px-2 py-1">
         <DateField.Input className="flex-1 text-sm outline-none">
           {(segment) => <DateField.Segment segment={segment} />}
@@ -62,11 +60,8 @@ const DateSelect = ({ value, onChange, label }: DateSelectProps) => {
         </DateField.Suffix>
       </DateField.Group>
 
-      <DatePicker.Popover>
-        <Calendar
-          aria-label="Choose date"
-          className="rounded-lg border bg-white p-4 shadow-xl dark:bg-zinc-950"
-        >
+      <DatePicker.Popover placement="bottom left" className={"min-w-[250px]"}>
+        <Calendar aria-label="Choose date" className="w-full rounded-lg">
           <Calendar.Header className="flex items-center justify-between pb-4">
             <Calendar.YearPickerTrigger className="flex items-center gap-1 font-medium">
               <Calendar.YearPickerTriggerHeading />
