@@ -1,6 +1,6 @@
 import { STATUS_OPTIONS } from "@/lib/contants";
 import type { SelectProps } from "@/lib/types";
-import { Label, ListBox, Select } from "@heroui/react";
+import { ListBox, Select } from "@heroui/react";
 
 const StatusIcon = ({
   option,

@@ -59,6 +59,7 @@ const SignUser = () => {
         router.push("/");
         setIsSubmitting(false);
         reset();
+        // TODO: REMOVE THIS
         return `Welcome back! ${data.user.name}`;
       },
       error: (err) => {

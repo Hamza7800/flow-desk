@@ -3,7 +3,6 @@ import { useEffect, useRef, useState } from "react";
 import { useDebounce } from "use-debounce";
 import Editor from "./editor";
 import type { InputType } from "@/lib/types";
-import { Label } from "@heroui/react";
 
 const InlineBlockNote = ({
   initialValue,

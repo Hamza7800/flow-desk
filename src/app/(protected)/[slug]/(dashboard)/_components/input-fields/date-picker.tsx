@@ -1,6 +1,6 @@
 "use client";
 
-import { Calendar, DateField, DatePicker, Label } from "@heroui/react";
+import { Calendar, DateField, DatePicker } from "@heroui/react";
 import type { DateValue } from "@heroui/react";
 import {
   parseDate,

@@ -1,6 +1,6 @@
 import { useTeamProjects } from "@/hooks/use-projects";
 import type { SelectProps } from "@/lib/types";
-import { Label, ListBox, Select, Spinner } from "@heroui/react";
+import { ListBox, Select, Spinner } from "@heroui/react";
 import { FolderOpen } from "lucide-react";
 
 interface Props extends SelectProps {

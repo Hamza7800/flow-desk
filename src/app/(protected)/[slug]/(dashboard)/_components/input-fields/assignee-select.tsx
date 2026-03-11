@@ -8,7 +8,6 @@ import {
   Select,
   type Key,
 } from "@heroui/react";
-import { index } from "drizzle-orm/gel-core";
 import { UserRound } from "lucide-react";
 import { useState } from "react";
 

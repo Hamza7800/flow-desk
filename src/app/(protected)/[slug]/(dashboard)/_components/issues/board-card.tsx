@@ -5,12 +5,8 @@ import PrioritySelect from "../input-fields/priority-select";
 import StatusSelect from "../input-fields/status-select";
 import AssigneeSelect from "../input-fields/assignee-select";
 import type { Priority, Status } from "@/lib/contants";
-import { MoreHorizontal } from "lucide-react";
 import { Card } from "@heroui/react";
 import { useParams, useRouter } from "next/navigation";
-import ProjectSelect from "../input-fields/project-select";
-import InlineBlockNote from "../input-fields/block-note-input";
-import { issueSchema } from "@/zod-schema/issue-schema";
 import { format } from "date-fns";
 
 const BoardCard = ({
