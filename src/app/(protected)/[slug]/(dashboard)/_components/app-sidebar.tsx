@@ -6,14 +6,20 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
-import { Accordion, Button } from "@heroui/react";
+import { Accordion } from "@heroui/react";
 import { OrganizationSwitcher } from "@/components/organization-switcher";
 import { LinkButton } from "@/components/link-button";
 import type { ComponentProps } from "react";
 import { ChevronDown } from "@gravity-ui/icons";
 import UserTeams from "./teams/user-teams";
+import {
+  Layers2Icon,
+  Settings,
+  SettingsIcon,
+  UserSquare2,
+  UsersRoundIcon,
+} from "lucide-react";
 
-// This is sample data.
 const data = {
   navMain: [
     {
@@ -22,10 +28,12 @@ const data = {
         {
           title: "Members",
           url: "/members",
+          icon: <UsersRoundIcon size={14} />,
         },
         {
           title: "Teams",
           url: "/teams",
+          icon: <UserSquare2 size={14} />,
         },
       ],
     },
@@ -45,11 +53,11 @@ export function AppSidebar({ slug, ...props }: ComponentProps<typeof Sidebar>) {
           <SidebarMenuItem>
             <LinkButton
               variant="ghost"
-              className={"justify-start pl-4.5 text-left shadow-none"}
+              className={"justify-start gap-3 pl-4.5 text-left shadow-none"}
               fullWidth
               href={`/${slug}/my-issues/assigned`}
             >
-              My Issues
+              <Layers2Icon size={14} /> <span> My Issues</span>
             </LinkButton>
           </SidebarMenuItem>
         </SidebarMenu>
@@ -72,13 +80,13 @@ export function AppSidebar({ slug, ...props }: ComponentProps<typeof Sidebar>) {
               <Accordion.Panel className={""}>
                 {item.items.map((item) => (
                   <LinkButton
-                    className={"justify-start text-left shadow-none"}
+                    className={"justify-start gap-3 text-left shadow-none"}
                     fullWidth
                     variant="ghost"
                     key={item.title}
                     href={`/${slug}/${item.url}`}
                   >
-                    {item.title}
+                    {item.icon} {item.title}
                   </LinkButton>
                 ))}
               </Accordion.Panel>
@@ -92,11 +100,12 @@ export function AppSidebar({ slug, ...props }: ComponentProps<typeof Sidebar>) {
           <SidebarMenuItem>
             <LinkButton
               variant="ghost"
-              className={"justify-start pl-4.5 text-left shadow-none"}
+              className={"justify-start gap-3 pl-4.5 text-left shadow-none"}
               fullWidth
               href={`/${slug}/settings/account/profile`}
             >
-              Settings
+              <SettingsIcon size={14} />
+              <span> Settings</span>
             </LinkButton>
           </SidebarMenuItem>
         </SidebarMenu>

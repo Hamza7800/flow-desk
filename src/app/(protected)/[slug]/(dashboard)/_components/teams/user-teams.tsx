@@ -4,12 +4,13 @@ import { useOrganizationContext } from "@/components/context/organization-client
 import { LinkButton } from "@/components/link-button";
 import { useUserTeams } from "@/hooks/use-teams";
 import { ChevronDown } from "@gravity-ui/icons";
-import { Accordion, Spinner } from "@heroui/react";
+import { Accordion, ErrorMessage, Spinner } from "@heroui/react";
+import { BoxIcon, Layers2Icon, UserSquare2 } from "lucide-react";
 import { useParams } from "next/navigation";
 
 const items = [
-  { title: "Projects", url: "projects" },
-  { title: "Issues", url: "issues" },
+  { title: "Projects", url: "projects", icon: <BoxIcon size={14} /> },
+  { title: "Issues", url: "issues", icon: <Layers2Icon size={14} /> },
 ];
 
 const UserTeams = () => {
@@ -27,7 +28,9 @@ const UserTeams = () => {
 
   if (isError) {
     return (
-      <p className="px-4 py-2 text-sm text-slate-400">Failed to load teams</p>
+      <ErrorMessage className="px-4 py-2 text-sm">
+        Failed to load teams
+      </ErrorMessage>
     );
   }
 
@@ -57,7 +60,9 @@ const UserTeams = () => {
                   <Accordion.Item id={team.id}>
                     <Accordion.Heading>
                       <Accordion.Trigger className="rounded-md px-2 py-1 text-sm">
-                        {team.name}
+                        <div className="flex items-center gap-2">
+                          <UserSquare2 size={16} /> <span>{team.name}</span>
+                        </div>
                         <Accordion.Indicator>
                           <ChevronDown />
                         </Accordion.Indicator>
@@ -74,7 +79,7 @@ const UserTeams = () => {
                             variant="ghost"
                             className="justify-start text-left text-sm shadow-none"
                           >
-                            {item.title}
+                            {item.icon} {item.title}
                           </LinkButton>
                         ))}
                       </div>
