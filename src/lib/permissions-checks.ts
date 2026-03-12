@@ -39,7 +39,6 @@ export const isTeamMember = async (userId: string, teamId: string) => {
     columns: { id: true },
   });
 
-  console.log(result);
   return !!result;
 };
 

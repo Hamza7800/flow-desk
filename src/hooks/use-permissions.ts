@@ -1,5 +1,6 @@
 import { useOrganizationContext } from "@/components/context/organization-client-context";
 import { authClient } from "@/server/better-auth/client";
+import { useCurrentMemberRole } from "./use-member-role";
 
 type Role = "owner" | "admin" | "member";
 
@@ -13,14 +14,30 @@ const hasRole = (userRole: Role, requiredRole: Role): boolean => {
   return ROLE_HIERARCHY[userRole] >= ROLE_HIERARCHY[requiredRole];
 };
 
-export const usePermissions = () => {
+type PermissionsOptions = {
+  projectLead?: boolean;
+  projectMember?: boolean;
+  teamMember?: boolean;
+  resourceOwnerId?: string;
+};
+
+export const usePermissions = (opts: PermissionsOptions = {}) => {
   const { org } = useOrganizationContext();
   const { data: session } = authClient.useSession();
+  const { data: userRole } = useCurrentMemberRole();
+
   const currentUserId = session?.user?.id;
+  const role = (userRole ?? "member") as Role;
 
-  const currentMember = org?.members?.find((m) => m.userId === currentUserId);
+  const {
+    projectLead = false,
+    projectMember = false,
+    teamMember = false,
+    resourceOwnerId,
+  } = opts;
 
-  const role = (currentMember?.role ?? "member") as Role;
+  const isResourceOwner =
+    !!resourceOwnerId && resourceOwnerId === currentUserId;
 
   return {
     role,
@@ -28,17 +45,23 @@ export const usePermissions = () => {
     isAdmin: hasRole(role, "admin"),
     isMember: hasRole(role, "member"),
 
+    isProjectLead: projectLead,
+    isProjectMember: projectMember,
+    isTeamMember: teamMember,
+    isResourceOwner,
+
     canCreateIssue: hasRole(role, "member"),
-    canEditIssue: hasRole(role, "member"),
-    canDeleteIssue: hasRole(role, "admin"),
+    canEditIssue: hasRole(role, "member") || isResourceOwner,
+    canDeleteIssue: hasRole(role, "admin") || isResourceOwner,
 
     canCreateProject: hasRole(role, "member"),
-    canArchiveProject: hasRole(role, "admin"),
+    canArchiveProject: hasRole(role, "admin") || projectLead,
     canDeleteProject: hasRole(role, "admin"),
-    canManageProjectMembers: hasRole(role, "admin"),
+    canManageProjectMembers: hasRole(role, "admin") || projectLead,
 
     canCreateTeam: hasRole(role, "admin"),
     canDeleteTeam: hasRole(role, "admin"),
+    canEditTeam: hasRole(role, "admin"),
     canManageTeamMembers: hasRole(role, "admin"),
 
     canInviteMembers: hasRole(role, "admin"),

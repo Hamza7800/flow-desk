@@ -90,7 +90,7 @@ export const useUpdateProjects = (orgId: string) => {
 
       toast.danger(error.message);
     },
-    onSuccess: (_) => {
+    onSuccess: () => {
       queryClient.invalidateQueries({
         queryKey: queryKeys.projects.all,
       });

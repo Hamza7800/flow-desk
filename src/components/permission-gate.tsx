@@ -5,12 +5,31 @@ type PermissionKey = keyof ReturnType<typeof usePermissions>;
 
 type Props = {
   permission: PermissionKey;
+  projectLead?: boolean;
+  projectMember?: boolean;
+  teamMember?: boolean;
+  resourceOwnerId?: string;
+
   children: ReactNode;
   fallback?: ReactNode;
 };
 
-const PermissionGate = ({ children, permission, fallback }: Props) => {
-  const permissions = usePermissions();
+const PermissionGate = ({
+  permission,
+  projectLead,
+  projectMember,
+  teamMember,
+  resourceOwnerId,
+  children,
+  fallback = null,
+}: Props) => {
+  const permissions = usePermissions({
+    projectLead,
+    projectMember,
+    teamMember,
+    resourceOwnerId,
+  });
+
   const allowed = permissions[permission];
 
   if (!allowed) return <>{fallback}</>;

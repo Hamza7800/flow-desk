@@ -244,14 +244,13 @@ export const updateProject = async ({
     }
 
     const { members, startDate, endDate, ...scalerFields } = validatedData;
-
     if (scalerFields) {
       await db
         .update(project)
         .set({
           ...scalerFields,
           identifier: await generateIdentifier(orgId),
-          leadId: validatedData?.leadId?.[0],
+          leadId: validatedData?.leadId?.[0] ?? null,
           ...(startDate !== undefined && { startDate: toDate(startDate) }),
           ...(endDate !== undefined && { endDate: toDate(endDate) }),
         })

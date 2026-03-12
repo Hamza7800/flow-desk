@@ -9,6 +9,7 @@ export const queryKeys = {
   members: {
     all: ["members"] as const,
     list: (orgId: string) => [...queryKeys.members.all, "list", orgId] as const,
+    role: (orgId: string) => [...queryKeys.members.all, "role", orgId] as const,
   },
 
   invitations: {
@@ -46,6 +47,8 @@ export const queryKeys = {
       [...queryKeys.projects.all, "list", orgId, "team", teamId] as const,
     detail: (projectId: string) =>
       [...queryKeys.projects.all, "detail", projectId] as const,
+    projectLead: (projectId: string) =>
+      [...queryKeys.projects.all, "lead", projectId] as const,
   },
 
   issues: {

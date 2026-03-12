@@ -7,20 +7,25 @@ import StatusSelect from "@/app/(protected)/[slug]/(dashboard)/_components/input
 import DateSelect from "@/app/(protected)/[slug]/(dashboard)/_components/input-fields/date-picker";
 import DeleteProject from "@/app/(protected)/[slug]/(dashboard)/_components/projects/delete-project";
 import PermissionGate from "@/components/permission-gate";
-import { Label, Separator } from "@heroui/react";
+import { ErrorMessage, Label, Separator } from "@heroui/react";
+import { useProjectLead } from "@/hooks/use-member-role";
+import { usePermissions } from "@/hooks/use-permissions";
 
 const ProjectProperties = () => {
   const { projectId } = useParams<{ projectId: string }>();
   const { data: project, isError, error } = useProjectDetails(projectId);
-
+  const { data: isProjectLead } = useProjectLead(projectId);
+  const { canManageProjectMembers } = usePermissions({
+    projectLead: isProjectLead || false,
+  });
   const updateProject = useUpdateProjects(project?.organizationId ?? "");
 
   if (isError) {
-    return <h2>Error : {error.message}</h2>;
+    return <ErrorMessage>Error : {error?.message}</ErrorMessage>;
   }
 
   if (!project) {
-    return <h2>No Project available</h2>;
+    return null;
   }
 
   return (
@@ -67,6 +72,7 @@ const ProjectProperties = () => {
         <Label className="w-[100px]">Lead</Label>
         <div className="w-full">
           <AssigneeSelect
+            isDisabled={!canManageProjectMembers}
             mode="create"
             value={[project.leadId ?? ""]}
             onChange={(values) =>
@@ -86,6 +92,7 @@ const ProjectProperties = () => {
         <Label className="w-[100px]">Members</Label>
         <div className="w-full">
           <AssigneeSelect
+            isDisabled={!canManageProjectMembers}
             mode="create"
             selection="multiple"
             value={project.members.map((user) => user.userId) ?? []}
