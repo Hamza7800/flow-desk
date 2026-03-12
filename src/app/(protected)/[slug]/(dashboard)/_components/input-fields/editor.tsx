@@ -8,18 +8,21 @@ import type { Block } from "@blocknote/core";
 interface EditorProps {
   initialContent?: string;
   onChange: (jsonString: string) => void;
+  num?: number;
 }
 
-export default function Editor({ initialContent, onChange }: EditorProps) {
+const generatePlaceholder = (num: number) => {
+  return Array.from({ length: num }, () => ({ type: "paragraph" }));
+};
+
+export default function Editor({
+  initialContent,
+  onChange,
+  num = 5,
+}: EditorProps) {
   const editor = useCreateBlockNote({
     initialContent: (() => {
-      if (!initialContent)
-        return [
-          { type: "paragraph" },
-          { type: "paragraph" },
-          { type: "paragraph" },
-          { type: "paragraph" },
-        ];
+      if (!initialContent) return generatePlaceholder(num);
 
       try {
         // Try to parse as JSON (new format)

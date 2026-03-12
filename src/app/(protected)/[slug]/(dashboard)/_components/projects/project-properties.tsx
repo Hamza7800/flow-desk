@@ -106,6 +106,7 @@ const ProjectProperties = () => {
         <Label className="w-[100px]">Start Date</Label>
         <div className="w-full">
           <DateSelect
+            placeholderText="Start"
             value={project.startDate}
             onChange={(value) =>
               updateProject.mutate({
@@ -124,6 +125,7 @@ const ProjectProperties = () => {
         <Label className="w-[100px]">End Date</Label>
         <div className="w-full">
           <DateSelect
+            placeholderText="End"
             value={project.endDate}
             onChange={(value) =>
               updateProject.mutate({

@@ -12,6 +12,7 @@ const InlineBlockNote = ({
   className,
   label,
   debounceMs = 1000,
+  num = 5,
 }: InputType) => {
   const [blocksJson, setBlocksJson] = useState(initialValue);
   const [error, setError] = useState<string | null>(null);
@@ -38,6 +39,7 @@ const InlineBlockNote = ({
   return (
     <div className={`w-full ${className}`}>
       <Editor
+        num={num}
         initialContent={initialValue}
         onChange={(val) => setBlocksJson(val)}
       />

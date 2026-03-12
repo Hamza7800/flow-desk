@@ -6,7 +6,7 @@ import {
   projectSchema,
   type ProjectSchemaType,
 } from "@/zod-schema/project-schema";
-import { Button, Form, Spinner } from "@heroui/react";
+import { Button, Form, Separator, Spinner } from "@heroui/react";
 import { useState } from "react";
 import PopupModal from "@/components/modal";
 import { useOrganizationContext } from "@/components/context/organization-client-context";
@@ -65,8 +65,7 @@ export function CreateProjectModal({ teamId, isOpen, onOpenChange }: Props) {
       onOpenChange={onOpenChange}
       heading="Create Project"
     >
-      <Form className="flex flex-col gap-6" onSubmit={handleSubmit(onSubmit)}>
-        {/* PROJECT NAME */}
+      <Form className="flex flex-col gap-2" onSubmit={handleSubmit(onSubmit)}>
         <Controller
           control={control}
           name="name"
@@ -82,7 +81,6 @@ export function CreateProjectModal({ teamId, isOpen, onOpenChange }: Props) {
           )}
         />
 
-        {/* SUMMARY */}
         <Controller
           control={control}
           name="summary"
@@ -92,42 +90,50 @@ export function CreateProjectModal({ teamId, isOpen, onOpenChange }: Props) {
               onSave={(val) => field.onChange(val)}
               schema={projectSchema.shape.summary}
               debounceMs={0}
+              num={1}
               label="Summary"
               placeholder="Summary"
             />
           )}
         />
 
-        <div className="flex flex-col flex-wrap gap-4">
-          {/* STATUS */}
+        <div className="my-2 flex gap-4">
           <Controller
             control={control}
             name="status"
             render={({ field }) => {
               return (
-                <StatusSelect value={field.value} onChange={field.onChange} />
+                <StatusSelect
+                  mode="create"
+                  value={field.value}
+                  onChange={field.onChange}
+                />
               );
             }}
           />
 
-          {/* PRIORITY */}
           <Controller
             control={control}
             name="priority"
             render={({ field }) => {
               return (
-                <PrioritySelect value={field.value} onChange={field.onChange} />
+                <PrioritySelect
+                  mode="create"
+                  value={field.value}
+                  onChange={field.onChange}
+                />
               );
             }}
           />
 
-          {/* PROJECT LEAD (Single Member Select) */}
           <Controller
             control={control}
             name="leadId"
             render={({ field }) => {
               return (
                 <AssigneeSelect
+                  placeholderText="Lead"
+                  mode="create"
                   value={field.value || []}
                   onChange={field.onChange}
                 />
@@ -135,29 +141,26 @@ export function CreateProjectModal({ teamId, isOpen, onOpenChange }: Props) {
             }}
           />
 
-          {/* Project Members */}
           <Controller
             control={control}
             name="members"
             render={({ field }) => {
               return (
                 <AssigneeSelect
+                  placeholderText="Members"
+                  mode="create"
                   value={field.value || []}
                   onChange={field.onChange}
                 />
               );
             }}
           />
-        </div>
-
-        {/* TIMELINE SECTION */}
-        <div className="">
           <Controller
             control={control}
             name="startDate"
             render={({ field }) => (
               <DateSelect
-                label="Start Date"
+                placeholderText="Start"
                 value={field.value}
                 onChange={(val) => field.onChange(val)}
               />
@@ -168,13 +171,30 @@ export function CreateProjectModal({ teamId, isOpen, onOpenChange }: Props) {
             name="endDate"
             render={({ field }) => (
               <DateSelect
-                label="End Date"
+                placeholderText="End"
                 value={field.value}
                 onChange={(val) => field.onChange(val)}
               />
             )}
           />
         </div>
+
+        <Separator />
+
+        <Controller
+          control={control}
+          name="description"
+          render={({ field }) => (
+            <InlineBlockNote
+              initialValue={field.value ?? ""}
+              onSave={(val) => field.onChange(val)}
+              schema={projectSchema.shape.description}
+              debounceMs={0}
+              label="Description"
+              placeholder="Description"
+            />
+          )}
+        />
 
         <Button
           type="submit"

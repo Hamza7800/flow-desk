@@ -1,14 +1,9 @@
 "use client";
 import { useProjectDetails, useUpdateProjects } from "@/hooks/use-projects";
 import type { ProjectType } from "@/server-actions/projects";
-import AssigneeSelect from "../input-fields/assignee-select";
-import PrioritySelect from "../input-fields/priority-select";
-import StatusSelect from "../input-fields/status-select";
 import InlineBlockNote from "../input-fields/block-note-input";
 import { projectSchema } from "@/zod-schema/project-schema";
 import InlineInput from "../input-fields/input";
-import type { Priority, Status } from "@/lib/contants";
-import DateSelect from "../input-fields/date-picker";
 import { Label } from "@heroui/react";
 
 const ProjectDetails = ({

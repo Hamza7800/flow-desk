@@ -1,6 +1,6 @@
 "use client";
 
-import { Calendar, DateField, DatePicker } from "@heroui/react";
+import { Button, Calendar, DateField, DatePicker } from "@heroui/react";
 import type { DateValue } from "@heroui/react";
 import {
   parseDate,
@@ -8,13 +8,15 @@ import {
   CalendarDate,
 } from "@internationalized/date";
 import { format } from "date-fns";
+import { CalendarIcon } from "lucide-react";
 
 type DateSelectProps = {
   value?: string | Date | null;
   onChange: (date: string | undefined) => void;
+  placeholderText?: string;
 };
 
-const DateSelect = ({ value, onChange }: DateSelectProps) => {
+const DateSelect = ({ value, onChange, placeholderText }: DateSelectProps) => {
   const toCalendarDate = (val?: string | Date | null): CalendarDate | null => {
     if (!val) return null;
     try {
@@ -42,22 +44,25 @@ const DateSelect = ({ value, onChange }: DateSelectProps) => {
     onChange(dbFormat);
   };
 
+  const calendarDate = toCalendarDate(value);
+
+  const displayLabel = calendarDate
+    ? format(calendarDate.toDate(getLocalTimeZone()), "MMM d")
+    : placeholderText;
+
   return (
     <DatePicker
-      className="w-full"
       value={toCalendarDate(value)}
       onChange={handleChange}
       aria-label="Date select"
     >
-      <DateField.Group className="flex items-center gap-2 rounded-md border bg-transparent px-2 py-1">
-        <DateField.Input className="flex-1 text-sm outline-none">
-          {(segment) => <DateField.Segment segment={segment} />}
-        </DateField.Input>
-        <DateField.Suffix>
-          <DatePicker.Trigger>
-            <DatePicker.TriggerIndicator />
-          </DatePicker.Trigger>
-        </DateField.Suffix>
+      <DateField.Group className="flex items-center rounded-md bg-transparent px-2 hover:bg-zinc-800 data-[pressed]:bg-zinc-800">
+        <DatePicker.Trigger>
+          <div className="flex items-center gap-2">
+            <CalendarIcon size={15} />
+            {placeholderText && <h2>{displayLabel}</h2>}
+          </div>
+        </DatePicker.Trigger>
       </DateField.Group>
 
       <DatePicker.Popover placement="bottom left" className={"min-w-[250px]"}>

@@ -16,6 +16,7 @@ export type InputType = {
   label?: string;
   className?: string;
   debounceMs?: number;
+  num?: number;
 };
 
 export type IssueSnapshot = {

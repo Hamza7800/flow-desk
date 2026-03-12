@@ -17,6 +17,7 @@ type Props = {
   selection?: "multiple" | "single";
   isDisabled?: boolean;
   mode?: "create" | "edit";
+  placeholderText?: string;
 };
 
 const NO_ASSIGNEE = "no-assignee";
@@ -27,6 +28,7 @@ const AssigneeSelect = ({
   isDisabled = false,
   selection = "multiple",
   mode = "edit",
+  placeholderText = "No Assignee",
 }: Props) => {
   const { org: organization } = useOrganizationContext();
   const [selected, setSelected] = useState<Key[]>(value);
@@ -64,7 +66,7 @@ const AssigneeSelect = ({
               return (
                 <div className="flex items-center gap-1 text-white">
                   <UserRound size={16} />
-                  {mode === "create" && <span>No Assignee</span>}
+                  {mode === "create" && <span>{placeholderText}</span>}
                 </div>
               );
             }
@@ -112,11 +114,11 @@ const AssigneeSelect = ({
           <ListBox.Item
             key={NO_ASSIGNEE}
             id={NO_ASSIGNEE}
-            textValue="No Assignee"
+            textValue={placeholderText}
           >
             <span className="flex items-center gap-2">
               <UserRound size={14} />
-              No Assignee
+              {placeholderText}
             </span>
             <ListBox.ItemIndicator />
           </ListBox.Item>

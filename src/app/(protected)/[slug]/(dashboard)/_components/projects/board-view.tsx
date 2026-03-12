@@ -42,7 +42,7 @@ export const BoardColumnHeader = ({
 }) => {
   return (
     <>
-      <div className="flex items-center gap-2 p-1">
+      <div className="flex items-center gap-2 p-1 px-2">
         <span className={cn("text-sm", container.color)}>{container.icon}</span>
         <span className="text-sm font-medium text-zinc-200">
           {container.label}
@@ -50,7 +50,6 @@ export const BoardColumnHeader = ({
         <span className="ml-auto rounded-full bg-zinc-800/80 px-1.5 py-0.5 text-xs text-zinc-500">
           {container.items.length}
         </span>
-        <CreateProjectButton />
       </div>
     </>
   );

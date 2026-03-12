@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils";
 import { Draggable, DroppableGroup } from "@/components/dnd-primitives";
-import { Button, Card } from "@heroui/react";
+import { Card } from "@heroui/react";
 import type { ProjectContainer } from "@/components/context/project-dnd-context";
 import ProjectView from "./project-view";
 import CreateProjectButton from "./create-project-button";
@@ -42,9 +42,6 @@ const CollapsibleListGroup = ({
           <span className="ml-1 text-xs text-zinc-500">
             {container.items.length}
           </span>
-          <div className="ml-auto">
-            <CreateProjectButton />
-          </div>
         </Card>
       </DroppableGroup>
 

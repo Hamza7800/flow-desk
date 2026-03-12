@@ -22,54 +22,21 @@ const ListCard = ({
 
   if (isPlaceholder) {
     return (
-      <Card
-        onClick={() => router.push(`/${slug}/issue/${project.id}`)}
-        className="group ring-surface-secondary hover:bg-surface max-h-14 min-h-14 w-fit flex-row items-center rounded bg-[#101012] px-2 ring-1"
-      >
+      <Card className="group ring-surface-secondary hover:bg-surface max-h-14 min-h-14 w-fit flex-row items-center rounded bg-[#101012] px-2 ring-1">
         <div className="grid grid-cols-2 gap-6">
           <span className="w-[130px] shrink-0 text-sm text-white/70">
             {project.identifier}
           </span>
           <span className="shrink-0 text-sm">{project.name}</span>
         </div>
-
-        <div className="ml-auto flex items-center justify-end gap-3">
-          {/* {displayProperties.showPriority && (
-            <PrioritySelect
-              onChange={(value) =>
-                updateProject.mutate({
-                  values: {
-                    priority: value as Priority,
-                  },
-                  teamId: project.teamId ?? "",
-                  projectId: project.id,
-                })
-              }
-              value={project.priority ?? ""}
-            />
-          )}
-
-          {displayProperties.showStatus && (
-            <StatusSelect
-              onChange={(value) =>
-                updateProject.mutate({
-                  values: {
-                    status: value as Status,
-                  },
-                  teamId: project.teamId ?? "",
-                  projectId: project.id,
-                })
-              }
-              value={project.status ?? ""}
-            />
-          )} */}
-        </div>
       </Card>
     );
   }
   return (
     <Card
-      onClick={() => router.push(`/${slug}/project/${project.id}`)}
+      onClick={() =>
+        router.push(`/${slug}/team/${teamId}/project/${project.id}/overview`)
+      }
       className="group hover:bg-surface max-h-14 min-h-14 flex-row items-center rounded bg-[#101012] px-2"
     >
       <div className="grid grid-cols-2 gap-6">

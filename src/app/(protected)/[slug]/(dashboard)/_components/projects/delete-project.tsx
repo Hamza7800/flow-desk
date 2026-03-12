@@ -28,7 +28,7 @@ const DeleteProject = ({
       }}
       trigger={
         <Button fullWidth variant="danger-soft">
-          Delete Team
+          Delete Project
         </Button>
       }
     />
