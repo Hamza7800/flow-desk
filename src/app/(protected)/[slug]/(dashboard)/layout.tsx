@@ -5,6 +5,7 @@ import {
   getActiveOrg,
   getOrganization,
   getOrganizationById,
+  setActiveOrganization,
 } from "@/server-actions/organization";
 import { redirect } from "next/navigation";
 import { type ReactNode } from "react";
@@ -22,23 +23,24 @@ export default async function SlugLayout({ children, params }: Props) {
     getActiveOrg(),
   ]);
 
-  // If active org fetch failed, nothing we can do
   if (!activeOrgRes.success || !activeOrgRes.data) {
     redirect("/");
   }
 
   const activeOrgId = activeOrgRes.data;
 
-  // If the slug org doesn't exist or mismatches active org
-  // → fetch the active org by id and redirect to its slug
   if (!orgRes.success || !orgRes.data || orgRes.data.id !== activeOrgId) {
     const activeOrgByIdRes = await getOrganizationById(activeOrgId);
 
     if (!activeOrgByIdRes.success || !activeOrgByIdRes.data) {
       redirect("/");
     }
+    await setActiveOrganization(
+      activeOrgByIdRes.data.id,
+      activeOrgByIdRes.data.slug,
+    );
 
-    redirect(`/${activeOrgByIdRes.data.slug}`);
+    redirect(`/${activeOrgByIdRes.data.slug}/my-issues/assigned`);
   }
 
   return (

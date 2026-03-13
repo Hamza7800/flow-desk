@@ -14,8 +14,10 @@ import { Separator } from "@heroui/react";
 const IssueDetails = ({
   initialData,
   issueId,
+  teamId,
 }: {
   issueId: string;
+  teamId: string;
   initialData: IssueType["data"];
 }) => {
   const router = useRouter();
@@ -25,9 +27,12 @@ const IssueDetails = ({
     isError,
     error,
     refetch,
-  } = useIssueDetails(issueId, initialData);
+  } = useIssueDetails(issueId, teamId, initialData);
 
-  const updateIssue = useUpdateIssue({ projectId: issue?.projectId });
+  const updateIssue = useUpdateIssue({
+    projectId: issue?.projectId,
+    teamId: issue?.teamId,
+  });
 
   if (isError) {
     return (

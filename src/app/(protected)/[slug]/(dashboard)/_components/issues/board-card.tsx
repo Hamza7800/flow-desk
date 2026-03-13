@@ -27,7 +27,9 @@ const BoardCard = ({
 
   return (
     <Card
-      onClick={() => router.push(`/${slug}/issue/${issue.id}`)}
+      onClick={() =>
+        router.push(`/${slug}/team/${issue.teamId}/issue/${issue.id}`)
+      }
       className="gap-1 rounded-lg bg-[#17181b] p-1 px-2"
       // variant="secondary"
     >

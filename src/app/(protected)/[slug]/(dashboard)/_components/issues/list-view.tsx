@@ -5,6 +5,7 @@ import IssueView from "./issue-view";
 import type { IssueContainer } from "@/components/context/issue-dnd-context";
 import { Button, Card } from "@heroui/react";
 import CreateIssueButton from "./create-issue-button";
+import { usePathname } from "next/navigation";
 
 export const ListView = ({ containers }: { containers: IssueContainer[] }) => (
   <div className="scrollbar-thin h-full overflow-y-auto px-2 pb-10">
@@ -15,6 +16,7 @@ export const ListView = ({ containers }: { containers: IssueContainer[] }) => (
 );
 
 const CollapsibleListGroup = ({ container }: { container: IssueContainer }) => {
+  const pathname = usePathname();
   return (
     <div>
       <DroppableGroup
@@ -36,7 +38,9 @@ const CollapsibleListGroup = ({ container }: { container: IssueContainer }) => {
             {container.items.length}
           </span>
           <div className="ml-auto">
-            <CreateIssueButton container={container} />
+            {pathname.includes("my-issues") ? null : (
+              <CreateIssueButton label={container.label} />
+            )}
           </div>
         </Card>
       </DroppableGroup>

@@ -138,7 +138,7 @@ export const useTeamProjects = (
 
 export const useProjectDetails = (
   projectId: string,
-  teamId?: string,
+  teamId: string,
   initialData?: ProjectType["data"],
 ) => {
   return useQuery({

@@ -23,6 +23,8 @@ import { ErrorState } from "@/components/error-state";
 import { EmptyState } from "@/components/empty-state";
 import PermissionGate from "@/components/permission-gate";
 import { Avatar } from "@/components/avatar";
+import { useAuth } from "@/components/context/auth-context";
+import RoleSelect from "./input-fields/role-select";
 
 const roleIcon = (role: string) => {
   switch (role) {
@@ -63,7 +65,7 @@ export default function OrgMembers() {
   const { slug } = useParams<{ slug: string }>();
   const router = useRouter();
   const { org } = useOrganizationContext();
-  const { data: session } = authClient.useSession();
+  const { user } = useAuth();
   const [isInviteModalOpen, setIsInviteModalOpen] = useState(false);
 
   const {
@@ -75,6 +77,7 @@ export default function OrgMembers() {
   } = useOrganization(slug);
 
   if (isPending) return <LoadingState />;
+
   if (isError)
     return (
       <ErrorState
@@ -84,6 +87,7 @@ export default function OrgMembers() {
         homeHref={`/${slug}`}
       />
     );
+
   if (!organization)
     return (
       <EmptyState
@@ -94,9 +98,7 @@ export default function OrgMembers() {
       />
     );
 
-  const currentMember = organization.members.find(
-    (m) => m.userId === session?.user.id,
-  );
+  const currentMember = organization.members.find((m) => m.userId === user?.id);
   const canManageInvites =
     currentMember?.role === "admin" || currentMember?.role === "owner";
 
@@ -151,7 +153,7 @@ export default function OrgMembers() {
                       <div className="min-w-0">
                         <p className="truncate text-sm font-medium text-white">
                           {member.user.name}
-                          {member.userId === session?.user.id && (
+                          {member.userId === user?.id && (
                             <span className="ml-1.5 text-[10px] font-normal text-zinc-500">
                               (you)
                             </span>
@@ -174,17 +176,28 @@ export default function OrgMembers() {
                       {member.role}
                     </Chip>
 
-                    <PermissionGate permission={"canInviteMembers"}>
-                      <div className="ml-auto">
-                        <RemoveMemberFromOrg userId={member.id} />
-                      </div>
-                    </PermissionGate>
+                    <div className="ml-auto flex w-fit items-center gap-2">
+                      <PermissionGate permission="isOwner">
+                        <RoleSelect
+                          memberId={member.id}
+                          currentRole={member.role}
+                          memberUserId={member.userId}
+                        />
+                      </PermissionGate>
+                      <PermissionGate permission={"canInviteMembers"}>
+                        <div className="ml-auto">
+                          <RemoveMemberFromOrg
+                            isCurrentUser={member.userId === user?.id}
+                            userId={member.id}
+                          />
+                        </div>
+                      </PermissionGate>
+                    </div>
                   </div>
                 ))}
               </div>
             </Card.Content>
           </Card>
-          <Separator />
 
           {organization.invitations.length > 0 && (
             <Invites
@@ -194,7 +207,7 @@ export default function OrgMembers() {
               slug={slug}
             />
           )}
-          <Separator />
+
           {organization.invitations.length > 0 && (
             <Invites
               heading="Rejected"

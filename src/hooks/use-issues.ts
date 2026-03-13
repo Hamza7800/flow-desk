@@ -52,12 +52,13 @@ export const useOrgIssues = (orgId: string | undefined) => {
 
 export const useIssueDetails = (
   issueId: string,
+  teamId: string,
   initialData?: IssueType["data"],
 ) => {
   return useQuery({
     queryKey: queryKeys.issues.detail(issueId),
     queryFn: async () => {
-      const result = await getIssue(issueId);
+      const result = await getIssue(issueId, teamId);
       if (!result.success) throw new Error(result.message);
 
       return result.data;

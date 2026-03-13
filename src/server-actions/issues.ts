@@ -2,6 +2,7 @@
 
 import {
   canDeleteIssue,
+  canViewTeamData,
   checkPermission,
   isTeamMember,
 } from "@/lib/permissions-checks";
@@ -76,7 +77,8 @@ export const getIssues = async (teamId?: string, projectId?: string) => {
   try {
     const { orgId, userId } = await getActiveOrgId();
 
-    // const { success:isAdmin} =await checkPermission("issue", "view");
+    const { success: isAdmin } = await checkPermission("teamData", "view");
+
     const filters = [eq(issue.organizationId, orgId)];
     if (teamId && teamId.trim() !== "") {
       filters.push(eq(issue.teamId, teamId));
@@ -85,18 +87,18 @@ export const getIssues = async (teamId?: string, projectId?: string) => {
       filters.push(eq(issue.projectId, projectId));
     }
 
-    // let isMember;
-    // if (teamId) {
-    //   isMember = await isTeamMember(userId, teamId);
-    // }
+    let canViewData;
+    if (teamId) {
+      canViewData = await canViewTeamData(teamId, userId, isAdmin);
+    }
 
-    // if (!isMember) {
-    //   return {
-    //     success: false,
-    //     data: null,
-    //     message: "You are not member of this team",
-    //   };
-    // }
+    if (!canViewData) {
+      return {
+        success: false,
+        data: null,
+        message: "You are not member of this team",
+      };
+    }
 
     const issues = await db.query.issue.findMany({
       where: and(...filters),
@@ -180,9 +182,23 @@ export const getUserAssignedIssues = async () => {
 
 export type IssuesType = Awaited<ReturnType<typeof getIssues>>;
 
-export const getIssue = async (issueId: string) => {
+export const getIssue = async (issueId: string, teamId: string) => {
   try {
-    const { orgId } = await getActiveOrgId();
+    const { orgId, userId } = await getActiveOrgId();
+    const { success: isAdmin } = await checkPermission("teamData", "view");
+
+    let canViewData;
+    if (teamId) {
+      canViewData = await canViewTeamData(teamId, userId, isAdmin);
+    }
+
+    if (!canViewData) {
+      return {
+        success: false,
+        data: null,
+        message: "You are not member of this team",
+      };
+    }
 
     const issueDetails = await db.query.issue.findFirst({
       where: and(eq(issue.organizationId, orgId), eq(issue.id, issueId)),

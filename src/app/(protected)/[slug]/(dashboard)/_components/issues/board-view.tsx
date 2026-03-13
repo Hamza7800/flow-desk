@@ -4,6 +4,7 @@ import IssueView from "./issue-view";
 import type { IssueContainer } from "@/components/context/issue-dnd-context";
 import CreateIssueButton from "./create-issue-button";
 import { Card } from "@heroui/react";
+import { usePathname } from "next/navigation";
 
 export const BoardView = ({ containers }: { containers: IssueContainer[] }) => (
   <div className="scrollbar-thin flex h-full min-h-0 w-full flex-1 gap-2 overflow-x-auto overflow-y-hidden px-2">
@@ -36,6 +37,7 @@ export const BoardColumnHeader = ({
 }: {
   container: IssueContainer;
 }) => {
+  const pathname = usePathname();
   return (
     <>
       <div className="flex items-center gap-2 p-1">
@@ -46,7 +48,9 @@ export const BoardColumnHeader = ({
         <span className="ml-auto rounded-full bg-zinc-800/80 px-1.5 py-0.5 text-xs text-zinc-500">
           {container.items.length}
         </span>
-        <CreateIssueButton container={container} />
+        {pathname.includes("my-issues") ? null : (
+          <CreateIssueButton label={container.label} />
+        )}
       </div>
     </>
   );

@@ -40,11 +40,11 @@ const data = {
           url: "invitations",
           icon: <Mail size={14} />,
         },
-        {
-          title: "Billing",
-          url: "billing",
-          icon: <Receipt size={14} />,
-        },
+        // {
+        //   title: "Billing",
+        //   url: "billing",
+        //   icon: <Receipt size={14} />,
+        // },
         {
           title: "Workspace",
           url: "workspace",

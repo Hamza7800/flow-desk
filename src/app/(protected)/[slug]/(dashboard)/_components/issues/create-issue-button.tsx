@@ -1,4 +1,4 @@
-import type { IssueContainer } from "@/components/context/issue-dnd-context";
+"use client";
 import {
   PRIORITY_OPTIONS,
   STATUS_OPTIONS,
@@ -12,7 +12,7 @@ import { useParams } from "next/navigation";
 import { useState } from "react";
 import { CreateIssueModal } from "./create-issue";
 
-const CreateIssueButton = ({ container }: { container: IssueContainer }) => {
+const CreateIssueButton = ({ label }: { label: string }) => {
   const [isOpen, setIsOpen] = useState(false);
 
   const { teamId, projectId } = useParams<{
@@ -29,18 +29,16 @@ const CreateIssueButton = ({ container }: { container: IssueContainer }) => {
 
     switch (groupBy) {
       case "priority":
-        const foundPriority = PRIORITY_OPTIONS.find(
-          (p) => p.label === container.label,
-        )?.key as Priority;
+        const foundPriority = PRIORITY_OPTIONS.find((p) => p.label === label)
+          ?.key as Priority;
 
         return {
           ...baseDefaults,
           priority: foundPriority ?? baseDefaults.priority,
         };
       case "status":
-        const foundStatus = STATUS_OPTIONS.find(
-          (s) => s.label === container.label,
-        )?.key as Status;
+        const foundStatus = STATUS_OPTIONS.find((s) => s.label === label)
+          ?.key as Status;
         return {
           ...baseDefaults,
           status: foundStatus ?? baseDefaults.status,

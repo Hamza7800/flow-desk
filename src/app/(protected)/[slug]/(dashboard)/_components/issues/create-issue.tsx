@@ -16,6 +16,7 @@ import AssigneeSelect from "../input-fields/assignee-select";
 import InlineInput from "../input-fields/input";
 import ProjectSelect from "../input-fields/project-select";
 import InlineBlockNote from "../input-fields/block-note-input";
+import TeamMembersSelect from "../input-fields/team-members-select";
 
 type Props = {
   teamId: string;
@@ -131,7 +132,8 @@ export function CreateIssueModal({
             control={control}
             name="assigneeIds"
             render={({ field }) => (
-              <AssigneeSelect
+              <TeamMembersSelect
+                teamId={teamId}
                 mode="create"
                 value={field.value || []}
                 onChange={field.onChange}

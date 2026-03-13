@@ -20,8 +20,17 @@ export const checkPermission = async (
     | "team"
     | "member"
     | "invitation"
-    | "organization",
-  action: "create" | "update" | "delete" | "archive" | "view" | "manageMember",
+    | "organization"
+    | "teamData",
+  action:
+    | "create"
+    | "update"
+    | "delete"
+    | "archive"
+    | "view"
+    | "manageMember"
+    | "removeMember"
+    | "leave",
 ) => {
   return await auth.api.hasPermission({
     body: {
@@ -40,6 +49,15 @@ export const isTeamMember = async (userId: string, teamId: string) => {
   });
 
   return !!result;
+};
+
+export const canViewTeamData = async (
+  teamId: string,
+  userId: string,
+  hasAdminAccess: boolean,
+) => {
+  if (hasAdminAccess) return true;
+  return isTeamMember(userId, teamId);
 };
 
 export const isProjectLead = async (projectId: string, userId: string) => {
@@ -143,5 +161,3 @@ export const canDeleteComment = async (
   if (hasAdminAccess) return true;
   return isCommentAuthor(commentId, userId);
 };
-
-// TODO: Might ADD Create ID to Issues

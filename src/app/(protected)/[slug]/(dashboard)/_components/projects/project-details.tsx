@@ -5,27 +5,45 @@ import InlineBlockNote from "../input-fields/block-note-input";
 import { projectSchema } from "@/zod-schema/project-schema";
 import InlineInput from "../input-fields/input";
 import { Label } from "@heroui/react";
+import { EmptyState } from "@/components/empty-state";
+import { Box } from "lucide-react";
+import { useParams, useRouter } from "next/navigation";
 
 const ProjectDetails = ({
   initialData,
   projectId,
+  teamId,
 }: {
   projectId: string;
+  teamId: string;
   initialData: ProjectType["data"];
 }) => {
+  const router = useRouter();
+  const { slug } = useParams<{ slug: string }>();
+
   const {
     data: project,
     isError,
     error,
-  } = useProjectDetails(projectId, undefined, initialData);
+  } = useProjectDetails(projectId, teamId, initialData);
   const updateProject = useUpdateProjects(project?.organizationId ?? "");
 
   if (isError) {
-    return <h2>Error : {error.message}</h2>;
+    return null;
   }
 
   if (!project) {
-    return <h2>No Project available</h2>;
+    return (
+      <EmptyState
+        icon={Box}
+        title="No Project Found"
+        description="The project you're looking for doesn't exist."
+        action={{
+          label: "My Issues",
+          onClick: () => router.push(`/${slug}/my-issues/assigned`),
+        }}
+      />
+    );
   }
 
   return (

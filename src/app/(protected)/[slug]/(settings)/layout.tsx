@@ -1,3 +1,4 @@
+"use client";
 import {
   SidebarInset,
   SidebarProvider,
@@ -6,15 +7,20 @@ import {
 import type { ReactNode } from "react";
 import { AppSidebar } from "./_components/app-sidebar";
 import { Separator } from "@/components/ui/separator";
+import { useParams } from "next/navigation";
+import { useCurrentMemberRole } from "@/hooks/use-member-role";
+import { ErrorState } from "@/components/error-state";
 
 type Props = {
   children: ReactNode;
-  params: Promise<{ slug: string }>;
+  // params: Promise<{ slug: string }>;
 };
 
-// TODO: WILL FIX SETTINGS LATER
-const SettingsLayout = async ({ children, params }: Props) => {
-  const { slug } = await params;
+const SettingsLayout = ({ children }: Props) => {
+  const { slug } = useParams<{ slug: string }>();
+  const { data: memberRole, isPending } = useCurrentMemberRole();
+
+  const isAllowed = memberRole === "admin" || memberRole === "owner";
 
   return (
     <SidebarProvider
@@ -31,7 +37,16 @@ const SettingsLayout = async ({ children, params }: Props) => {
         </div>
         <Separator />
         <div className="@container/main flex min-h-0 flex-1 flex-col overflow-hidden p-2">
-          {children}
+          {isAllowed
+            ? children
+            : !isPending && (
+                <ErrorState
+                  title="Access Denied"
+                  message={"You don't have permission to view this page"}
+                  // onRetry={() => refetch()}
+                  homeHref={`/${slug}`}
+                />
+              )}
         </div>
       </SidebarInset>
     </SidebarProvider>

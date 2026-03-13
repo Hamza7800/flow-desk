@@ -33,7 +33,7 @@ export const updateMemberRole = async (
     });
 
     if (callerRole !== "owner" && callerRole !== "admin") {
-      throw new Error("Unauthorized");
+      throw new Error("Unauthorized: You don't have permission");
     }
 
     if (newRole === "admin" && callerRole !== "owner") {

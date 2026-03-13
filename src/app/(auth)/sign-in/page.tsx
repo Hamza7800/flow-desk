@@ -54,7 +54,7 @@ const SignUser = () => {
     try {
       await loginAction(values);
 
-      toast.success("Account created");
+      toast.success("Login Success");
       setIsSubmitting(false);
       router.push("/organizations");
     } catch (error: any) {

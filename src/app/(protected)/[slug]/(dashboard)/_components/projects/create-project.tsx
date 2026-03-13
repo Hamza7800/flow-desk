@@ -7,7 +7,6 @@ import {
   type ProjectSchemaType,
 } from "@/zod-schema/project-schema";
 import { Button, Form, Separator, Spinner } from "@heroui/react";
-import { useState } from "react";
 import PopupModal from "@/components/modal";
 import { useOrganizationContext } from "@/components/context/organization-client-context";
 import { useCreateProject } from "@/hooks/use-projects";
@@ -17,6 +16,7 @@ import AssigneeSelect from "../input-fields/assignee-select";
 import InlineInput from "../input-fields/input";
 import InlineBlockNote from "../input-fields/block-note-input";
 import DateSelect from "../input-fields/date-picker";
+import TeamMembersSelect from "../input-fields/team-members-select";
 
 type Props = {
   teamId: string;
@@ -131,7 +131,8 @@ export function CreateProjectModal({ teamId, isOpen, onOpenChange }: Props) {
             name="leadId"
             render={({ field }) => {
               return (
-                <AssigneeSelect
+                <TeamMembersSelect
+                  teamId={teamId}
                   placeholderText="Lead"
                   mode="create"
                   value={field.value || []}
@@ -146,7 +147,8 @@ export function CreateProjectModal({ teamId, isOpen, onOpenChange }: Props) {
             name="members"
             render={({ field }) => {
               return (
-                <AssigneeSelect
+                <TeamMembersSelect
+                  teamId={teamId}
                   placeholderText="Members"
                   mode="create"
                   value={field.value || []}

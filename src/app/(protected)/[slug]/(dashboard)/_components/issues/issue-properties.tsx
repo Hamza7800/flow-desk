@@ -1,23 +1,23 @@
 import type { Priority, Status } from "@/lib/contants";
 import { useParams } from "next/navigation";
-import AssigneeSelect from "../input-fields/assignee-select";
 import PrioritySelect from "../input-fields/priority-select";
 import StatusSelect from "../input-fields/status-select";
 import DeleteIssue from "./delete-issue";
 import { useIssueDetails, useUpdateIssue } from "@/hooks/use-issues";
 import PermissionGate from "@/components/permission-gate";
 import { usePermissions } from "@/hooks/use-permissions";
-import { ErrorMessage, Label, Separator } from "@heroui/react";
+import { Label, Separator } from "@heroui/react";
 import ProjectSelect from "../input-fields/project-select";
+import TeamMembersSelect from "../input-fields/team-members-select";
 
 const IssueProperties = () => {
-  const { issueId } = useParams<{ issueId: string }>();
-  const { data: issue, isError } = useIssueDetails(issueId);
+  const { issueId, teamId } = useParams<{ issueId: string; teamId: string }>();
+  const { data: issue, isError } = useIssueDetails(issueId, teamId);
   const { canEditIssue } = usePermissions();
   const updateIssue = useUpdateIssue({ projectId: issue?.projectId });
 
   if (isError) {
-    return <ErrorMessage>Failed to load issue</ErrorMessage>;
+    return null;
   }
 
   if (!issue) {
@@ -65,7 +65,8 @@ const IssueProperties = () => {
       <div className="flex items-center gap-4">
         <Label className="w-[100px]">Assign</Label>
         <div className="w-full">
-          <AssigneeSelect
+          <TeamMembersSelect
+            teamId={issue.teamId ?? ""}
             mode="create"
             isDisabled={!canEditIssue}
             value={issue.assignees.map((user) => user.userId) ?? []}

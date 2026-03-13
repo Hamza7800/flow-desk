@@ -46,10 +46,6 @@ const data = {
 export function AppSidebar({ slug, ...props }: ComponentProps<typeof Sidebar>) {
   const { data: userRole, isPending } = useCurrentMemberRole();
 
-  if (isPending) {
-    return null;
-  }
-
   return (
     <Sidebar {...props}>
       <SidebarHeader>
@@ -72,6 +68,7 @@ export function AppSidebar({ slug, ...props }: ComponentProps<typeof Sidebar>) {
         </SidebarMenu>
 
         {userRole !== "member" &&
+          !isPending &&
           data.navMain.map((item) => (
             <Accordion
               key={item.title}
@@ -105,20 +102,6 @@ export function AppSidebar({ slug, ...props }: ComponentProps<typeof Sidebar>) {
           ))}
 
         <UserTeams />
-
-        <SidebarMenu>
-          <SidebarMenuItem>
-            <LinkButton
-              variant="ghost"
-              className={"justify-start gap-3 pl-4.5 text-left shadow-none"}
-              fullWidth
-              href={`/${slug}/settings/account/profile`}
-            >
-              <SettingsIcon size={14} />
-              <span> Settings</span>
-            </LinkButton>
-          </SidebarMenuItem>
-        </SidebarMenu>
       </SidebarContent>
       <SidebarRail />
     </Sidebar>

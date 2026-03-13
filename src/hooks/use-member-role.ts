@@ -25,7 +25,6 @@ export const useCurrentMemberRole = () => {
 
 export const useUpdateMemberRole = () => {
   const queryClient = useQueryClient();
-  const { org } = useOrganizationContext();
 
   return useMutation({
     mutationFn: async ({
@@ -44,7 +43,7 @@ export const useUpdateMemberRole = () => {
 
     onSuccess: () => {
       queryClient.invalidateQueries({
-        queryKey: queryKeys.members.list(org?.id ?? ""),
+        queryKey: queryKeys.organizations.all,
       });
       toast.success("Role updated");
     },

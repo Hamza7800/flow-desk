@@ -1,6 +1,10 @@
 "use server";
 
-import { checkPermission, isProjectMember } from "@/lib/permissions-checks";
+import {
+  canViewTeamData,
+  checkPermission,
+  isProjectMember,
+} from "@/lib/permissions-checks";
 import { returnError } from "@/lib/utils";
 import { getActiveOrgId } from "@/server/better-auth/server";
 import { db } from "@/server/db";
@@ -85,7 +89,19 @@ export const createProject = async ({
 export const getProjects = async (teamId?: string) => {
   try {
     const { userId, orgId } = await getActiveOrgId();
-    const { success: isAdmin } = await checkPermission("project", "view");
+    const { success: isAdmin } = await checkPermission("teamData", "view");
+    let canViewData;
+    if (teamId) {
+      canViewData = await canViewTeamData(teamId, userId, isAdmin);
+    }
+
+    if (!canViewData) {
+      return {
+        success: false,
+        data: null,
+        message: "You are not member of this team",
+      };
+    }
 
     const projects = await db.query.project.findMany({
       where: and(
@@ -168,22 +184,37 @@ const projectQuery = async (
   });
 };
 
-export const getProject = async (projectId: string, teamId?: string) => {
+export const getProject = async (projectId: string, teamId: string) => {
   try {
     const { userId, orgId } = await getActiveOrgId();
 
-    const { success: isAdmin } = await checkPermission("project", "view");
-    const isLead = await isProjectLead(projectId, userId);
-    const isMember = await isProjectMember(projectId, userId);
+    // const { success: isAdmin } = await checkPermission("project", "view");
 
-    const hasAccess = isAdmin || isLead || isMember;
+    const { success: isAdmin } = await checkPermission("teamData", "view");
+    let canViewData;
+    if (teamId) {
+      canViewData = await canViewTeamData(teamId, userId, isAdmin);
+    }
 
-    if (!hasAccess) {
+    if (!canViewData) {
       return {
         success: false,
-        message: "You don't have permission to view this project",
+        data: null,
+        message: "You are not member of this team",
       };
     }
+
+    // const isLead = await isProjectLead(projectId, userId);
+    // const isMember = await isProjectMember(projectId, userId);
+
+    // const hasAccess = isAdmin || isLead || isMember;
+
+    // if (!hasAccess) {
+    //   return {
+    //     success: false,
+    //     message: "You don't have permission to view this project",
+    //   };
+    // }
 
     const projectData = await projectQuery(
       orgId,

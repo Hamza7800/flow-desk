@@ -1,5 +1,6 @@
 "use server";
 
+import { checkPermission } from "@/lib/permissions-checks";
 import { returnError } from "@/lib/utils";
 import { auth } from "@/server/better-auth";
 import { getActiveOrgId, getUser } from "@/server/better-auth/server";
@@ -249,9 +250,36 @@ export const updateOrganization = async (
   }
 };
 
-export const removeMemberFromOrg = async (userId: string) => {
+export const removeMemberFromOrg = async (
+  userId: string,
+  action: "leave" | "remove",
+) => {
   try {
     const { orgId } = await getActiveOrgId();
+    const { success: canLeave } = await checkPermission(
+      "organization",
+      "leave",
+    );
+    const { success: canRemove } = await checkPermission(
+      "organization",
+      "removeMember",
+    );
+
+    if (action === "leave" && !canLeave) {
+      return {
+        success: false,
+        data: null,
+        message: "You don't have permission to leave",
+      };
+    }
+
+    if (action === "remove" && !canRemove) {
+      return {
+        success: false,
+        data: null,
+        message: "You don't have permission to remove member",
+      };
+    }
 
     const data = await auth.api.removeMember({
       body: {

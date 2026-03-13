@@ -31,10 +31,7 @@ const ListCard = ({
 
   if (isPlaceholder) {
     return (
-      <Card
-        onClick={() => router.push(`/${slug}/issue/${issue.id}`)}
-        className="group ring-surface-secondary hover:bg-surface max-h-14 min-h-14 w-fit flex-row items-center rounded bg-[#101012] px-2 ring-1"
-      >
+      <Card className="group ring-surface-secondary hover:bg-surface max-h-14 min-h-14 w-fit flex-row items-center rounded bg-[#101012] px-2 ring-1">
         {displayProperties.showPriority && (
           <PrioritySelect
             onChange={(value) =>
@@ -75,7 +72,9 @@ const ListCard = ({
   }
   return (
     <Card
-      onClick={() => router.push(`/${slug}/issue/${issue.id}`)}
+      onClick={() =>
+        router.push(`/${slug}/team/${issue.teamId}/issue/${issue.id}`)
+      }
       className="group hover:bg-surface max-h-14 min-h-14 flex-row items-center rounded bg-[#101012] px-2"
     >
       {displayProperties.showPriority && (

@@ -12,6 +12,7 @@ const statement = {
   comment: ["create", "update", "delete"],
   label: ["create", "update", "delete"],
   team: ["create", "update", "delete", "manageMember"],
+  teamData: ["view"],
 } as const;
 
 export const ac = createAccessControl(statement);
@@ -26,6 +27,7 @@ export const memberRole = ac.newRole({
   cycle: ["create", "update", "delete"],
   label: ["create"],
   team: [],
+  teamData: [],
 });
 
 export const adminRole = ac.newRole({
@@ -36,6 +38,7 @@ export const adminRole = ac.newRole({
   cycle: ["create", "update"],
   label: ["create", "update"],
   team: ["create", "update", "manageMember"],
+  teamData: ["view"],
 });
 
 export const ownerRole = ac.newRole({
@@ -47,4 +50,5 @@ export const ownerRole = ac.newRole({
   cycle: ["create", "update", "delete"],
   label: ["create", "update", "delete"],
   team: ["create", "update", "delete", "manageMember"],
+  teamData: ["view"],
 });

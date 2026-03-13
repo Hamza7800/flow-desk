@@ -203,12 +203,12 @@ export const useUpdateOrganization = () => {
   });
 };
 
-export const useRemoveMember = () => {
+export const useRemoveMember = (actionType: "leave" | "remove") => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async ({ userId }: { userId: string }) => {
-      const result = await removeMemberFromOrg(userId);
+      const result = await removeMemberFromOrg(userId, actionType);
       if (!result.success)
         throw new Error(result.message || "Failed to remove from org");
       return result;

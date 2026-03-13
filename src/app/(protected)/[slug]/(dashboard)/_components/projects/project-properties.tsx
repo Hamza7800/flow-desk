@@ -12,8 +12,15 @@ import { useProjectLead } from "@/hooks/use-member-role";
 import { usePermissions } from "@/hooks/use-permissions";
 
 const ProjectProperties = () => {
-  const { projectId } = useParams<{ projectId: string }>();
-  const { data: project, isError, error } = useProjectDetails(projectId);
+  const { projectId, teamId } = useParams<{
+    projectId: string;
+    teamId: string;
+  }>();
+  const {
+    data: project,
+    isError,
+    error,
+  } = useProjectDetails(projectId, teamId);
   const { data: isProjectLead } = useProjectLead(projectId);
   const { canManageProjectMembers } = usePermissions({
     projectLead: isProjectLead || false,
@@ -21,7 +28,7 @@ const ProjectProperties = () => {
   const updateProject = useUpdateProjects(project?.organizationId ?? "");
 
   if (isError) {
-    return <ErrorMessage>Error : {error?.message}</ErrorMessage>;
+    return null;
   }
 
   if (!project) {
