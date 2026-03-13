@@ -1,49 +1,62 @@
 "use client";
+import { EmptyState } from "@/components/empty-state";
+import { ErrorState } from "@/components/error-state";
 import OrganizationForm from "@/components/forms/organization-form";
+import { LoadingState } from "@/components/loading-state";
 import { useOrganization } from "@/hooks/use-organizations";
 import { Card, Spinner } from "@heroui/react";
-import { useParams } from "next/navigation";
+import { Box } from "lucide-react";
+import { useParams, useRouter } from "next/navigation";
 
 const Form = () => {
   const { slug } = useParams<{ slug: string }>();
+  const router = useRouter();
 
   const {
     data: organization,
-    isLoading,
+    isPending,
     isError,
+    refetch,
     error,
   } = useOrganization(slug);
 
-  if (isLoading) {
+  if (isPending) {
+    return <LoadingState />;
+  }
+
+  if (isError) {
     return (
-      <Card className="items-center">
-        <Spinner />
-      </Card>
+      <ErrorState
+        title="Failed to load organization"
+        message={error?.message}
+        onRetry={() => refetch()}
+        homeHref={`/${slug}`}
+      />
     );
   }
 
-  if (isError || !organization) {
+  if (!isPending && !organization) {
     return (
-      <Card>
-        <Card.Content>
-          <Card.Header>No Organization found</Card.Header>
-          <Card.Description>{error?.message}</Card.Description>
-        </Card.Content>
-      </Card>
+      <EmptyState
+        icon={Box}
+        title="No Organization"
+        description="You don't have any organization right now."
+        action={{
+          label: "Home",
+          onClick: () => router.push(`/${slug}/`),
+        }}
+      />
     );
   }
 
   return (
-    <div className="w-full space-y-2">
-      <h2>Workspace</h2>
-      <Card>
-        <OrganizationForm
-          mode="edit"
-          initialData={organization}
-          organizationId={organization.id}
-        />
-      </Card>
-    </div>
+    <Card>
+      <OrganizationForm
+        mode="edit"
+        initialData={organization!}
+        organizationId={organization?.id}
+      />
+    </Card>
   );
 };
 

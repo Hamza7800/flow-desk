@@ -53,6 +53,7 @@ const InviteMembers = ({
       onSuccess: () => {
         // state.close();
         setOpen(false);
+        form.reset();
       },
     });
   };

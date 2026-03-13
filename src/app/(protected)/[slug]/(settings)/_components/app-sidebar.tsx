@@ -28,10 +28,6 @@ const data = {
       title: "Administration",
       items: [
         {
-          title: "Teams",
-          url: "teams",
-        },
-        {
           title: "Members",
           url: "members",
         },
@@ -55,7 +51,7 @@ const data = {
 
 export function AppSidebar({ slug, ...props }: ComponentProps<typeof Sidebar>) {
   return (
-    <Sidebar className="bg-[#161616]" {...props}>
+    <Sidebar {...props}>
       <SidebarHeader>
         <LinkButton fullWidth href={`/${slug}`}>
           Go Back

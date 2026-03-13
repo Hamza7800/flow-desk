@@ -9,6 +9,7 @@ import {
 import type { InviteType } from "@/zod-schema/invite-schema";
 import { toast } from "@heroui/react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useRouter } from "next/navigation";
 
 export const useSendInvitation = (
   orgId: string,
@@ -44,6 +45,7 @@ export const useSendInvitation = (
 
 export const useAcceptInvitation = (slug: string) => {
   const queryClient = useQueryClient();
+  const router = useRouter();
 
   return useMutation({
     mutationFn: async (inviteId: string) => {
@@ -61,6 +63,7 @@ export const useAcceptInvitation = (slug: string) => {
         queryKey: queryKeys.organizations.all,
       });
       toast.success(data.message);
+      router.replace(`/${slug}`);
     },
     onError: (error) => {
       toast.danger(error.message);

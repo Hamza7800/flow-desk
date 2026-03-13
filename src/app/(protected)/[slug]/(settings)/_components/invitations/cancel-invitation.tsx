@@ -1,5 +1,6 @@
 "use client";
 
+import { ConfirmModal } from "@/components/confirm-modal";
 import { useCancelInvitation } from "@/hooks/use-invitations";
 import { Button, Spinner } from "@heroui/react";
 import { X } from "lucide-react";
@@ -11,16 +12,37 @@ const CancelInvitation = ({
   inviteId: string;
   slug: string;
 }) => {
-  const acceptMutation = useCancelInvitation(slug);
+  const cancelMutation = useCancelInvitation(slug);
   return (
-    <Button
-      isPending={acceptMutation.isPending}
-      onPress={() => acceptMutation.mutate(inviteId)}
-    >
-      {({ isPending }) => (
-        <>{isPending ? <Spinner color="current" size="sm" /> : <X />}</>
-      )}
-    </Button>
+    <ConfirmModal
+      title="Cancel Invitation"
+      description="Are you sure you want to cancel invitation."
+      confirmText="Yes"
+      isLoading={cancelMutation.isPending}
+      onConfirm={(close) => {
+        cancelMutation.mutate(inviteId, {
+          onSuccess: () => {
+            close();
+          },
+        });
+      }}
+      trigger={
+        <Button variant="outline">
+          {({ isPending }) => (
+            <>
+              {isPending ? (
+                <Spinner color="current" size="sm" />
+              ) : (
+                <div className="flex items-center gap-2">
+                  <X />
+                  <span>Cancel</span>
+                </div>
+              )}
+            </>
+          )}
+        </Button>
+      }
+    />
   );
 };
 

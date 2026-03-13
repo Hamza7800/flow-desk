@@ -28,6 +28,7 @@ import {
   useCreateOrganization,
   useUpdateOrganization,
 } from "@/hooks/use-organizations";
+import { LoadingState } from "../loading-state";
 
 type Props = {
   mode: "edit" | "create";
@@ -73,29 +74,14 @@ const OrganizationForm = ({ mode, initialData, organizationId }: Props) => {
   };
 
   if (!session) {
-    return (
-      <div className="flex min-h-screen items-center justify-center">
-        <Spinner size="lg" />
-      </div>
-    );
+    return <LoadingState />;
   }
 
   const isPending = updateMutation.isPending || createMutation.isPending;
 
   return (
-    // <Surface
-    //   variant="secondary"
-    //   className="flex min-h-screen items-center justify-center px-4"
-    // >
-    <div className="w-full space-y-8">
-      {/* <div className="space-y-2 text-center">
-          <h1 className="text-4xl font-bold text-white">
-            Welcome, {session.user.name}!
-          </h1>
-          <p className="text-slate-400">Let's set up your first organization</p>
-        </div> */}
-
-      <Form className="flex flex-col gap-8" onSubmit={handleSubmit(onSubmit)}>
+    <div className="w-full">
+      <Form className="flex flex-col gap-5" onSubmit={handleSubmit(onSubmit)}>
         <Controller
           control={control}
           name="name"
@@ -126,7 +112,6 @@ const OrganizationForm = ({ mode, initialData, organizationId }: Props) => {
             </TextField>
           )}
         />
-        <Separator />
         <Controller
           control={control}
           name="slug"
@@ -148,19 +133,16 @@ const OrganizationForm = ({ mode, initialData, organizationId }: Props) => {
             </TextField>
           )}
         />
-        <Separator />
-
         <Button
           isPending={isPending}
-          variant="secondary"
+          variant="outline"
           type="submit"
-          className="-mt-4 ml-auto"
+          className="-mt-2 ml-auto"
         >
           {({ isPending }) => (
             <>
               {isPending ? <Spinner color="current" size="sm" /> : null}
               {mode === "create" ? "Create" : "Update"}{" "}
-              {/* <ArrowRight className="ml-2 h-4 w-4" /> */}
             </>
           )}
         </Button>

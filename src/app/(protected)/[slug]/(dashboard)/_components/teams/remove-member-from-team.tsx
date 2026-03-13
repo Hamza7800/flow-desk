@@ -1,7 +1,9 @@
 "use client";
 
+import { ConfirmModal } from "@/components/confirm-modal";
 import { useRemoveMemberFromTeam } from "@/hooks/use-teams";
 import { Button, Spinner } from "@heroui/react";
+import { X } from "lucide-react";
 
 interface TeamRemoveProps {
   teamId: string;
@@ -11,20 +13,38 @@ interface TeamRemoveProps {
 export function RemoveMemberFromTeam({ teamId, userId }: TeamRemoveProps) {
   const removeMutation = useRemoveMemberFromTeam(teamId);
 
-  const handleToggle = async () => {
-    removeMutation.mutate({ teamId, userId });
-  };
-
-  const loading = removeMutation.isPending;
-
   return (
-    <Button onClick={handleToggle} isPending={loading}>
-      {({ isPending }) => (
-        <>
-          {isPending ? <Spinner color="current" size="sm" /> : null}
-          Remove Member
-        </>
-      )}
-    </Button>
+    <ConfirmModal
+      title="Remove Member"
+      description="Are you sure you want to remove member."
+      confirmText="Yes"
+      isLoading={removeMutation.isPending}
+      onConfirm={(close) => {
+        removeMutation.mutate(
+          { teamId, userId },
+          {
+            onSuccess: () => {
+              close();
+            },
+          },
+        );
+      }}
+      trigger={
+        <Button variant="outline">
+          {({ isPending }) => (
+            <>
+              {isPending ? (
+                <Spinner color="current" size="sm" />
+              ) : (
+                <div className="flex items-center gap-2">
+                  <X />
+                  <span>Remove</span>
+                </div>
+              )}
+            </>
+          )}
+        </Button>
+      }
+    />
   );
 }

@@ -78,7 +78,7 @@ const TeamForm = ({
         />
         <Button
           isPending={isPending}
-          variant="secondary"
+          variant="outline"
           type="submit"
           className="ml-auto"
         >
