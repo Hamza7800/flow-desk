@@ -12,6 +12,7 @@ import {
 import { LinkButton } from "@/components/link-button";
 import type { ComponentProps } from "react";
 import SideBarTeams from "./side-bar-teams";
+import { Box, Mail, Receipt, User, Users } from "lucide-react";
 
 const data = {
   navMain: [
@@ -21,6 +22,7 @@ const data = {
         {
           title: "Account",
           url: "account/profile",
+          icon: <User size={14} />,
         },
       ],
     },
@@ -30,19 +32,23 @@ const data = {
         {
           title: "Members",
           url: "members",
+          icon: <Users size={14} />,
         },
 
         {
           title: "Invitations",
           url: "invitations",
+          icon: <Mail size={14} />,
         },
         {
           title: "Billing",
           url: "billing",
+          icon: <Receipt size={14} />,
         },
         {
           title: "Workspace",
           url: "workspace",
+          icon: <Box size={14} />,
         },
       ],
     },
@@ -71,7 +77,7 @@ export function AppSidebar({ slug, ...props }: ComponentProps<typeof Sidebar>) {
                       className="justify-start shadow-none"
                       href={`/${slug}/settings/${item.url}`}
                     >
-                      {item.title}
+                      {item.icon} {item.title}
                     </LinkButton>
                   </SidebarMenuItem>
                 ))}

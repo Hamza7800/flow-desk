@@ -9,7 +9,8 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { useOrgTeams } from "@/hooks/use-teams";
-import { Spinner } from "@heroui/react";
+import { ErrorMessage, Spinner } from "@heroui/react";
+import { BoxIcon } from "lucide-react";
 
 const data = {
   title: "Teams",
@@ -33,20 +34,14 @@ const SideBarTeams = ({ slug }: { slug?: string }) => {
   if (!org) return null;
 
   if (isPending) {
-    return (
-      <div className="flex justify-center py-4">
-        <Spinner size="sm" />
-      </div>
-    );
+    return null;
   }
 
   if (isError) {
-    return (
-      <p className="px-4 py-2 text-sm text-slate-400">Failed to load teams</p>
-    );
+    return <ErrorMessage>Failed to load teams</ErrorMessage>;
   }
 
-  console.log(teams);
+  // console.log(teams);
 
   return (
     <SidebarGroup>
@@ -54,7 +49,9 @@ const SideBarTeams = ({ slug }: { slug?: string }) => {
       <SidebarGroupContent>
         <SidebarMenu>
           {!teams?.length ? (
-            <p className="px-4 py-2 text-sm text-slate-500">No teams</p>
+            <ErrorMessage className="px-4 py-2 text-sm text-slate-500">
+              No teams
+            </ErrorMessage>
           ) : (
             teams?.map((team) => (
               <SidebarMenuItem key={team.id}>
@@ -64,7 +61,7 @@ const SideBarTeams = ({ slug }: { slug?: string }) => {
                   className="justify-start shadow-none"
                   href={`/${slug}/settings/teams/${team.id}`}
                 >
-                  {team.name}
+                  <BoxIcon size={14} /> {team.name}
                 </LinkButton>
               </SidebarMenuItem>
             ))

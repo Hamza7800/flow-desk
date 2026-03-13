@@ -1,3 +1,5 @@
+"use client";
+
 import {
   Sidebar,
   SidebarContent,
@@ -19,6 +21,7 @@ import {
   UserSquare2,
   UsersRoundIcon,
 } from "lucide-react";
+import { useCurrentMemberRole } from "@/hooks/use-member-role";
 
 const data = {
   navMain: [
@@ -41,6 +44,12 @@ const data = {
 };
 
 export function AppSidebar({ slug, ...props }: ComponentProps<typeof Sidebar>) {
+  const { data: userRole, isPending } = useCurrentMemberRole();
+
+  if (isPending) {
+    return null;
+  }
+
   return (
     <Sidebar {...props}>
       <SidebarHeader>
@@ -62,37 +71,38 @@ export function AppSidebar({ slug, ...props }: ComponentProps<typeof Sidebar>) {
           </SidebarMenuItem>
         </SidebarMenu>
 
-        {data.navMain.map((item) => (
-          <Accordion
-            key={item.title}
-            className={"py-0"}
-            defaultExpandedKeys={["workspace"]}
-          >
-            <Accordion.Item id={"workspace"}>
-              <Accordion.Heading>
-                <Accordion.Trigger>
-                  {item.title}
-                  <Accordion.Indicator>
-                    <ChevronDown />
-                  </Accordion.Indicator>
-                </Accordion.Trigger>
-              </Accordion.Heading>
-              <Accordion.Panel className={""}>
-                {item.items.map((item) => (
-                  <LinkButton
-                    className={"justify-start gap-3 text-left shadow-none"}
-                    fullWidth
-                    variant="ghost"
-                    key={item.title}
-                    href={`/${slug}/${item.url}`}
-                  >
-                    {item.icon} {item.title}
-                  </LinkButton>
-                ))}
-              </Accordion.Panel>
-            </Accordion.Item>
-          </Accordion>
-        ))}
+        {userRole !== "member" &&
+          data.navMain.map((item) => (
+            <Accordion
+              key={item.title}
+              className={"py-0"}
+              defaultExpandedKeys={["workspace"]}
+            >
+              <Accordion.Item id={"workspace"}>
+                <Accordion.Heading>
+                  <Accordion.Trigger>
+                    {item.title}
+                    <Accordion.Indicator>
+                      <ChevronDown />
+                    </Accordion.Indicator>
+                  </Accordion.Trigger>
+                </Accordion.Heading>
+                <Accordion.Panel className={""}>
+                  {item.items.map((item) => (
+                    <LinkButton
+                      className={"justify-start gap-3 text-left shadow-none"}
+                      fullWidth
+                      variant="ghost"
+                      key={item.title}
+                      href={`/${slug}/${item.url}`}
+                    >
+                      {item.icon} {item.title}
+                    </LinkButton>
+                  ))}
+                </Accordion.Panel>
+              </Accordion.Item>
+            </Accordion>
+          ))}
 
         <UserTeams />
 

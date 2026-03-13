@@ -35,7 +35,7 @@ const IssueDetails = ({
         title="Failed to load issue"
         message={error?.message}
         onRetry={() => refetch()}
-        homeHref="/"
+        homeHref={`/${slug}`}
       />
     );
   }

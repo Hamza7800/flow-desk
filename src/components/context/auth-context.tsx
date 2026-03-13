@@ -1,14 +1,14 @@
 "use client";
 import { getAuthenticatedUser } from "@/server-actions/users";
 import { authClient } from "@/server/better-auth/client";
-import { Button, Card, Spinner } from "@heroui/react";
+import { Button, Card } from "@heroui/react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import type { User } from "better-auth";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createContext, useContext } from "react";
 import type { ReactNode } from "react";
 import { LinkButton } from "@/components/link-button";
+import WorkspaceLayoutSkeleton from "@/components/skeletons/workspace-layout-skeleton";
 
 type AuthContextType = {
   logout: () => void;
@@ -46,13 +46,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   if (isPending) {
-    return (
-      <div className="flex min-h-screen items-center justify-center">
-        <div className="flex flex-col items-center gap-4">
-          <Spinner size="lg" color="success" />
-        </div>
-      </div>
-    );
+    return <WorkspaceLayoutSkeleton />;
   }
 
   if (isError) {

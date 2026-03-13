@@ -29,6 +29,7 @@ import {
   useUpdateOrganization,
 } from "@/hooks/use-organizations";
 import { LoadingState } from "../loading-state";
+import { cn } from "@/lib/utils";
 
 type Props = {
   mode: "edit" | "create";
@@ -81,7 +82,7 @@ const OrganizationForm = ({ mode, initialData, organizationId }: Props) => {
 
   return (
     <div className="w-full">
-      <Form className="flex flex-col gap-5" onSubmit={handleSubmit(onSubmit)}>
+      <Form className="flex flex-col gap-8" onSubmit={handleSubmit(onSubmit)}>
         <Controller
           control={control}
           name="name"
@@ -99,10 +100,10 @@ const OrganizationForm = ({ mode, initialData, organizationId }: Props) => {
               isInvalid={fieldState.invalid}
               className={"relative flex-row items-center justify-between"}
             >
-              <Label>Name</Label>
+              {mode === "edit" && <Label>Name</Label>}
               <Input
                 variant="secondary"
-                className={"w-full max-w-xs"}
+                className={cn(mode === "create" && "w-full")}
                 placeholder="Space"
               />
               {/* <FieldError>{fieldState.error?.message}</FieldError> */}
@@ -121,9 +122,9 @@ const OrganizationForm = ({ mode, initialData, organizationId }: Props) => {
               {...field}
               isInvalid={fieldState.invalid}
             >
-              <Label>Slug</Label>
+              {mode === "edit" && <Label>Slug</Label>}
               <Input
-                className={"w-full max-w-xs"}
+                className={cn(mode === "create" && "w-full")}
                 variant="secondary"
                 placeholder="Slug"
               />
