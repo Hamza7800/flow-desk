@@ -10,7 +10,7 @@ import {
   MoreHorizontal,
   UserPlus,
 } from "lucide-react";
-import { Button, Card, Chip, Surface } from "@heroui/react";
+import { Button, Card, Chip, Separator, Surface } from "@heroui/react";
 import { useOrganization } from "@/hooks/use-organizations";
 import InviteMembers from "@/app/(protected)/[slug]/(settings)/_components/invite-members";
 import CancelInvitation from "@/app/(protected)/[slug]/(settings)/_components/invitations/cancel-invitation";
@@ -135,26 +135,8 @@ export default function OrgMembers() {
         </div>
 
         <div className="space-y-6 px-2">
-          <Card className="p-0">
-            <Card.Header className="p-4 pb-0">
-              <div className="flex items-center gap-2">
-                <Users size={15} className="text-zinc-400" />
-                <Card.Title className="text-sm font-medium text-white">
-                  Organization Members
-                </Card.Title>
-                <Chip variant="secondary" size="sm" className="ml-auto text-xs">
-                  {organization.members.length}
-                </Chip>
-              </div>
-            </Card.Header>
-
-            <Card.Content className="pt-3">
-              <div className="mb-2 grid grid-cols-[1fr_auto_1fr] gap-4 px-3 text-[11px] font-medium tracking-wider text-zinc-600 uppercase">
-                <span>Member</span>
-                <span>Role</span>
-                <span></span>
-              </div>
-
+          <Card className="p-0" variant="transparent">
+            <Card.Content>
               <div>
                 {organization.members.map((member) => (
                   <div
@@ -202,6 +184,7 @@ export default function OrgMembers() {
               </div>
             </Card.Content>
           </Card>
+          <Separator />
 
           {organization.invitations.length > 0 && (
             <Invites
@@ -211,7 +194,7 @@ export default function OrgMembers() {
               slug={slug}
             />
           )}
-
+          <Separator />
           {organization.invitations.length > 0 && (
             <Invites
               heading="Rejected"
@@ -247,28 +230,10 @@ const Invites = ({
   heading: string;
 }) => {
   return (
-    <Card className="p-0">
-      <Card.Header className="pb-0">
-        <div className="flex items-center gap-2 p-4">
-          <Mail size={15} className="text-zinc-400" />
-          <Card.Title className="text-sm font-medium text-white">
-            {heading}
-          </Card.Title>
-          <Chip variant="secondary" size="sm" className="ml-auto text-xs">
-            {invites.length}
-          </Chip>
-        </div>
-      </Card.Header>
-
-      <Card.Content className="pt-3">
-        <div className="mb-2 grid grid-cols-[1fr_auto_1fr_auto] gap-4 px-3 text-[11px] font-medium tracking-wider text-zinc-600 uppercase">
-          <span>Email</span>
-          <span>Role</span>
-          <span>Status</span>
-          <span>Action</span>
-        </div>
-
-        <div className="divide-y divide-zinc-800/60">
+    <Card className="p-0" variant="transparent">
+      <Card.Header className="px-3">{heading} invites</Card.Header>
+      <Card.Content className="">
+        <div className="divide-y">
           {invites.map((invite: any) => {
             const showCancel = canManageInvites && invite.status === "pending";
             return (

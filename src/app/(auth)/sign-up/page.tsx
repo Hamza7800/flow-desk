@@ -37,12 +37,7 @@ const SignUpUser = () => {
     },
   });
 
-  const {
-    handleSubmit,
-    control,
-    reset,
-    // formState: {  },
-  } = form;
+  const { handleSubmit, control, reset } = form;
 
   const sigUpAction = async (values: SignUpSchemaType) => {
     const parsedInput = SignUpSchema.safeParse(values);
@@ -74,55 +69,7 @@ const SignUpUser = () => {
       setIsSubmitting(false);
       toast.danger(error.message);
     }
-    // setIsSubmitting(true);
-    // toast.promise(sigUpAction(values), {
-    //   loading: "Creating Account...",
-    //   success: (data) => {
-    //     // setIsSubmitting(false);
-    //     reset();
-    //     router.push("/onboarding");
-    //     return `Welcome! ${data.user.name}`;
-    //   },
-    //   error: (err) => {
-    //     // setIsSubmitting(false);
-    //     return err.message;
-    //   },
-    // });
   };
-
-  // const onSubmit = async (values: SignUpSchemaType) => {
-  //   setIsSubmitting(true);
-  //   try {
-  //     const parsedInput = SignUpSchema.safeParse(values);
-  //     if (!parsedInput.success) {
-  //       throw new Error("Invalid Data");
-  //     }
-  //     const res = await authClient.signUp.email({
-  //       email: values.email,
-  //       password: values.password,
-  //       name: values.name,
-  //     });
-
-  //     if (!res.data) {
-  //       throw new Error("Unable to create account");
-  //     }
-  //     reset();
-  //     toast.success("Sign In Success");
-  //     router.push("/");
-  //   } catch (error) {
-  //     if (error instanceof Error) {
-  //       toast.danger(error.message);
-  //       return;
-  //     }
-  //     toast.danger("Unable to create account");
-  //     console.log(error);
-  //   } finally {
-  //     setIsSubmitting(false);
-  //   }
-  // };
-
-  // const password = form.watch("password");
-  // const strength = calculatePasswordStrength(password || "");
 
   return (
     <div className="flex min-h-screen items-center justify-center p-6">

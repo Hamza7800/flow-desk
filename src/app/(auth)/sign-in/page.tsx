@@ -33,8 +33,6 @@ const SignUser = () => {
   const { handleSubmit, control, reset } = form;
 
   const loginAction = async (values: SignInSchemaType) => {
-    // await new Promise((res) => setTimeout(res, 5000));
-
     const parsedInput = SignInSchema.safeParse(values);
     if (!parsedInput.success) {
       throw new Error("Invalid Data");
@@ -53,20 +51,16 @@ const SignUser = () => {
 
   const onSubmit = async (values: SignInSchemaType) => {
     setIsSubmitting(true);
-    toast.promise(loginAction(values), {
-      loading: "Authenticating...",
-      success: (data) => {
-        router.push("/");
-        setIsSubmitting(false);
-        reset();
-        // TODO: REMOVE THIS
-        return `Welcome back! ${data.user.name}`;
-      },
-      error: (err) => {
-        setIsSubmitting(false);
-        return err.message;
-      },
-    });
+    try {
+      await loginAction(values);
+
+      toast.success("Account created");
+      setIsSubmitting(false);
+      router.push("/organizations");
+    } catch (error: any) {
+      setIsSubmitting(false);
+      toast.danger(error.message);
+    }
   };
 
   return (

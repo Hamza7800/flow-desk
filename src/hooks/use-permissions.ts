@@ -1,4 +1,3 @@
-import { useOrganizationContext } from "@/components/context/organization-client-context";
 import { authClient } from "@/server/better-auth/client";
 import { useCurrentMemberRole } from "./use-member-role";
 
@@ -22,7 +21,6 @@ type PermissionsOptions = {
 };
 
 export const usePermissions = (opts: PermissionsOptions = {}) => {
-  const { org } = useOrganizationContext();
   const { data: session } = authClient.useSession();
   const { data: userRole } = useCurrentMemberRole();
 
@@ -52,15 +50,15 @@ export const usePermissions = (opts: PermissionsOptions = {}) => {
 
     canCreateIssue: hasRole(role, "member"),
     canEditIssue: hasRole(role, "member") || isResourceOwner,
-    canDeleteIssue: hasRole(role, "admin") || isResourceOwner,
+    canDeleteIssue: hasRole(role, "owner") || isResourceOwner,
 
     canCreateProject: hasRole(role, "member"),
     canArchiveProject: hasRole(role, "admin") || projectLead,
-    canDeleteProject: hasRole(role, "admin"),
+    canDeleteProject: hasRole(role, "owner"),
     canManageProjectMembers: hasRole(role, "admin") || projectLead,
 
     canCreateTeam: hasRole(role, "admin"),
-    canDeleteTeam: hasRole(role, "admin"),
+    canDeleteTeam: hasRole(role, "owner"),
     canEditTeam: hasRole(role, "admin"),
     canManageTeamMembers: hasRole(role, "admin"),
 

@@ -269,7 +269,6 @@ export const getUserTeamsCurrentOrg = async () => {
 export const addMemberToTeam = async (teamId: string, userId: string) => {
   try {
     // const user = await getUser();
-
     const data = await auth.api.addTeamMember({
       body: {
         teamId,
@@ -281,11 +280,11 @@ export const addMemberToTeam = async (teamId: string, userId: string) => {
 
     return {
       success: true,
-      message: "Team Joined",
+      message: "Added to team",
       data,
     };
   } catch (error) {
-    return returnError(error, "Unable to join team");
+    return returnError(error, "Unable to add member");
   }
 };
 
@@ -304,11 +303,11 @@ export const removeMemberFromTeam = async (teamId: string, userId: string) => {
 
     return {
       success: true,
-      message: "Team Left",
+      message: "Removed from team",
       data,
     };
   } catch (error) {
-    return returnError(error, "Unable to leave team");
+    return returnError(error, "Unable to remove from team");
   }
 };
 

@@ -64,26 +64,8 @@ const TeamMembers = () => {
         </div>
 
         <div className="space-y-6 px-2">
-          <Card className="p-0">
-            <Card.Header className="p-4 pb-0">
-              <div className="flex items-center gap-2">
-                <Users size={15} className="text-zinc-400" />
-                <Card.Title className="text-sm font-medium text-white">
-                  Team Members
-                </Card.Title>
-                <Chip variant="secondary" size="sm" className="ml-auto text-xs">
-                  {membersInTeam?.length}
-                </Chip>
-              </div>
-            </Card.Header>
-
-            <Card.Content className="pt-3">
-              <div className="mb-2 grid grid-cols-[1fr_auto_1fr] gap-4 px-3 text-[11px] font-medium tracking-wider text-zinc-600 uppercase">
-                <span>Member</span>
-                <span>Role</span>
-                <span></span>
-              </div>
-
+          <Card className="p-0" variant="transparent">
+            <Card.Content>
               <div>
                 {membersInTeam?.map((member) => (
                   <div

@@ -73,41 +73,24 @@ const OrgTeams = ({ initialData }: { initialData: TeamsType["data"] }) => {
           </div>
         </div>
 
-        <div className="space-y-6 px-2">
-          <Card className="p-0">
-            <Card.Header className="p-4 pb-0">
-              <div className="flex items-center gap-2">
-                <UserSquare size={15} className="text-zinc-400" />
-                <Card.Title className="text-sm font-medium text-white">
-                  Teams
-                </Card.Title>
-                <Chip variant="secondary" size="sm" className="ml-auto text-xs">
-                  {teams?.length}
-                </Chip>
+        <div className="px-2">
+          {teams?.map((team) => (
+            <Card
+              variant="transparent"
+              onClick={() =>
+                router.push(`/${org?.slug}/settings/teams/${team.id}`)
+              }
+              key={team.id}
+              className="group items-center gap-4 rounded-lg px-3 py-3 transition-colors hover:bg-zinc-800/30"
+            >
+              <div className="flex w-full items-center justify-between">
+                <p className="flex items-center gap-2 truncate text-sm font-medium text-white">
+                  <Box /> {team?.name}
+                </p>
+                <ArrowRight />
               </div>
-            </Card.Header>
-
-            <Card.Content className="pt-3">
-              <div>
-                {teams?.map((team) => (
-                  <Card
-                    onClick={() =>
-                      router.push(`/${org?.slug}/settings/teams/${team.id}`)
-                    }
-                    key={team.id}
-                    className="group items-center gap-4 rounded-lg px-3 py-3 transition-colors hover:bg-zinc-800/30"
-                  >
-                    <div className="flex w-full items-center justify-between">
-                      <p className="flex items-center gap-2 truncate text-sm font-medium text-white">
-                        <Box /> {team?.name}
-                      </p>
-                      <ArrowRight />
-                    </div>
-                  </Card>
-                ))}
-              </div>
-            </Card.Content>
-          </Card>
+            </Card>
+          ))}
         </div>
       </main>
     </div>
