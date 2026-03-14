@@ -17,6 +17,8 @@ import {
 } from "@/zod-schema/project-schema";
 import { and, eq, exists, inArray, or, sql } from "drizzle-orm";
 import { isProjectLead } from "../lib/permissions-checks";
+import { cacheDel, cacheWrap } from "@/lib/cache";
+import { cacheKeys } from "@/lib/query-keys";
 
 const toDate = (val?: string | null) => (val ? new Date(val) : null);
 
@@ -85,56 +87,59 @@ export const createProject = async ({
   }
 };
 
-// TODO: NEED TO FIGURE OUT IF I ONLY HAVE TO SHOW ISSUES IF THE USER IS PART OF THAT PROJECT AS WELL
-export const getProjects = async (teamId?: string) => {
+export const getProjects = async (teamId: string) => {
   try {
     const { userId, orgId } = await getActiveOrgId();
     const { success: isAdmin } = await checkPermission("teamData", "view");
-    let canViewData;
+
     if (teamId) {
-      canViewData = await canViewTeamData(teamId, userId, isAdmin);
+      const canViewData = await canViewTeamData(teamId, userId, isAdmin);
+      if (!canViewData) {
+        return {
+          success: false,
+          data: null,
+          message: "You are not member of this team",
+        };
+      }
     }
 
-    if (!canViewData) {
-      return {
-        success: false,
-        data: null,
-        message: "You are not member of this team",
-      };
-    }
-
-    const projects = await db.query.project.findMany({
-      where: and(
-        eq(project.organizationId, orgId),
-        teamId ? eq(project.teamId, teamId) : undefined,
-        isAdmin
-          ? undefined
-          : or(
-              eq(project.isPrivate, false),
-              eq(project.leadId, userId),
-              exists(
-                db
-                  .select()
-                  .from(projectMember)
-                  .where(
-                    and(
-                      eq(projectMember.projectId, project.id),
-                      eq(projectMember.userId, userId),
-                    ),
+    const projects = await cacheWrap(
+      cacheKeys.projects.teamList(orgId, teamId),
+      async () => {
+        return await db.query.project.findMany({
+          where: and(
+            eq(project.organizationId, orgId),
+            teamId ? eq(project.teamId, teamId) : undefined,
+            isAdmin
+              ? undefined
+              : or(
+                  eq(project.isPrivate, false),
+                  eq(project.leadId, userId),
+                  exists(
+                    db
+                      .select()
+                      .from(projectMember)
+                      .where(
+                        and(
+                          eq(projectMember.projectId, project.id),
+                          eq(projectMember.userId, userId),
+                        ),
+                      ),
                   ),
-              ),
-            ),
-      ),
-      with: {
-        team: { columns: { name: true, id: true } },
-        members: {
+                ),
+          ),
           with: {
-            user: { columns: { id: true, name: true } },
+            team: { columns: { name: true, id: true } },
+            members: {
+              with: {
+                user: { columns: { id: true, name: true } },
+              },
+            },
           },
-        },
+          orderBy: (project, { desc }) => [desc(project.createdAt)],
+        });
       },
-      orderBy: (project, { desc }) => [desc(project.createdAt)],
-    });
+    );
 
     return { success: true, data: projects, message: "Org Projects" };
   } catch (error) {
@@ -188,40 +193,24 @@ export const getProject = async (projectId: string, teamId: string) => {
   try {
     const { userId, orgId } = await getActiveOrgId();
 
-    // const { success: isAdmin } = await checkPermission("project", "view");
-
     const { success: isAdmin } = await checkPermission("teamData", "view");
-    let canViewData;
+
     if (teamId) {
-      canViewData = await canViewTeamData(teamId, userId, isAdmin);
+      const canViewData = await canViewTeamData(teamId, userId, isAdmin);
+      if (!canViewData) {
+        return {
+          success: false,
+          data: null,
+          message: "You are not member of this team",
+        };
+      }
     }
 
-    if (!canViewData) {
-      return {
-        success: false,
-        data: null,
-        message: "You are not member of this team",
-      };
-    }
-
-    // const isLead = await isProjectLead(projectId, userId);
-    // const isMember = await isProjectMember(projectId, userId);
-
-    // const hasAccess = isAdmin || isLead || isMember;
-
-    // if (!hasAccess) {
-    //   return {
-    //     success: false,
-    //     message: "You don't have permission to view this project",
-    //   };
-    // }
-
-    const projectData = await projectQuery(
-      orgId,
-      projectId,
-      userId,
-      isAdmin,
-      teamId,
+    const projectData = await cacheWrap(
+      cacheKeys.projects.detail(projectId),
+      async () => {
+        return await projectQuery(orgId, projectId, userId, isAdmin, teamId);
+      },
     );
 
     return { success: true, data: projectData, message: "Project" };
@@ -312,6 +301,12 @@ export const updateProject = async ({
       existing.teamId!,
     );
 
+    await cacheDel(
+      cacheKeys.projects.orgList(orgId),
+      cacheKeys.projects.teamList(orgId, existing.teamId!),
+      cacheKeys.projects.detail(projectId),
+    );
+
     return {
       success: true,
       message: "Project Updated",
@@ -390,6 +385,12 @@ export const deleteProject = async (projectId: string) => {
       .delete(project)
       .where(and(eq(project.organizationId, orgId), eq(project.id, projectId)))
       .returning();
+
+    await cacheDel(
+      cacheKeys.projects.orgList(orgId),
+      cacheKeys.projects.teamList(orgId, deleted?.teamId!),
+      cacheKeys.projects.detail(projectId),
+    );
 
     return {
       success: true,

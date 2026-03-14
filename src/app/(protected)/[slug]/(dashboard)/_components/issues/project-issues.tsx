@@ -9,20 +9,14 @@ import { Separator } from "@heroui/react";
 import { ErrorState } from "@/components/error-state";
 import { useParams } from "next/navigation";
 
-const ProjectIssues = ({
-  initialData,
-  projectId,
-}: {
-  projectId: string;
-  initialData: IssuesType["data"];
-}) => {
+const ProjectIssues = ({ projectId }: { projectId: string }) => {
   const { slug } = useParams<{ slug: string }>();
   const {
     data: issues,
     isError,
     error,
     refetch,
-  } = useProjectIssues("", projectId, initialData);
+  } = useProjectIssues("", projectId);
 
   if (isError) {
     return (

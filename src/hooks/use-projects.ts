@@ -29,7 +29,7 @@ export const useCreateProject = (orgId: string, teamId: string) => {
       });
       if (teamId) {
         queryClient.invalidateQueries({
-          queryKey: queryKeys.projects.teamList(orgId, teamId),
+          queryKey: queryKeys.projects.teamList(teamId),
         });
       }
       queryClient.invalidateQueries({
@@ -67,11 +67,11 @@ export const useUpdateProjects = (orgId: string) => {
       });
 
       const previousProjects = queryClient.getQueryData(
-        queryKeys.projects.teamList(orgId, teamId),
+        queryKeys.projects.teamList(teamId),
       );
 
       queryClient.setQueryData(
-        queryKeys.projects.teamList(orgId, teamId),
+        queryKeys.projects.teamList(teamId),
         (old: any[]) =>
           old?.map((project) =>
             project.id === projectId ? { ...project, ...newValues } : project,
@@ -83,16 +83,20 @@ export const useUpdateProjects = (orgId: string) => {
     onError: (error, _, context) => {
       if (context?.previousProjects) {
         queryClient.setQueryData(
-          queryKeys.projects.teamList(orgId, context.teamId),
+          queryKeys.projects.teamList(context.teamId),
           context.previousProjects,
         );
       }
 
       toast.danger(error.message);
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       queryClient.invalidateQueries({
         queryKey: queryKeys.projects.all,
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: queryKeys.projects.teamList(data?.teamId ?? ""),
       });
 
       toast.success("Update Success");
@@ -116,31 +120,18 @@ export const useOrgProjects = (
   });
 };
 
-export const useTeamProjects = (
-  orgId: string | undefined,
-  teamId: string | undefined,
-  initialData?: ProjectsType["data"],
-) => {
+export const useTeamProjects = (teamId: string) => {
   return useQuery({
-    queryKey: queryKeys.projects.teamList(
-      orgId ?? "no-org",
-      teamId ?? "no-team",
-    ),
+    queryKey: queryKeys.projects.teamList(teamId),
     queryFn: async () => {
       const result = await getProjects(teamId);
       if (!result.success) throw new Error(result.message);
       return result.data;
     },
-    // enabled: !!orgId && !!teamId,
-    initialData,
   });
 };
 
-export const useProjectDetails = (
-  projectId: string,
-  teamId: string,
-  initialData?: ProjectType["data"],
-) => {
+export const useProjectDetails = (projectId: string, teamId: string) => {
   return useQuery({
     queryKey: queryKeys.projects.detail(projectId),
     queryFn: async () => {
@@ -150,7 +141,6 @@ export const useProjectDetails = (
       }
       return result.data ?? null;
     },
-    initialData,
   });
 };
 
@@ -173,11 +163,11 @@ export const useDeleteProject = (orgId: string, teamId: string) => {
         queryKey: queryKeys.projects.detail(projectId),
       });
       await queryClient.cancelQueries({
-        queryKey: queryKeys.projects.teamList(orgId, teamId),
+        queryKey: queryKeys.projects.teamList(teamId),
       });
 
       const previousProjects = queryClient.getQueryData(
-        queryKeys.projects.teamList(orgId, teamId),
+        queryKeys.projects.teamList(teamId),
       );
 
       queryClient.removeQueries({
@@ -187,7 +177,7 @@ export const useDeleteProject = (orgId: string, teamId: string) => {
       // queryClient.setQueryData(queryKeys.projects.detail(projectId), undefined);
 
       queryClient.setQueryData(
-        queryKeys.projects.teamList(orgId, teamId),
+        queryKeys.projects.teamList(teamId),
         (old: any) => {
           if (!old) return old;
           return old.filter((project: any) => project.id !== projectId);
@@ -199,7 +189,7 @@ export const useDeleteProject = (orgId: string, teamId: string) => {
     onError: (error, _, context) => {
       if (context?.previousProjects) {
         queryClient.setQueryData(
-          queryKeys.projects.teamList(orgId, context.teamId),
+          queryKeys.projects.teamList(context.teamId),
           context.previousProjects,
         );
       }

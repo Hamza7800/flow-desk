@@ -43,8 +43,8 @@ export const queryKeys = {
     all: ["projects"] as const,
     orgList: (orgId: string) =>
       [...queryKeys.projects.all, "list", orgId] as const,
-    teamList: (orgId: string, teamId: string) =>
-      [...queryKeys.projects.all, "list", orgId, "team", teamId] as const,
+    teamList: (teamId: string) =>
+      [...queryKeys.projects.all, "list", "team", teamId] as const,
     detail: (projectId: string) =>
       [...queryKeys.projects.all, "detail", projectId] as const,
     projectLead: (projectId: string) =>

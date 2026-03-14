@@ -1,35 +1,39 @@
 import { getProjects } from "@/server-actions/projects";
-import { Suspense } from "react";
 import TeamProjects from "@/app/(protected)/[slug]/(dashboard)/_components/projects/team-projects";
-import { SiteHeader } from "@/components/site-header";
-import { LoadingState } from "@/components/loading-state";
-import { ErrorState } from "@/components/error-state";
+import {
+  dehydrate,
+  HydrationBoundary,
+  QueryClient,
+} from "@tanstack/react-query";
+import { queryKeys } from "@/lib/query-keys";
 
 type Props = {
   params: Promise<{ teamId: string }>;
 };
 
 const Content = async ({ teamId }: { teamId: string }) => {
-  try {
-    const projects = await getProjects(teamId);
-    if (!projects.success) {
-      throw new Error(projects.message);
-    }
+  const queryClient = new QueryClient();
 
-    return <TeamProjects initialData={projects.data} teamId={teamId} />;
-  } catch (error: any) {
-    return <ErrorState title="No Projects for team" message={error.message} />;
-  }
+  await queryClient.prefetchQuery({
+    queryKey: queryKeys.projects.teamList(teamId),
+    queryFn: async () => {
+      const result = await getProjects(teamId);
+      if (!result.success) throw new Error(result.message);
+      return result.data;
+    },
+  });
+
+  return (
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <TeamProjects teamId={teamId} />
+    </HydrationBoundary>
+  );
 };
 
 const ProjectsPage = async ({ params }: Props) => {
   const { teamId } = await params;
 
-  return (
-    <Suspense fallback={<LoadingState label="Loading... Projects" />}>
-      <Content teamId={teamId} />
-    </Suspense>
-  );
+  return <Content teamId={teamId} />;
 };
 
 export default ProjectsPage;

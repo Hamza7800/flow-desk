@@ -202,17 +202,15 @@ export const getIssue = async (issueId: string, teamId: string) => {
     const { orgId, userId } = await getActiveOrgId();
     const { success: isAdmin } = await checkPermission("teamData", "view");
 
-    let canViewData;
     if (teamId) {
-      canViewData = await canViewTeamData(teamId, userId, isAdmin);
-    }
-
-    if (!canViewData) {
-      return {
-        success: false,
-        data: null,
-        message: "You are not member of this team",
-      };
+      const canViewData = await canViewTeamData(teamId, userId, isAdmin);
+      if (!canViewData) {
+        return {
+          success: false,
+          data: null,
+          message: "You are not member of this team",
+        };
+      }
     }
 
     const issueDetails = await cacheWrap(

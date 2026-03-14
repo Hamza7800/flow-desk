@@ -13,21 +13,10 @@ import { useParams, useRouter } from "next/navigation";
 import { EmptyState } from "@/components/empty-state";
 import CreateProjectButton from "./create-project-button";
 
-const TeamProjects = ({
-  teamId,
-  initialData,
-}: {
-  teamId: string;
-  initialData: ProjectsType["data"];
-}) => {
+const TeamProjects = ({ teamId }: { teamId: string }) => {
   const router = useRouter();
   const { slug } = useParams<{ slug: string }>();
-  const {
-    data: projects,
-    isError,
-    error,
-    refetch,
-  } = useTeamProjects(undefined, teamId, initialData);
+  const { data: projects, isError, error, refetch } = useTeamProjects(teamId);
 
   if (isError) {
     return (

@@ -10,13 +10,11 @@ import { Box } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 
 const ProjectDetails = ({
-  initialData,
   projectId,
   teamId,
 }: {
   projectId: string;
   teamId: string;
-  initialData: ProjectType["data"];
 }) => {
   const router = useRouter();
   const { slug } = useParams<{ slug: string }>();
@@ -25,7 +23,7 @@ const ProjectDetails = ({
     data: project,
     isError,
     error,
-  } = useProjectDetails(projectId, teamId, initialData);
+  } = useProjectDetails(projectId, teamId);
   const updateProject = useUpdateProjects(project?.organizationId ?? "");
 
   if (isError) {
