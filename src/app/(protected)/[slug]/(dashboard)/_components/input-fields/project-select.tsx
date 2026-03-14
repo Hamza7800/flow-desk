@@ -17,7 +17,7 @@ const ProjectSelect = ({
   mode = "edit",
   onChange,
 }: Props) => {
-  const { data: projects, isError, isPending } = useTeamProjects(orgId, teamId);
+  const { data: projects, isError, isPending } = useTeamProjects(teamId);
 
   if (isPending) return null;
   if (isError) return null;

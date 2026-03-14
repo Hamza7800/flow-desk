@@ -104,21 +104,21 @@ export const useUpdateProjects = (orgId: string) => {
   });
 };
 
-export const useOrgProjects = (
-  orgId: string | undefined,
-  initialData?: ProjectsType["data"],
-) => {
-  return useQuery({
-    queryKey: queryKeys.projects.orgList(orgId ?? "no-org"),
-    queryFn: async () => {
-      const result = await getProjects();
-      if (!result.success) throw new Error(result.message);
-      return result.data;
-    },
-    enabled: !!orgId,
-    initialData,
-  });
-};
+// export const useOrgProjects = (
+//   orgId: string | undefined,
+//   initialData?: ProjectsType["data"],
+// ) => {
+//   return useQuery({
+//     queryKey: queryKeys.projects.orgList(orgId ?? "no-org"),
+//     queryFn: async () => {
+//       const result = await getProjects();
+//       if (!result.success) throw new Error(result.message);
+//       return result.data;
+//     },
+//     enabled: !!orgId,
+//     initialData,
+//   });
+// };
 
 export const useTeamProjects = (teamId: string) => {
   return useQuery({

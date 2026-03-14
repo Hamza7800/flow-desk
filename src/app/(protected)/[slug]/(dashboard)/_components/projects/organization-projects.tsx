@@ -1,7 +1,7 @@
 "use client";
 
 import type { ProjectsType } from "@/server-actions/projects";
-import { useOrgProjects } from "@/hooks/use-projects";
+// import { useOrgProjects } from "@/hooks/use-projects";
 import { ProjectBoard } from "./project-board";
 import { useOrganizationContext } from "@/components/context/organization-client-context";
 import { DisplayControls } from "./project-display-controls";
@@ -16,24 +16,24 @@ const OrganizationProjects = ({
   initialData: ProjectsType["data"];
 }) => {
   const { org } = useOrganizationContext();
-  const {
-    data: projects,
-    isError,
-    error,
-  } = useOrgProjects(org?.id ?? "", initialData);
+  // const {
+  //   data: projects,
+  //   isError,
+  //   error,
+  // } = useOrgProjects(org?.id ?? "", initialData);
 
-  if (isError) {
-    return <h2>Error : {error.message}</h2>;
-  }
+  // if (isError) {
+  //   return <h2>Error : {error.message}</h2>;
+  // }
 
-  if (!projects?.length) {
-    return (
-      <div>
-        <h2>No Projects</h2>
-        <p>Create a project in a team</p>
-      </div>
-    );
-  }
+  // if (!projects?.length) {
+  //   return (
+  //     <div>
+  //       <h2>No Projects</h2>
+  //       <p>Create a project in a team</p>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className="">
@@ -41,7 +41,7 @@ const OrganizationProjects = ({
         <DisplayControls />
       </div>
       <Separator className="mb-2" />
-      <ProjectBoard projects={projects ?? []} />
+      {/* <ProjectBoard projects={projects ?? []} /> */}
     </div>
   );
 };
