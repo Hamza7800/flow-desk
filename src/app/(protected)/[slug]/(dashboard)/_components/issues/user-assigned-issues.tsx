@@ -2,24 +2,19 @@
 
 import { useUserAssignedIssues } from "@/hooks/use-issues";
 
-import type { IssuesType } from "@/server-actions/issues";
 import { IssueBoard } from "@/app/(protected)/[slug]/(dashboard)/_components/issues/issue-board";
 import { ErrorState } from "@/components/error-state";
 
-const UserAssignedIssues = ({
-  initialData,
-  teamId,
-}: {
-  teamId?: string;
-  initialData: IssuesType["data"];
-}) => {
+const UserAssignedIssues = () => {
   const {
     data: issues,
+    isLoading,
+    isFetching,
     isError,
     error,
     refetch,
-  } = useUserAssignedIssues(initialData);
-
+  } = useUserAssignedIssues();
+  console.log({ isLoading, isFetching });
   if (isError) {
     return (
       <ErrorState

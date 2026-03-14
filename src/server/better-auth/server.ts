@@ -18,7 +18,7 @@ export const getUser = async () => {
   return session.user;
 };
 
-export const getActiveOrgId = async () => {
+export const getActiveOrgId = cache(async () => {
   const session = await auth.api.getSession({
     headers: await headers(),
   });
@@ -30,4 +30,4 @@ export const getActiveOrgId = async () => {
     userId: session.user.id,
     orgId: session.session.activeOrganizationId,
   };
-};
+});

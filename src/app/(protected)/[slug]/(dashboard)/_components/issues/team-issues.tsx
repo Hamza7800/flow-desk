@@ -10,21 +10,10 @@ import { useParams, useRouter } from "next/navigation";
 import { EmptyState } from "@/components/empty-state";
 import { TicketX } from "lucide-react";
 
-const TeamIssues = ({
-  initialData,
-  teamId,
-}: {
-  teamId: string;
-  initialData: IssuesType["data"];
-}) => {
+const TeamIssues = ({ teamId }: { teamId: string }) => {
   const { slug } = useParams<{ slug: string }>();
   const router = useRouter();
-  const {
-    data: issues,
-    isError,
-    error,
-    refetch,
-  } = useTeamIssues(teamId, initialData);
+  const { data: issues, isError, error, refetch } = useTeamIssues(teamId);
 
   if (isError) {
     return (

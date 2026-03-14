@@ -8,6 +8,7 @@
  *   1. Horizon Labs  — alex=owner,  jordan=admin   — 3 teams
  *   2. Craft Studio  — alex=admin,  jordan=member  — 2 teams
  *   3. Pixel Works   — alex=member, jordan=owner   — 1 team
+ *
  */
 
 import { db } from "@/server/db";

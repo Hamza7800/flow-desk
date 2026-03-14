@@ -90,3 +90,45 @@ export const queryKeys = {
       [...queryKeys.notifications.all, "list", orgId] as const,
   },
 };
+
+export const cacheKeys = {
+  organizations: {
+    detail: (slug: string) => `org:detail:${slug}`,
+    list: (userId: string) => `org:list:${userId}`,
+  },
+
+  members: {
+    list: (orgId: string) => `members:list:${orgId}`,
+    role: (orgId: string, userId: string) => `members:role:${orgId}:${userId}`,
+  },
+
+  invitations: {
+    list: (orgId: string) => `invitations:list:${orgId}`,
+  },
+
+  teams: {
+    orgList: (orgId: string) => `teams:org:${orgId}`,
+    userList: (userId: string) => `teams:user:${userId}`,
+    detail: (teamId: string) => `teams:detail:${teamId}`,
+    members: (teamId: string) => `teams:members:${teamId}`,
+  },
+
+  projects: {
+    orgList: (orgId: string) => `projects:org:${orgId}`,
+    teamList: (orgId: string, teamId: string) =>
+      `projects:team:${teamId}:org:${orgId}`,
+    detail: (projectId: string) => `projects:detail:${projectId}`,
+    lead: (projectId: string) => `projects:lead:${projectId}`,
+  },
+
+  issues: {
+    orgList: (orgId: string) => `issues:org:${orgId}`,
+    byProject: (projectId: string) => `issues:project:${projectId}`,
+    byTeam: (teamId: string) => `issues:team:${teamId}`,
+    byUserAssigned: (userId: string, orgId: string) =>
+      `issues:assigned:${userId}:${orgId}`,
+    byUserCreated: (userId: string, orgId: string) =>
+      `issues:created:${userId}:${orgId}`,
+    detail: (issueId: string) => `issues:detail:${issueId}`,
+  },
+};

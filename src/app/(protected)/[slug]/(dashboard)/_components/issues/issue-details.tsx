@@ -12,13 +12,11 @@ import { useParams, useRouter } from "next/navigation";
 import { Separator } from "@heroui/react";
 
 const IssueDetails = ({
-  initialData,
   issueId,
   teamId,
 }: {
   issueId: string;
   teamId: string;
-  initialData: IssueType["data"];
 }) => {
   const router = useRouter();
   const { slug } = useParams<{ slug: string }>();
@@ -27,7 +25,7 @@ const IssueDetails = ({
     isError,
     error,
     refetch,
-  } = useIssueDetails(issueId, teamId, initialData);
+  } = useIssueDetails(issueId, teamId);
 
   const updateIssue = useUpdateIssue({
     projectId: issue?.projectId,

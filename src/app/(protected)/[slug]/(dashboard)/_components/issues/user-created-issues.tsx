@@ -6,19 +6,8 @@ import type { IssuesType } from "@/server-actions/issues";
 import { IssueBoard } from "@/app/(protected)/[slug]/(dashboard)/_components/issues/issue-board";
 import { ErrorState } from "@/components/error-state";
 
-const UserCreatedIssues = ({
-  initialData,
-  teamId,
-}: {
-  teamId?: string;
-  initialData: IssuesType["data"];
-}) => {
-  const {
-    data: issues,
-    isError,
-    error,
-    refetch,
-  } = useUserCreatedIssues(initialData);
+const UserCreatedIssues = ({}: {}) => {
+  const { data: issues, isError, error, refetch } = useUserCreatedIssues();
 
   if (isError) {
     return (

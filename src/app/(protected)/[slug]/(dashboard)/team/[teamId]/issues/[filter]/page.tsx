@@ -1,35 +1,39 @@
 import { getIssues } from "@/server-actions/issues";
-import { Suspense } from "react";
-import { SiteHeader } from "@/components/site-header";
 import TeamIssues from "@/app/(protected)/[slug]/(dashboard)/_components/issues/team-issues";
-import { LoadingState } from "@/components/loading-state";
-import { ErrorState } from "@/components/error-state";
+import {
+  dehydrate,
+  HydrationBoundary,
+  QueryClient,
+} from "@tanstack/react-query";
+import { queryKeys } from "@/lib/query-keys";
 
 type Props = {
   params: Promise<{ teamId: string }>;
 };
 
 const Content = async ({ teamId }: { teamId: string }) => {
-  try {
-    const issues = await getIssues(teamId);
-    if (!issues.success) {
-      throw new Error(issues.message);
-    }
+  const queryClient = new QueryClient();
 
-    return <TeamIssues teamId={teamId} initialData={issues.data} />;
-  } catch (error: any) {
-    return <ErrorState title="No Issues for team" message={error.message} />;
-  }
+  await queryClient.prefetchQuery({
+    queryKey: queryKeys.issues.byTeam(teamId),
+    queryFn: async () => {
+      const result = await getIssues(teamId);
+      if (!result.success) throw new Error(result.message);
+      return result.data;
+    },
+  });
+
+  return (
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <TeamIssues teamId={teamId} />
+    </HydrationBoundary>
+  );
 };
 
 const IssuesPage = async ({ params }: Props) => {
   const { teamId } = await params;
 
-  return (
-    <Suspense fallback={<LoadingState label="Loading Issues" />}>
-      <Content teamId={teamId} />
-    </Suspense>
-  );
+  return <Content teamId={teamId} />;
 };
 
 export default IssuesPage;

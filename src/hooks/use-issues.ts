@@ -50,11 +50,7 @@ export const useOrgIssues = (orgId: string | undefined) => {
   });
 };
 
-export const useIssueDetails = (
-  issueId: string,
-  teamId: string,
-  initialData?: IssueType["data"],
-) => {
+export const useIssueDetails = (issueId: string, teamId: string) => {
   return useQuery({
     queryKey: queryKeys.issues.detail(issueId),
     queryFn: async () => {
@@ -63,14 +59,10 @@ export const useIssueDetails = (
 
       return result.data;
     },
-    initialData,
   });
 };
 
-export const useTeamIssues = (
-  teamId: string,
-  initialData?: IssuesType["data"],
-) => {
+export const useTeamIssues = (teamId: string) => {
   return useQuery({
     queryKey: queryKeys.issues.byTeam(teamId),
     queryFn: async () => {
@@ -79,7 +71,6 @@ export const useTeamIssues = (
 
       return result.data;
     },
-    initialData,
   });
 };
 
@@ -100,7 +91,7 @@ export const useProjectIssues = (
   });
 };
 
-export const useUserAssignedIssues = (initialData?: IssuesType["data"]) => {
+export const useUserAssignedIssues = () => {
   return useQuery({
     queryKey: queryKeys.issues.byUserAssigned(),
     queryFn: async () => {
@@ -109,11 +100,10 @@ export const useUserAssignedIssues = (initialData?: IssuesType["data"]) => {
 
       return result.data;
     },
-    initialData,
   });
 };
 
-export const useUserCreatedIssues = (initialData?: IssuesType["data"]) => {
+export const useUserCreatedIssues = () => {
   return useQuery({
     queryKey: queryKeys.issues.byUserCreated(),
     queryFn: async () => {
@@ -122,7 +112,6 @@ export const useUserCreatedIssues = (initialData?: IssuesType["data"]) => {
 
       return result.data;
     },
-    initialData,
   });
 };
 

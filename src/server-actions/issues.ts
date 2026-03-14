@@ -1,11 +1,13 @@
 "use server";
 
+import { cacheDel, cacheWrap } from "@/lib/cache";
 import {
   canDeleteIssue,
   canViewTeamData,
   checkPermission,
   isTeamMember,
 } from "@/lib/permissions-checks";
+import { cacheKeys } from "@/lib/query-keys";
 import { returnError } from "@/lib/utils";
 import { getActiveOrgId, getUser } from "@/server/better-auth/server";
 import { db } from "@/server/db";
@@ -24,11 +26,7 @@ import {
 } from "@/zod-schema/issue-schema";
 import { and, eq, exists, inArray, sql } from "drizzle-orm";
 
-export const createIssue = async (
-  // organizationId: string,
-  teamId: string,
-  data: IssueSchemaType,
-) => {
+export const createIssue = async (teamId: string, data: IssueSchemaType) => {
   try {
     const { orgId: organizationId, userId } = await getActiveOrgId();
     const values = issueSchema.parse(data);
@@ -79,35 +77,38 @@ export const getIssues = async (teamId?: string, projectId?: string) => {
 
     const { success: isAdmin } = await checkPermission("teamData", "view");
 
-    const filters = [eq(issue.organizationId, orgId)];
-    if (teamId && teamId.trim() !== "") {
-      filters.push(eq(issue.teamId, teamId));
-    }
-    if (projectId && projectId.trim() !== "") {
-      filters.push(eq(issue.projectId, projectId));
-    }
-
-    let canViewData;
     if (teamId) {
-      canViewData = await canViewTeamData(teamId, userId, isAdmin);
+      const canViewData = await canViewTeamData(teamId, userId, isAdmin);
+      if (!canViewData) {
+        return {
+          success: false,
+          data: null,
+          message: "You are not member of this team",
+        };
+      }
     }
 
-    if (!canViewData) {
-      return {
-        success: false,
-        data: null,
-        message: "You are not member of this team",
-      };
-    }
+    const cacheKey = projectId
+      ? cacheKeys.issues.byProject(projectId)
+      : teamId
+        ? cacheKeys.issues.byTeam(teamId)
+        : cacheKeys.issues.orgList(orgId);
 
-    const issues = await db.query.issue.findMany({
-      where: and(...filters),
-      with: {
-        assignees: true,
-        labels: true,
-        project: true,
-      },
-      orderBy: (issue, { desc }) => [desc(issue.createdAt)],
+    const issues = await cacheWrap(cacheKey, async () => {
+      const filters = [eq(issue.organizationId, orgId)];
+
+      if (teamId?.trim()) filters.push(eq(issue.teamId, teamId));
+      if (projectId?.trim()) filters.push(eq(issue.projectId, projectId));
+
+      return await db.query.issue.findMany({
+        where: and(...filters),
+        with: {
+          assignees: true,
+          labels: true,
+          project: true,
+        },
+        orderBy: (issue, { desc }) => [desc(issue.createdAt)],
+      });
     });
 
     return {
@@ -124,15 +125,24 @@ export const getUserCreatedIssues = async () => {
   try {
     const { userId, orgId } = await getActiveOrgId();
 
-    const issues = await db.query.issue.findMany({
-      where: and(eq(issue.organizationId, orgId), eq(issue.creatorId, userId)),
-      with: {
-        assignees: true,
-        project: true,
-        labels: true,
+    const issues = await cacheWrap(
+      cacheKeys.issues.byUserCreated(userId, orgId),
+      async () => {
+        return await db.query.issue.findMany({
+          where: and(
+            eq(issue.organizationId, orgId),
+            eq(issue.creatorId, userId),
+          ),
+          with: {
+            assignees: true,
+            project: true,
+            labels: true,
+          },
+          orderBy: (issue, { desc }) => [desc(issue.createdAt)],
+        });
       },
-      orderBy: (issue, { desc }) => [desc(issue.createdAt)],
-    });
+    );
+
     return {
       success: true,
       data: issues,
@@ -147,28 +157,33 @@ export const getUserAssignedIssues = async () => {
   try {
     const { userId, orgId } = await getActiveOrgId();
 
-    const issues = await db.query.issue.findMany({
-      where: and(
-        eq(issue.organizationId, orgId),
-        exists(
-          db
-            .select()
-            .from(issueAssignee)
-            .where(
-              and(
-                eq(issueAssignee.userId, userId),
-                eq(issueAssignee.issueId, issue.id),
-              ),
+    const issues = await cacheWrap(
+      cacheKeys.issues.byUserAssigned(userId, orgId),
+      async () => {
+        return await db.query.issue.findMany({
+          where: and(
+            eq(issue.organizationId, orgId),
+            exists(
+              db
+                .select()
+                .from(issueAssignee)
+                .where(
+                  and(
+                    eq(issueAssignee.userId, userId),
+                    eq(issueAssignee.issueId, issue.id),
+                  ),
+                ),
             ),
-        ),
-      ),
-      with: {
-        assignees: true,
-        project: true,
-        labels: true,
+          ),
+          with: {
+            assignees: true,
+            project: true,
+            labels: true,
+          },
+          orderBy: (issue, { desc }) => [desc(issue.createdAt)],
+        });
       },
-      orderBy: (issue, { desc }) => [desc(issue.createdAt)],
-    });
+    );
 
     return {
       success: true,
@@ -200,25 +215,30 @@ export const getIssue = async (issueId: string, teamId: string) => {
       };
     }
 
-    const issueDetails = await db.query.issue.findFirst({
-      where: and(eq(issue.organizationId, orgId), eq(issue.id, issueId)),
-      with: {
-        assignees: true,
-        labels: true,
-        project: {
-          columns: {
-            id: true,
-            name: true,
-            teamId: true,
+    const issueDetails = await cacheWrap(
+      cacheKeys.issues.detail(issueId),
+      async () => {
+        return await db.query.issue.findFirst({
+          where: and(eq(issue.organizationId, orgId), eq(issue.id, issueId)),
+          with: {
+            assignees: true,
+            labels: true,
+            project: {
+              columns: {
+                id: true,
+                name: true,
+                teamId: true,
+              },
+            },
+            comments: true,
+            activities: {
+              orderBy: (issue, { desc }) => [desc(issue.createdAt)],
+            },
           },
-        },
-        comments: true,
-        activities: {
           orderBy: (issue, { desc }) => [desc(issue.createdAt)],
-        },
+        });
       },
-      orderBy: (issue, { desc }) => [desc(issue.createdAt)],
-    });
+    );
 
     return {
       success: true,
@@ -310,6 +330,15 @@ export const updateIssue = async (
         activities: { with: { actor: { columns: { id: true, name: true } } } },
       },
     });
+
+    await cacheDel(
+      cacheKeys.issues.byUserAssigned(userId, orgId),
+      cacheKeys.issues.byUserCreated(userId, orgId),
+      cacheKeys.issues.byTeam(updated?.teamId!),
+      cacheKeys.issues.byProject(updated?.projectId!),
+      cacheKeys.issues.detail(issueId),
+      cacheKeys.issues.orgList(orgId),
+    );
 
     return { success: true, message: "Issue updated", data: updated };
   } catch (error) {
@@ -424,6 +453,15 @@ export const deleteIssue = async (issueId: string) => {
       .delete(issue)
       .where(and(eq(issue.id, issueId), eq(issue.organizationId, orgId)))
       .returning();
+
+    await cacheDel(
+      cacheKeys.issues.byUserAssigned(userId, orgId),
+      cacheKeys.issues.byUserCreated(userId, orgId),
+      cacheKeys.issues.byTeam(deleted?.teamId!),
+      cacheKeys.issues.byProject(deleted?.projectId!),
+      cacheKeys.issues.detail(issueId),
+      cacheKeys.issues.orgList(orgId),
+    );
 
     return { success: true as const, data: deleted, message: "Issue deleted" };
   } catch (error) {
