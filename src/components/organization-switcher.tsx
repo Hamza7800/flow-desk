@@ -3,7 +3,14 @@
 import { Check, ChevronsUpDown, GalleryVerticalEnd } from "lucide-react";
 
 import { SidebarMenu, SidebarMenuItem } from "@/components/ui/sidebar";
-import { Button, Dropdown, Header, Label, Spinner } from "@heroui/react";
+import {
+  Button,
+  Dropdown,
+  ErrorMessage,
+  Header,
+  Label,
+  Spinner,
+} from "@heroui/react";
 import {
   useOrganizationsList,
   useSetOrgActive,
@@ -34,11 +41,11 @@ export function OrganizationSwitcher() {
   }
 
   if (isError) {
-    <h2>Unable to get Organizations</h2>;
+    <ErrorMessage>Unable to get Organizations</ErrorMessage>;
   }
 
   if (action.isError) {
-    <h2>Unable to set Organization active</h2>;
+    <ErrorMessage>Unable to set Organization active</ErrorMessage>;
   }
 
   const isAllowed = memberRole === "admin" || memberRole === "owner";
@@ -51,8 +58,10 @@ export function OrganizationSwitcher() {
             <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
               <GalleryVerticalEnd className="size-4" />
             </div>
-            <div className="flex flex-col gap-1 text-left leading-none">
-              <span className="font-medium">{activeOrganization?.name}</span>
+            <div className="flex min-w-0 flex-col gap-1 text-left leading-none">
+              <span className="max-w-sm truncate font-medium">
+                {activeOrganization?.name}
+              </span>
             </div>
             <ChevronsUpDown className="ml-auto" />
           </Button>

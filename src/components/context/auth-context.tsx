@@ -88,7 +88,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
           <p className="text-muted-foreground mt-2 text-sm">
             We couldn't verify your session. Please try again.
           </p>
-          <p className="text-muted-foreground mt-2 text-sm">{error.message}</p>
+          {/* <p className="text-muted-foreground mt-2 text-sm">{error.message}</p> */}
 
           <div className="mt-6 flex justify-center gap-3">
             <Button onPress={() => refetch()}>Retry</Button>

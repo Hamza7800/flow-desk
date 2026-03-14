@@ -16,6 +16,7 @@ import { ChevronDown } from "@gravity-ui/icons";
 import UserTeams from "./teams/user-teams";
 import {
   Layers2Icon,
+  Mail,
   Settings,
   SettingsIcon,
   UserSquare2,
@@ -102,6 +103,19 @@ export function AppSidebar({ slug, ...props }: ComponentProps<typeof Sidebar>) {
           ))}
 
         <UserTeams />
+
+        <SidebarMenu>
+          <SidebarMenuItem>
+            <LinkButton
+              variant="ghost"
+              className={"justify-start gap-3 pl-4.5 text-left shadow-none"}
+              fullWidth
+              href={`/${slug}/invitations`}
+            >
+              <Mail size={14} /> <span> Invitations</span>
+            </LinkButton>
+          </SidebarMenuItem>
+        </SidebarMenu>
       </SidebarContent>
       <SidebarRail />
     </Sidebar>

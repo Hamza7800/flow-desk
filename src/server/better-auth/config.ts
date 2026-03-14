@@ -29,7 +29,7 @@ export const auth = betterAuth({
       },
       teams: {
         enabled: true,
-        maximumTeams: 2,
+        maximumTeams: 3,
         maximumMembersPerTeam: 10,
         allowRemovingAllTeams: false,
       },

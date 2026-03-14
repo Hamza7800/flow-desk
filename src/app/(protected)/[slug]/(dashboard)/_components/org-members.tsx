@@ -13,7 +13,7 @@ import {
 import { Button, Card, Chip, Separator, Surface } from "@heroui/react";
 import { useOrganization } from "@/hooks/use-organizations";
 import InviteMembers from "@/app/(protected)/[slug]/(settings)/_components/invite-members";
-import CancelInvitation from "@/app/(protected)/[slug]/(settings)/_components/invitations/cancel-invitation";
+import CancelInvitation from "@/app/(protected)/[slug]/(dashboard)/_components/invitations/cancel-invitation";
 import { authClient } from "@/server/better-auth/client";
 import { useState } from "react";
 import { useOrganizationContext } from "@/components/context/organization-client-context";
