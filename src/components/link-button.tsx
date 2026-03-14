@@ -48,7 +48,9 @@ export function LinkButton({
   const router = useRouter();
   return (
     <Button
-      onPress={() => router.push(href)}
+      onPress={() => {
+        if (href) router.push(href);
+      }}
       className={myButtonVariants({ className, radius, variant })}
       {...props}
     >

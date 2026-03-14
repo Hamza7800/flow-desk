@@ -65,9 +65,9 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
             </p>
 
             <div className="mt-6 flex items-center justify-center gap-3">
-              <Button size="lg" onPress={() => refetch()}>
+              <LinkButton href="" onClick={() => refetch()}>
                 Try Again
-              </Button>
+              </LinkButton>
 
               <LinkButton href="/sign-in">Go to Login</LinkButton>
             </div>
@@ -77,7 +77,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
 
     return (
-      <div className="flex min-h-[60vh] items-center justify-center">
+      <div className="flex min-h-screen items-center justify-center">
         <div className="bg-card w-full max-w-md rounded-2xl border p-8 text-center shadow-sm">
           <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-yellow-100 text-yellow-600">
             !
@@ -91,7 +91,9 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
           {/* <p className="text-muted-foreground mt-2 text-sm">{error.message}</p> */}
 
           <div className="mt-6 flex justify-center gap-3">
-            <Button onPress={() => refetch()}>Retry</Button>
+            <LinkButton href="" onClick={() => refetch()}>
+              Retry
+            </LinkButton>
 
             <LinkButton href="/sign-in">Go to Login</LinkButton>
           </div>

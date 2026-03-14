@@ -43,7 +43,7 @@ const ListCard = ({
         <span className="w-[130px] shrink-0 text-sm text-white/70">
           {project.identifier}
         </span>
-        <span className="shrink-0 text-sm">{project.name}</span>
+        <span className="shrink-0 truncate text-sm">{project.name}</span>
       </div>
 
       <div className="ml-auto flex items-center justify-end gap-3">

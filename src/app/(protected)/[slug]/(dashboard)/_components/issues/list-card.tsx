@@ -66,7 +66,7 @@ const ListCard = ({
           />
         )}
 
-        <span className="shrink-0 text-sm">{issue.title}</span>
+        <span className="min-w-0 flex-1 truncate text-sm">{issue.title}</span>
       </Card>
     );
   }
@@ -92,7 +92,9 @@ const ListCard = ({
         />
       )}
 
-      <span className="shrink-0 text-sm text-white/70">{issue.identifier}</span>
+      <span className="shrink-0 truncate text-sm text-white/70">
+        {issue.identifier}
+      </span>
 
       {displayProperties.showStatus && (
         <StatusSelect
@@ -109,7 +111,7 @@ const ListCard = ({
         />
       )}
 
-      <span className="shrink-0 text-sm">{issue.title}</span>
+      <span className="min-w-0 flex-1 truncate text-sm">{issue.title}</span>
 
       <div className="ml-auto flex items-center justify-end gap-3">
         {displayProperties.showAssignee && (
@@ -128,13 +130,13 @@ const ListCard = ({
         )}
 
         {displayProperties.showCreatedAt && (
-          <div>
+          <div className="hidden md:block">
             <span>{format(new Date(issue.createdAt), "MMM d")}</span>
           </div>
         )}
 
         {displayProperties.showUpdatedAt && (
-          <div>
+          <div className="hidden md:block">
             <span>{format(new Date(issue.updatedAt), "MMM d")}</span>
           </div>
         )}
