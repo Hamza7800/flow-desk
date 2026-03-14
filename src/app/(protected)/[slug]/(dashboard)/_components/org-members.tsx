@@ -184,14 +184,14 @@ export default function OrgMembers() {
                           memberUserId={member.userId}
                         />
                       </PermissionGate>
-                      <PermissionGate permission={"canInviteMembers"}>
+                      {/* <PermissionGate permission={"canInviteMembers"}>
                         <div className="ml-auto">
                           <RemoveMemberFromOrg
                             isCurrentUser={member.userId === user?.id}
                             userId={member.id}
                           />
                         </div>
-                      </PermissionGate>
+                      </PermissionGate> */}
                     </div>
                   </div>
                 ))}

@@ -1,6 +1,8 @@
 "use server";
 
+import { cacheDel } from "@/lib/cache";
 import { checkPermission } from "@/lib/permissions-checks";
+import { cacheKeys } from "@/lib/query-keys";
 import { returnError } from "@/lib/utils";
 import { auth } from "@/server/better-auth";
 import { getActiveOrgId, getUser } from "@/server/better-auth/server";
@@ -149,7 +151,7 @@ export type UserOrgType = Awaited<ReturnType<typeof getUserListOrganizations>>;
 
 export const setActiveOrganization = async (orgId: string, slug: string) => {
   try {
-    await getUser();
+    const { userId, orgId: previousOrgId } = await getActiveOrgId();
 
     const data = await auth.api.setActiveOrganization({
       body: {
@@ -165,6 +167,13 @@ export const setActiveOrganization = async (orgId: string, slug: string) => {
         message: "Unable to set  organization active",
       };
     }
+
+    await Promise.all([
+      cacheDel(cacheKeys.issues.byUserAssigned(userId, previousOrgId)),
+      cacheDel(cacheKeys.issues.byUserCreated(userId, previousOrgId)),
+      cacheDel(cacheKeys.issues.orgList(previousOrgId)),
+      cacheDel(cacheKeys.members.list(previousOrgId)),
+    ]);
 
     return {
       success: true,

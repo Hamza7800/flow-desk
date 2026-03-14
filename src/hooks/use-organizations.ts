@@ -97,47 +97,26 @@ export const useSetOrgActive = () => {
 
   return useMutation({
     mutationFn: async ({ id, slug }: { id: string; slug: string }) => {
-      await authClient.organization.setActive({
+      // await authClient.organization.setActive({
+      //   organizationId: id,
+      //   organizationSlug: slug,
+      // });
+      const result = await authClient.organization.setActive({
         organizationId: id,
         organizationSlug: slug,
       });
-      const result = await setActiveOrganization(id, slug);
-      if (!result.success) {
-        throw new Error(result.message);
-      }
+
+      if (result.error) throw new Error(result.error.message);
       return result.data;
     },
     onSuccess: (data) => {
-      // queryClient.clear();
-
-      queryClient.removeQueries({
-        queryKey: queryKeys.teams.all,
-      });
-
-      queryClient.removeQueries({
-        queryKey: queryKeys.invitations.all,
-      });
-      queryClient.removeQueries({
-        queryKey: queryKeys.projects.all,
-      });
-
-      queryClient.removeQueries({
-        queryKey: queryKeys.issues.all,
-      });
-
-      queryClient.removeQueries({
-        queryKey: queryKeys.members.all,
-      });
-
-      queryClient.removeQueries({
-        queryKey: queryKeys.comments.all,
-      });
+      queryClient.clear();
 
       toast.success(`${data?.name} org set active`);
-      router.replace(`/${data?.slug}`);
+      // router.replace(`/${data?.slug}`);
 
       // router.refresh();
-      // window.location.href = `/${data.data?.slug}`;
+      window.location.href = `/${data?.slug}`;
     },
 
     onError: (error: Error) => {
