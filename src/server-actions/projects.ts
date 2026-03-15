@@ -81,6 +81,13 @@ export const createProject = async ({
       }
       return createdProject;
     });
+
+    await cacheDel(
+      cacheKeys.projects.orgList(orgId),
+      cacheKeys.projects.teamList(orgId, newProject?.teamId!),
+      cacheKeys.projects.detail(newProject?.id!),
+    );
+
     return { success: true, message: "Project created", data: newProject };
   } catch (error) {
     return returnError(error, "Unable to create project");

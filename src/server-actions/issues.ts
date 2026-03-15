@@ -65,6 +65,16 @@ export const createIssue = async (teamId: string, data: IssueSchemaType) => {
 
       return createdIssue;
     });
+
+    await cacheDel(
+      cacheKeys.issues.byUserAssigned(userId, organizationId),
+      cacheKeys.issues.byUserCreated(userId, organizationId),
+      cacheKeys.issues.byTeam(newIssue?.teamId!),
+      cacheKeys.issues.byProject(newIssue?.projectId!),
+      cacheKeys.issues.detail(newIssue?.id!),
+      cacheKeys.issues.orgList(organizationId),
+    );
+
     return { success: true, message: "Issue created", data: newIssue };
   } catch (error) {
     return returnError(error, "Unable to create Issue");
