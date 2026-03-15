@@ -282,7 +282,7 @@ export const updateIssue = async (
         .update(issue)
         .set({
           ...scalerFields,
-          updatedAt: new Date(),
+          updatedAt: new Date().toString(),
         })
         .where(and(eq(issue.organizationId, orgId), eq(issue.id, issueId)));
 

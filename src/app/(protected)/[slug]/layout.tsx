@@ -22,10 +22,10 @@ const Content = async ({
   children: ReactNode;
 }) => {
   try {
-    const [orgRes, userOrgsRes, userTeamsRes] = await Promise.all([
+    const [orgRes, userOrgsRes] = await Promise.all([
       getOrganization(slug),
       getUserListOrganizations(),
-      getUserTeamsCurrentOrg(),
+      // getUserTeamsCurrentOrg(),
     ]);
 
     if (!orgRes.success) {
@@ -42,7 +42,7 @@ const Content = async ({
         initialData={{
           initialOrg: orgRes.data,
           initialUserOrgs: userOrgsRes.data,
-          initialTeams: userTeamsRes.data,
+          // initialTeams: userTeamsRes.data,
         }}
       >
         {children}

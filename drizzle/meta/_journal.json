@@ -1,61 +1,12 @@
 {
   "version": "7",
-  "dialect": "postgresql",
+  "dialect": "sqlite",
   "entries": [
     {
       "idx": 0,
-      "version": "7",
-      "when": 1771514466566,
-      "tag": "0000_eager_argent",
-      "breakpoints": true
-    },
-    {
-      "idx": 1,
-      "version": "7",
-      "when": 1771701776761,
-      "tag": "0001_cloudy_raza",
-      "breakpoints": true
-    },
-    {
-      "idx": 2,
-      "version": "7",
-      "when": 1771703849330,
-      "tag": "0002_lucky_blindfold",
-      "breakpoints": true
-    },
-    {
-      "idx": 3,
-      "version": "7",
-      "when": 1771718502892,
-      "tag": "0003_known_wrecker",
-      "breakpoints": true
-    },
-    {
-      "idx": 4,
-      "version": "7",
-      "when": 1771722019565,
-      "tag": "0004_skinny_guardsmen",
-      "breakpoints": true
-    },
-    {
-      "idx": 5,
-      "version": "7",
-      "when": 1772038527041,
-      "tag": "0005_panoramic_slyde",
-      "breakpoints": true
-    },
-    {
-      "idx": 6,
-      "version": "7",
-      "when": 1772239335351,
-      "tag": "0006_fancy_namora",
-      "breakpoints": true
-    },
-    {
-      "idx": 7,
-      "version": "7",
-      "when": 1772563097565,
-      "tag": "0007_kind_ulik",
+      "version": "6",
+      "when": 1773533256894,
+      "tag": "0000_fantastic_chronomancer",
       "breakpoints": true
     }
   ]

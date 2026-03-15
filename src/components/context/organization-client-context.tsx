@@ -18,14 +18,14 @@ const OrganizationContext = createContext<{
   org: OrgType["data"] | undefined;
   // setOrg: (o: Organization) => void;
   userOrgs: UserOrgType["data"];
-  userTeams: TeamsType["data"];
+  // userTeams: TeamsType["data"];
   switchOrg: (slug: string) => Promise<void>;
 } | null>(null);
 
 type InitialData = {
   initialOrg: OrgType["data"];
   initialUserOrgs: UserOrgType["data"];
-  initialTeams: TeamsType["data"];
+  // initialTeams: TeamsType["data"];
 };
 
 const OrganizationProvider = ({
@@ -48,7 +48,7 @@ const OrganizationProvider = ({
   const value = useMemo(
     () => ({
       org,
-      userTeams: initialData.initialTeams,
+      // userTeams: initialData.initialTeams,
       userOrgs: initialData.initialUserOrgs,
       switchOrg: async (slug: string) => {
         router.push(`/org/${slug}`);

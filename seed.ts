@@ -359,7 +359,7 @@ export async function seed() {
         id: orgId,
         name: orgConfig.name,
         slug: orgConfig.slug,
-        createdAt: new Date(),
+        createdAt: new Date().toString(),
       })
       .onConflictDoNothing();
 
@@ -376,7 +376,7 @@ export async function seed() {
         organizationId: finalOrgId,
         userId: alexId,
         role: orgConfig.alexRole,
-        createdAt: new Date(),
+        createdAt: new Date().toString(),
       })
       .onConflictDoNothing();
 
@@ -387,7 +387,7 @@ export async function seed() {
         organizationId: finalOrgId,
         userId: jordanId,
         role: orgConfig.jordanRole,
-        createdAt: new Date(),
+        createdAt: new Date().toString(),
       })
       .onConflictDoNothing();
 
@@ -420,7 +420,7 @@ export async function seed() {
           id: teamId,
           name: teamConfig.name,
           organizationId: finalOrgId,
-          createdAt: new Date(),
+          createdAt: new Date().toString(),
         })
         .onConflictDoNothing();
 
@@ -432,7 +432,7 @@ export async function seed() {
             id: shortId(),
             teamId,
             userId,
-            createdAt: new Date(),
+            createdAt: new Date().toString(),
           })
           .onConflictDoNothing();
       }
@@ -475,8 +475,8 @@ export async function seed() {
             isPrivate,
             leadId: pIdx % 2 === 0 ? alexId : jordanId,
             issueCounter: 0,
-            createdAt: new Date(),
-            updatedAt: new Date(),
+            createdAt: new Date().toString(),
+            updatedAt: new Date().toString(),
           })
           .onConflictDoNothing();
 
@@ -513,8 +513,8 @@ export async function seed() {
               identifier: `${ident}-${iIdx + 1}`,
               status: weightedStatus(),
               priority: weightedPriority(),
-              createdAt: new Date(),
-              updatedAt: new Date(),
+              createdAt: new Date().toString(),
+              updatedAt: new Date().toString(),
             })
             .onConflictDoNothing();
 

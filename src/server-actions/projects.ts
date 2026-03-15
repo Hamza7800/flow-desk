@@ -58,8 +58,8 @@ export const createProject = async ({
           leadId: validatedData?.leadId?.[0],
           status: validatedData.status,
           priority: validatedData.priority,
-          startDate: toDate(validatedData.startDate),
-          endDate: toDate(validatedData.endDate),
+          startDate: toDate(validatedData.startDate)?.toString(),
+          endDate: toDate(validatedData.endDate)?.toString(),
         })
         .returning();
 
@@ -271,8 +271,12 @@ export const updateProject = async ({
           ...scalerFields,
           identifier: await generateIdentifier(orgId),
           leadId: validatedData?.leadId?.[0] ?? null,
-          ...(startDate !== undefined && { startDate: toDate(startDate) }),
-          ...(endDate !== undefined && { endDate: toDate(endDate) }),
+          ...(startDate !== undefined && {
+            startDate: toDate(startDate)?.toString(),
+          }),
+          ...(endDate !== undefined && {
+            endDate: toDate(endDate)?.toString(),
+          }),
         })
         .where(
           and(eq(project.organizationId, orgId), eq(project.id, projectId)),

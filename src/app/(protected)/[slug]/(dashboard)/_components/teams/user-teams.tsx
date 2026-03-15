@@ -15,8 +15,8 @@ const items = [
 
 const UserTeams = () => {
   const { slug } = useParams<{ slug: string }>();
-  const { userTeams } = useOrganizationContext();
-  const { data: teams, isPending, isError } = useUserTeams(userTeams);
+  // const { userTeams } = useOrganizationContext();
+  const { data: teams, isPending, isError } = useUserTeams();
 
   if (isPending) {
     return (

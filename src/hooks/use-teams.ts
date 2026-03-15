@@ -30,7 +30,7 @@ export const useOrgTeams = (orgId: string, initialData?: TeamsType["data"]) => {
   });
 };
 
-export const useUserTeams = (initialData?: TeamsType["data"]) => {
+export const useUserTeams = () => {
   return useQuery({
     // queryKey: queryKeys.teams.userList(orgId),
     queryKey: queryKeys.teams.userList(),
@@ -39,7 +39,6 @@ export const useUserTeams = (initialData?: TeamsType["data"]) => {
       if (!result.success) throw new Error(result.message);
       return result.data;
     },
-    initialData,
   });
 };
 
