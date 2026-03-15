@@ -139,10 +139,11 @@ export type OrgType = Awaited<ReturnType<typeof getOrganization>>;
 
 export const getUserListOrganizations = async () => {
   try {
-    const { userId } = await getActiveOrgId();
+    const user = await getUser();
+    // const { userId } = await getActiveOrgId();
 
     const data = await cacheWrap(
-      cacheKeys.organizations.list(userId),
+      cacheKeys.organizations.list(user.id),
       async () => auth.api.listOrganizations({ headers: await headers() }),
       1000 * 60 * 10,
     );

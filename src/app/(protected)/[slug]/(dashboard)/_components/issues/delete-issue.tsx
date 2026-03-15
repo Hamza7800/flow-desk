@@ -28,7 +28,8 @@ const DeleteIssue = ({
         mutate(issueId, {
           onSuccess: () => {
             close();
-            router.push(`/${slug}/my-issues/assigned`);
+            // router.push(`/${slug}/my-issues/assigned`);
+            router.back();
           },
         });
       }}

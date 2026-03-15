@@ -8,9 +8,14 @@ export const getSession = cache(async () =>
 );
 
 export const getUser = async () => {
-  const session = await auth.api.getSession({
-    headers: await headers(),
-  });
+  const hdrs = await headers();
+  const token = hdrs.get("cookie") ?? hdrs.get("authorization") ?? "no-token";
+
+  const session = await cacheWrap(
+    `session:${token.slice(-32)}`,
+    () => auth.api.getSession({ headers: hdrs }),
+    1000 * 30,
+  );
 
   if (!session?.user || !session?.user.id) {
     throw new Error("Unauthorized: You must be logged in");

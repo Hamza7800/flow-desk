@@ -11,8 +11,8 @@ const keyv = new Keyv({ store });
 
 export const appCache = createCache({
   stores: [keyv],
-  ttl: 1000 * 60 * 2,
-  refreshThreshold: 1000 * 30,
+  ttl: 1000 * 60 * 30,
+  refreshThreshold: 1000 * 60 * 5,
 });
 
 export const cacheWrap = <T>(

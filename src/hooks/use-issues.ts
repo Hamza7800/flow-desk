@@ -82,7 +82,7 @@ export const useProjectIssues = (
   return useQuery({
     queryKey: queryKeys.issues.byProject(projectId),
     queryFn: async () => {
-      const result = await getIssues(teamId, projectId);
+      const result = await getIssues(undefined, projectId);
       if (!result.success) throw new Error(result.message);
 
       return result.data;

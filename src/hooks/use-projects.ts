@@ -202,7 +202,8 @@ export const useDeleteProject = (orgId: string, teamId: string) => {
       });
 
       toast.success(data.message);
-      router.replace(`/${slug}`);
+      // router.replace(`/${slug}`);
+      router.back();
     },
   });
 };

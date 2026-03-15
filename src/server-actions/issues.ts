@@ -481,6 +481,15 @@ export const deleteIssue = async (issueId: string) => {
       .where(and(eq(issue.id, issueId), eq(issue.organizationId, orgId)))
       .returning();
 
+    // await cacheDel(
+    //   cacheKeys.issues.byUserAssigned(userId, orgId),
+    //   cacheKeys.issues.byUserCreated(userId, orgId),
+    //   cacheKeys.issues.byTeam(deleted?.teamId!),
+    //   cacheKeys.issues.byProject(deleted?.projectId!),
+    //   cacheKeys.issues.detail(issueId),
+    //   cacheKeys.issues.orgList(orgId),
+    // );
+
     await cacheDel(
       cacheKeys.issues.byUserAssigned(userId, orgId),
       cacheKeys.issues.byUserCreated(userId, orgId),
