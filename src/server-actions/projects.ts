@@ -4,6 +4,7 @@ import {
   canViewTeamData,
   checkPermission,
   isProjectMember,
+  isTeamMemberCached,
 } from "@/lib/permissions-checks";
 import { returnError } from "@/lib/utils";
 import { getActiveOrgId } from "@/server/better-auth/server";
@@ -100,8 +101,12 @@ export const getProjects = async (teamId: string) => {
     const { success: isAdmin } = await checkPermission("teamData", "view");
 
     if (teamId) {
-      const canViewData = await canViewTeamData(teamId, userId, isAdmin);
-      if (!canViewData) {
+      const [{ success: isAdmin }, isMember] = await Promise.all([
+        checkPermission("teamData", "view"),
+        isTeamMemberCached(userId, teamId),
+      ]);
+
+      if (!isAdmin && !isMember) {
         return {
           success: false,
           data: null,
@@ -203,8 +208,12 @@ export const getProject = async (projectId: string, teamId: string) => {
     const { success: isAdmin } = await checkPermission("teamData", "view");
 
     if (teamId) {
-      const canViewData = await canViewTeamData(teamId, userId, isAdmin);
-      if (!canViewData) {
+      const [{ success: isAdmin }, isMember] = await Promise.all([
+        checkPermission("teamData", "view"),
+        isTeamMemberCached(userId, teamId),
+      ]);
+
+      if (!isAdmin && !isMember) {
         return {
           success: false,
           data: null,

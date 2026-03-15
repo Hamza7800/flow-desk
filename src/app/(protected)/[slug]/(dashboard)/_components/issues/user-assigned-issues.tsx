@@ -6,15 +6,8 @@ import { IssueBoard } from "@/app/(protected)/[slug]/(dashboard)/_components/iss
 import { ErrorState } from "@/components/error-state";
 
 const UserAssignedIssues = () => {
-  const {
-    data: issues,
-    isLoading,
-    isFetching,
-    isError,
-    error,
-    refetch,
-  } = useUserAssignedIssues();
-  console.log({ isLoading, isFetching });
+  const { data: issues, isError, error, refetch } = useUserAssignedIssues();
+
   if (isError) {
     return (
       <ErrorState

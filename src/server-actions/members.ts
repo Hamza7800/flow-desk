@@ -22,6 +22,7 @@ export const getCurrentMemberRole = async () => {
   }
 };
 
+// TODO: Clear Permission Cache
 export const updateMemberRole = async (
   memberId: string,
   newRole: "admin" | "member",

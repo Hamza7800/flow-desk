@@ -177,13 +177,13 @@ export default function OrgMembers() {
                     </Chip>
 
                     <div className="ml-auto flex w-fit items-center gap-2">
-                      <PermissionGate permission="isOwner">
+                      {/* <PermissionGate permission="isOwner">
                         <RoleSelect
                           memberId={member.id}
                           currentRole={member.role}
                           memberUserId={member.userId}
                         />
-                      </PermissionGate>
+                      </PermissionGate> */}
                       {/* <PermissionGate permission={"canInviteMembers"}>
                         <div className="ml-auto">
                           <RemoveMemberFromOrg
@@ -242,6 +242,9 @@ const Invites = ({
   canManageInvites: boolean;
   heading: string;
 }) => {
+  if (!invites.length) {
+    return null;
+  }
   return (
     <Card className="p-0" variant="transparent">
       <Card.Header className="px-3">{heading} invites</Card.Header>

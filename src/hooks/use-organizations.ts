@@ -77,7 +77,7 @@ export const useOrganization = (
   });
 };
 
-export const useOrganizationsList = (initialData?: UserOrgType["data"]) => {
+export const useOrganizationsList = () => {
   return useQuery({
     queryKey: queryKeys.organizations.list(),
     queryFn: async () => {
@@ -87,7 +87,7 @@ export const useOrganizationsList = (initialData?: UserOrgType["data"]) => {
       }
       return result.data;
     },
-    initialData,
+    // initialData,
   });
 };
 

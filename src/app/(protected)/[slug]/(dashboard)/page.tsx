@@ -12,17 +12,5 @@ type Props = {
 
 export default async function Page({ params }: Props) {
   const { slug } = await params;
-  const result = await getOrganization(slug);
-
-  if (!result.success) {
-    throw Error(result.message);
-  }
-
-  if (!result.data) {
-    throw new Error("Organization not found");
-  }
-
-  const { data: organization } = result;
-
-  redirect(`/${organization.slug}/my-issues/assigned`);
+  redirect(`/${slug}/my-issues/assigned`);
 }

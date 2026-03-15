@@ -111,6 +111,8 @@ export const cacheKeys = {
     userList: (userId: string) => `teams:user:${userId}`,
     detail: (teamId: string) => `teams:detail:${teamId}`,
     members: (teamId: string) => `teams:members:${teamId}`,
+    membership: (userId: string, teamId: string) =>
+      `team:membership:${userId}:${teamId}`,
   },
 
   projects: {

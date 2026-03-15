@@ -1,4 +1,4 @@
-"use client";
+// "use client";
 
 import {
   Sidebar,
@@ -22,30 +22,10 @@ import {
   UserSquare2,
   UsersRoundIcon,
 } from "lucide-react";
-import { useCurrentMemberRole } from "@/hooks/use-member-role";
-
-const data = {
-  navMain: [
-    {
-      title: "Workspace",
-      items: [
-        {
-          title: "Members",
-          url: "/members",
-          icon: <UsersRoundIcon size={14} />,
-        },
-        {
-          title: "Teams",
-          url: "/teams",
-          icon: <UserSquare2 size={14} />,
-        },
-      ],
-    },
-  ],
-};
+import WorkspaceSettings from "./workspace-settings";
 
 export function AppSidebar({ slug, ...props }: ComponentProps<typeof Sidebar>) {
-  const { data: userRole, isPending } = useCurrentMemberRole();
+  // const { data: userRole, isPending } = useCurrentMemberRole();
 
   return (
     <Sidebar {...props}>
@@ -68,39 +48,7 @@ export function AppSidebar({ slug, ...props }: ComponentProps<typeof Sidebar>) {
           </SidebarMenuItem>
         </SidebarMenu>
 
-        {userRole !== "member" &&
-          !isPending &&
-          data.navMain.map((item) => (
-            <Accordion
-              key={item.title}
-              className={"py-0"}
-              defaultExpandedKeys={["workspace"]}
-            >
-              <Accordion.Item id={"workspace"}>
-                <Accordion.Heading>
-                  <Accordion.Trigger>
-                    {item.title}
-                    <Accordion.Indicator>
-                      <ChevronDown />
-                    </Accordion.Indicator>
-                  </Accordion.Trigger>
-                </Accordion.Heading>
-                <Accordion.Panel className={""}>
-                  {item.items.map((item) => (
-                    <LinkButton
-                      className={"justify-start gap-3 text-left shadow-none"}
-                      fullWidth
-                      variant="ghost"
-                      key={item.title}
-                      href={`/${slug}/${item.url}`}
-                    >
-                      {item.icon} {item.title}
-                    </LinkButton>
-                  ))}
-                </Accordion.Panel>
-              </Accordion.Item>
-            </Accordion>
-          ))}
+        <WorkspaceSettings slug={`${slug}`} />
 
         <UserTeams />
 

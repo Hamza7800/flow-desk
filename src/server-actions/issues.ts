@@ -6,6 +6,7 @@ import {
   canViewTeamData,
   checkPermission,
   isTeamMember,
+  isTeamMemberCached,
 } from "@/lib/permissions-checks";
 import { cacheKeys } from "@/lib/query-keys";
 import { returnError } from "@/lib/utils";
@@ -83,13 +84,22 @@ export const createIssue = async (teamId: string, data: IssueSchemaType) => {
 
 export const getIssues = async (teamId?: string, projectId?: string) => {
   try {
+    const t0 = Date.now();
+
     const { orgId, userId } = await getActiveOrgId();
 
-    const { success: isAdmin } = await checkPermission("teamData", "view");
+    console.log(`① getActiveOrgId: ${Date.now() - t0}ms`);
 
+    const t1 = Date.now();
     if (teamId) {
-      const canViewData = await canViewTeamData(teamId, userId, isAdmin);
-      if (!canViewData) {
+      const [{ success: isAdmin }, isMember] = await Promise.all([
+        checkPermission("teamData", "view"),
+        isTeamMemberCached(userId, teamId),
+      ]);
+
+      console.log(`② permission checks: ${Date.now() - t1}ms`);
+
+      if (!isAdmin && !isMember) {
         return {
           success: false,
           data: null,
@@ -103,6 +113,7 @@ export const getIssues = async (teamId?: string, projectId?: string) => {
       : teamId
         ? cacheKeys.issues.byTeam(teamId)
         : cacheKeys.issues.orgList(orgId);
+    const t2 = Date.now();
 
     const issues = await cacheWrap(cacheKey, async () => {
       const filters = [eq(issue.organizationId, orgId)];
@@ -120,6 +131,8 @@ export const getIssues = async (teamId?: string, projectId?: string) => {
         orderBy: (issue, { desc }) => [desc(issue.createdAt)],
       });
     });
+    console.log(`③ cacheWrap: ${Date.now() - t2}ms`);
+    console.log(`④ getIssues total: ${Date.now() - t0}ms`);
 
     return {
       success: true,
@@ -210,11 +223,15 @@ export type IssuesType = Awaited<ReturnType<typeof getIssues>>;
 export const getIssue = async (issueId: string, teamId: string) => {
   try {
     const { orgId, userId } = await getActiveOrgId();
-    const { success: isAdmin } = await checkPermission("teamData", "view");
+    // const { success: isAdmin } = await checkPermission("teamData", "view");
 
     if (teamId) {
-      const canViewData = await canViewTeamData(teamId, userId, isAdmin);
-      if (!canViewData) {
+      const [{ success: isAdmin }, isMember] = await Promise.all([
+        checkPermission("teamData", "view"),
+        isTeamMemberCached(userId, teamId),
+      ]);
+
+      if (!isAdmin && !isMember) {
         return {
           success: false,
           data: null,

@@ -1,6 +1,8 @@
 "use server";
 
+import { cacheDel, cacheWrap } from "@/lib/cache";
 import { checkPermission } from "@/lib/permissions-checks";
+import { cacheKeys } from "@/lib/query-keys";
 import { returnError } from "@/lib/utils";
 import { auth } from "@/server/better-auth";
 import { getActiveOrgId, getUser } from "@/server/better-auth/server";
@@ -10,23 +12,9 @@ import { teamSchema, type TeamSchemaType } from "@/zod-schema/teams-schema";
 import { and, eq } from "drizzle-orm";
 import { headers } from "next/headers";
 
-// export const checkPermission = async (
-//   permission: "create" | "update" | "delete",
-// ) => {
-//   return await auth.api.hasPermission({
-//     body: {
-//       permissions: {
-//         team: [permission],
-//       },
-//     },
-//     headers: await headers(),
-//   });
-// };
-
-// TODO: FIX ADD ACTIVE ORG FROM SERVER
 export const createTeam = async (orgId: string, values: TeamSchemaType) => {
   try {
-    const user = await getUser();
+    const { userId, orgId } = await getActiveOrgId();
     const validatedValues = teamSchema.parse(values);
 
     const hasPermission = await checkPermission("team", "create");
@@ -55,10 +43,15 @@ export const createTeam = async (orgId: string, values: TeamSchemaType) => {
     await auth.api.addTeamMember({
       body: {
         teamId: data.id,
-        userId: user.id,
+        userId,
       },
       headers: await headers(),
     });
+
+    await cacheDel(
+      cacheKeys.organizations.detail(orgId),
+      cacheKeys.teams.userList(userId),
+    );
 
     return {
       success: true,
@@ -71,7 +64,7 @@ export const createTeam = async (orgId: string, values: TeamSchemaType) => {
 
 export const updateTeam = async (teamId: string, values: TeamSchemaType) => {
   try {
-    await getUser();
+    const { orgId, userId } = await getActiveOrgId();
     const hasPermission = await checkPermission("team", "update");
 
     if (!hasPermission.success) {
@@ -99,6 +92,11 @@ export const updateTeam = async (teamId: string, values: TeamSchemaType) => {
       };
     }
 
+    await cacheDel(
+      cacheKeys.organizations.detail(orgId),
+      cacheKeys.teams.userList(userId),
+    );
+
     return {
       success: true,
       message: "Team Updated",
@@ -111,7 +109,7 @@ export const updateTeam = async (teamId: string, values: TeamSchemaType) => {
 
 export const removeTeam = async (teamId: string, organizationId: string) => {
   try {
-    await getUser();
+    const { orgId, userId } = await getActiveOrgId();
 
     const hasPermission = await checkPermission("team", "delete");
 
@@ -135,6 +133,11 @@ export const removeTeam = async (teamId: string, organizationId: string) => {
         message: "Unable to remove team",
       };
     }
+
+    await cacheDel(
+      cacheKeys.organizations.detail(orgId),
+      cacheKeys.teams.userList(userId),
+    );
 
     return {
       success: true,
@@ -198,7 +201,7 @@ export type TeamsType = Awaited<ReturnType<typeof getOrgTeams>>;
 
 export const getUserTeams = async () => {
   try {
-    await getUser();
+    // await getUser();
     const data = await auth.api.listUserTeams({
       headers: await headers(),
     });
@@ -241,18 +244,21 @@ export const getUserTeamsCurrentOrg = async () => {
   try {
     const { userId, orgId } = await getActiveOrgId();
     // const user = await getUser();
-    const data = await db
-      .select({
-        id: team.id,
-        name: team.name,
-        organizationId: team.organizationId,
-        createdAt: team.createdAt,
-      })
-      .from(team)
-      .innerJoin(teamMember, eq(team.id, teamMember.teamId))
-      .where(
-        and(eq(team.organizationId, orgId), eq(teamMember.userId, userId)),
-      );
+    const data = await cacheWrap(cacheKeys.teams.userList(userId), async () => {
+      return await db
+        .select({
+          id: team.id,
+          name: team.name,
+          organizationId: team.organizationId,
+          createdAt: team.createdAt,
+          updatedAt: team.updatedAt,
+        })
+        .from(team)
+        .innerJoin(teamMember, eq(team.id, teamMember.teamId))
+        .where(
+          and(eq(team.organizationId, orgId), eq(teamMember.userId, userId)),
+        );
+    });
 
     return {
       success: true,
@@ -264,11 +270,10 @@ export const getUserTeamsCurrentOrg = async () => {
   }
 };
 
-// TODO: WHEN INVITE YOU CAN ALSO SPECIFY A TEAM BY DEFAULT
-
+//WHEN INVITE YOU CAN ALSO SPECIFY A TEAM BY DEFAULT
 export const addMemberToTeam = async (teamId: string, userId: string) => {
   try {
-    // const user = await getUser();
+    const { orgId } = await getActiveOrgId();
     const data = await auth.api.addTeamMember({
       body: {
         teamId,
@@ -277,6 +282,12 @@ export const addMemberToTeam = async (teamId: string, userId: string) => {
       },
       headers: await headers(),
     });
+
+    await cacheDel(
+      cacheKeys.teams.membership(userId, teamId),
+      cacheKeys.organizations.detail(orgId),
+      `permission:${userId}:${orgId}:${"teamData"}:${"view"}`,
+    );
 
     return {
       success: true,
@@ -290,7 +301,7 @@ export const addMemberToTeam = async (teamId: string, userId: string) => {
 
 export const removeMemberFromTeam = async (teamId: string, userId: string) => {
   try {
-    // const user = await getUser();
+    const { orgId } = await getActiveOrgId();
 
     const data = await auth.api.removeTeamMember({
       body: {
@@ -300,6 +311,12 @@ export const removeMemberFromTeam = async (teamId: string, userId: string) => {
       },
       headers: await headers(),
     });
+
+    await cacheDel(
+      cacheKeys.teams.membership(userId, teamId),
+      cacheKeys.organizations.detail(orgId),
+      `permission:${userId}:${orgId}:${"teamData"}:${"view"}`,
+    );
 
     return {
       success: true,

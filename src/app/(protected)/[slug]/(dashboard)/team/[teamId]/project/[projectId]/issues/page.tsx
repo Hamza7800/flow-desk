@@ -8,16 +8,22 @@ import {
 import { queryKeys } from "@/lib/query-keys";
 
 type Props = {
-  params: Promise<{ projectId: string }>;
+  params: Promise<{ projectId: string; teamId: string }>;
 };
 
-const Content = async ({ projectId }: { projectId: string }) => {
+const Content = async ({
+  projectId,
+  teamId,
+}: {
+  teamId: string;
+  projectId: string;
+}) => {
   const queryClient = new QueryClient();
 
   await queryClient.prefetchQuery({
     queryKey: queryKeys.issues.byProject(projectId),
     queryFn: async () => {
-      const result = await getIssues(undefined, projectId);
+      const result = await getIssues(teamId, projectId);
       if (!result.success) throw new Error(result.message);
       return result.data;
     },
@@ -31,9 +37,9 @@ const Content = async ({ projectId }: { projectId: string }) => {
 };
 
 const ProjectIssuesPage = async ({ params }: Props) => {
-  const { projectId } = await params;
+  const { projectId, teamId } = await params;
 
-  return <Content projectId={projectId} />;
+  return <Content projectId={projectId} teamId={teamId} />;
 };
 
 export default ProjectIssuesPage;

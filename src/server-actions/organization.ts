@@ -1,6 +1,6 @@
 "use server";
 
-import { cacheDel } from "@/lib/cache";
+import { cacheDel, cacheWrap } from "@/lib/cache";
 import { checkPermission } from "@/lib/permissions-checks";
 import { cacheKeys } from "@/lib/query-keys";
 import { returnError } from "@/lib/utils";
@@ -57,6 +57,8 @@ export const createOrganization = async (values: OrganizationSchemaType) => {
       };
     }
 
+    await cacheDel(cacheKeys.organizations.list(user.id));
+
     return {
       success: true,
       message: "Organization Created",
@@ -67,18 +69,26 @@ export const createOrganization = async (values: OrganizationSchemaType) => {
   }
 };
 
-// TODO: Maybe I should
-// FIXME: This get full organization, we need only org details not full org
 export const getOrganization = cache(async (slug: string) => {
   try {
-    await getUser();
+    const t0 = Date.now();
 
-    const organization = await auth.api.getFullOrganization({
-      query: {
-        organizationSlug: slug,
-      },
-      headers: await headers(),
-    });
+    const { orgId } = await getActiveOrgId();
+    console.log(`① ORG getActiveOrgId: ${Date.now() - t0}ms`);
+
+    const t1 = Date.now();
+
+    const organization = await cacheWrap(
+      cacheKeys.organizations.detail(orgId),
+      async () =>
+        await auth.api.getFullOrganization({
+          query: {
+            organizationSlug: slug,
+          },
+          headers: await headers(),
+        }),
+      1000 * 60 * 10,
+    );
 
     if (!organization) {
       return {
@@ -86,6 +96,10 @@ export const getOrganization = cache(async (slug: string) => {
         message: "Organization not found",
       };
     }
+
+    console.log(`③ ORG cacheWrap: ${Date.now() - t1}ms`);
+    console.log(`④ ORG getOrg total: ${Date.now() - t0}ms`);
+
     return {
       success: true,
       data: organization,
@@ -125,11 +139,13 @@ export type OrgType = Awaited<ReturnType<typeof getOrganization>>;
 
 export const getUserListOrganizations = async () => {
   try {
-    await getUser();
+    const { userId } = await getActiveOrgId();
 
-    const data = await auth.api.listOrganizations({
-      headers: await headers(),
-    });
+    const data = await cacheWrap(
+      cacheKeys.organizations.list(userId),
+      async () => auth.api.listOrganizations({ headers: await headers() }),
+      1000 * 60 * 10,
+    );
 
     if (!data) {
       return {
@@ -187,7 +203,7 @@ export const setActiveOrganization = async (orgId: string, slug: string) => {
 
 export const deleteOrganization = async (slug: string) => {
   try {
-    await getUser();
+    const { orgId, userId } = await getActiveOrgId();
     const result = await getOrganization(slug);
 
     if (!result.success || !result.data) return result;
@@ -205,6 +221,12 @@ export const deleteOrganization = async (slug: string) => {
         message: "Unable to delete organization",
       };
     }
+
+    await cacheDel(
+      cacheKeys.organizations.detail(orgId),
+      cacheKeys.organizations.list(userId),
+    );
+
     return {
       success: true,
       message: `${data.name} deleted`,
@@ -220,7 +242,7 @@ export const updateOrganization = async (
   values: OrganizationSchemaType,
 ) => {
   try {
-    await getUser();
+    const { orgId, userId } = await getActiveOrgId();
     const validatedData = organizationSchema.parse(values);
 
     // const isSlugAvailable = await checkSlug(validatedData.slug);
@@ -249,6 +271,12 @@ export const updateOrganization = async (
         message: "Unable to update organization",
       };
     }
+
+    await cacheDel(
+      cacheKeys.organizations.detail(orgId),
+      cacheKeys.organizations.list(userId),
+    );
+
     return {
       success: true,
       message: "Organization updated success",
@@ -265,30 +293,30 @@ export const removeMemberFromOrg = async (
 ) => {
   try {
     const { orgId } = await getActiveOrgId();
-    const { success: canLeave } = await checkPermission(
-      "organization",
-      "leave",
-    );
-    const { success: canRemove } = await checkPermission(
-      "organization",
-      "removeMember",
-    );
+    // const { success: canLeave } = await checkPermission(
+    //   "organization",
+    //   "leave",
+    // );
+    // const { success: canRemove } = await checkPermission(
+    //   "organization",
+    //   "removeMember",
+    // );
 
-    if (action === "leave" && !canLeave) {
-      return {
-        success: false,
-        data: null,
-        message: "You don't have permission to leave",
-      };
-    }
+    // if (action === "leave" && !canLeave) {
+    //   return {
+    //     success: false,
+    //     data: null,
+    //     message: "You don't have permission to leave",
+    //   };
+    // }
 
-    if (action === "remove" && !canRemove) {
-      return {
-        success: false,
-        data: null,
-        message: "You don't have permission to remove member",
-      };
-    }
+    // if (action === "remove" && !canRemove) {
+    //   return {
+    //     success: false,
+    //     data: null,
+    //     message: "You don't have permission to remove member",
+    //   };
+    // }
 
     const data = await auth.api.removeMember({
       body: {
@@ -297,6 +325,8 @@ export const removeMemberFromOrg = async (
       },
       headers: await headers(),
     });
+
+    await cacheDel(cacheKeys.organizations.detail(orgId));
 
     return {
       success: true,

@@ -16,32 +16,41 @@ type Props = {
 };
 
 export default async function SlugLayout({ children, params }: Props) {
-  const { slug } = await params;
+  const [{ slug }, activeOrgRes] = await Promise.all([params, getActiveOrg()]);
 
-  const [orgRes, activeOrgRes] = await Promise.all([
-    getOrganization(slug),
-    getActiveOrg(),
-  ]);
+  if (!activeOrgRes.success || !activeOrgRes.data) redirect("/");
 
-  if (!activeOrgRes.success || !activeOrgRes.data) {
-    redirect("/");
+  const activeOrg = await getOrganizationById(activeOrgRes.data);
+  if (!activeOrg.success || !activeOrg.data) redirect("/");
+
+  if (activeOrg.data.slug !== slug) {
+    redirect(`/${activeOrg.data.slug}/my-issues/assigned`);
   }
 
-  const activeOrgId = activeOrgRes.data;
+  // const [orgRes, activeOrgRes] = await Promise.all([
+  //   getOrganization(slug),
+  //   getActiveOrg(),
+  // ]);
 
-  if (!orgRes.success || !orgRes.data || orgRes.data.id !== activeOrgId) {
-    const activeOrgByIdRes = await getOrganizationById(activeOrgId);
+  // if (!activeOrgRes.success || !activeOrgRes.data) {
+  //   redirect("/");
+  // }
 
-    if (!activeOrgByIdRes.success || !activeOrgByIdRes.data) {
-      redirect("/");
-    }
-    await setActiveOrganization(
-      activeOrgByIdRes.data.id,
-      activeOrgByIdRes.data.slug,
-    );
+  // const activeOrgId = activeOrgRes.data;
 
-    redirect(`/${activeOrgByIdRes.data.slug}/my-issues/assigned`);
-  }
+  // if (!orgRes.success || !orgRes.data || orgRes.data.id !== activeOrgId) {
+  //   const activeOrgByIdRes = await getOrganizationById(activeOrgId);
+
+  //   if (!activeOrgByIdRes.success || !activeOrgByIdRes.data) {
+  //     redirect("/");
+  //   }
+  //   await setActiveOrganization(
+  //     activeOrgByIdRes.data.id,
+  //     activeOrgByIdRes.data.slug,
+  //   );
+
+  //   redirect(`/${activeOrgByIdRes.data.slug}/my-issues/assigned`);
+  // }
 
   return (
     <SidebarProvider

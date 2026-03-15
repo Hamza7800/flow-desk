@@ -9,6 +9,9 @@ import {
 } from "@/server/db/schema";
 import { and, eq } from "drizzle-orm";
 import { headers } from "next/headers";
+import { cacheWrap } from "./cache";
+import { cacheKeys } from "./query-keys";
+import { getActiveOrgId } from "@/server/better-auth/server";
 
 export const checkPermission = async (
   resource:
@@ -32,14 +35,25 @@ export const checkPermission = async (
     | "removeMember"
     | "leave",
 ) => {
-  return await auth.api.hasPermission({
-    body: {
-      permissions: {
-        [resource]: [action],
-      },
-    },
-    headers: await headers(),
-  });
+  const { userId, orgId } = await getActiveOrgId();
+
+  return cacheWrap(
+    `permission:${userId}:${orgId}:${resource}:${action}`,
+    async () =>
+      auth.api.hasPermission({
+        body: { permissions: { [resource]: [action] } },
+        headers: await headers(),
+      }),
+    1000 * 60 * 5,
+  );
+  // return await auth.api.hasPermission({
+  //   body: {
+  //     permissions: {
+  //       [resource]: [action],
+  //     },
+  //   },
+  //   headers: await headers(),
+  // });
 };
 
 export const isTeamMember = async (userId: string, teamId: string) => {
@@ -160,4 +174,12 @@ export const canDeleteComment = async (
 ) => {
   if (hasAdminAccess) return true;
   return isCommentAuthor(commentId, userId);
+};
+
+export const isTeamMemberCached = async (userId: string, teamId: string) => {
+  return cacheWrap(
+    cacheKeys.teams.membership(userId, teamId),
+    () => isTeamMember(userId, teamId),
+    1000 * 60 * 10,
+  );
 };
