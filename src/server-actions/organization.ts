@@ -74,7 +74,7 @@ export const getOrganization = cache(async (slug: string) => {
     const t0 = Date.now();
 
     const { orgId } = await getActiveOrgId();
-    console.log(`① ORG getActiveOrgId: ${Date.now() - t0}ms`);
+    // console.log(`① ORG getActiveOrgId: ${Date.now() - t0}ms`);
 
     const t1 = Date.now();
 
@@ -97,8 +97,8 @@ export const getOrganization = cache(async (slug: string) => {
       };
     }
 
-    console.log(`③ ORG cacheWrap: ${Date.now() - t1}ms`);
-    console.log(`④ ORG getOrg total: ${Date.now() - t0}ms`);
+    // console.log(`③ ORG cacheWrap: ${Date.now() - t1}ms`);
+    // console.log(`④ ORG getOrg total: ${Date.now() - t0}ms`);
 
     return {
       success: true,

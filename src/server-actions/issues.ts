@@ -84,11 +84,11 @@ export const createIssue = async (teamId: string, data: IssueSchemaType) => {
 
 export const getIssues = async (teamId?: string, projectId?: string) => {
   try {
-    const t0 = Date.now();
+    // const t0 = Date.now();
 
     const { orgId, userId } = await getActiveOrgId();
 
-    console.log(`① getActiveOrgId: ${Date.now() - t0}ms`);
+    // console.log(`① getActiveOrgId: ${Date.now() - t0}ms`);
 
     const t1 = Date.now();
     if (teamId) {
@@ -97,7 +97,7 @@ export const getIssues = async (teamId?: string, projectId?: string) => {
         isTeamMemberCached(userId, teamId),
       ]);
 
-      console.log(`② permission checks: ${Date.now() - t1}ms`);
+      // console.log(`② permission checks: ${Date.now() - t1}ms`);
 
       if (!isAdmin && !isMember) {
         return {
@@ -108,12 +108,13 @@ export const getIssues = async (teamId?: string, projectId?: string) => {
       }
     }
 
-    const cacheKey = projectId
-      ? cacheKeys.issues.byProject(projectId)
-      : teamId
-        ? cacheKeys.issues.byTeam(teamId)
+    const cacheKey = teamId
+      ? cacheKeys.issues.byTeam(teamId)
+      : projectId
+        ? cacheKeys.issues.byProject(projectId)
         : cacheKeys.issues.orgList(orgId);
-    const t2 = Date.now();
+
+    // const t2 = Date.now();
 
     const issues = await cacheWrap(cacheKey, async () => {
       const filters = [eq(issue.organizationId, orgId)];
@@ -131,8 +132,9 @@ export const getIssues = async (teamId?: string, projectId?: string) => {
         orderBy: (issue, { desc }) => [desc(issue.createdAt)],
       });
     });
-    console.log(`③ cacheWrap: ${Date.now() - t2}ms`);
-    console.log(`④ getIssues total: ${Date.now() - t0}ms`);
+
+    // console.log(`③ cacheWrap: ${Date.now() - t2}ms`);
+    // console.log(`④ getIssues total: ${Date.now() - t0}ms`);
 
     return {
       success: true,
