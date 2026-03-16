@@ -71,12 +71,12 @@ export const createOrganization = async (values: OrganizationSchemaType) => {
 
 export const getOrganization = cache(async (slug: string) => {
   try {
-    const t0 = Date.now();
+    // const t0 = Date.now();
 
     const { orgId } = await getActiveOrgId();
     // console.log(`① ORG getActiveOrgId: ${Date.now() - t0}ms`);
 
-    const t1 = Date.now();
+    // const t1 = Date.now();
 
     const organization = await cacheWrap(
       cacheKeys.organizations.detail(orgId),
@@ -185,12 +185,22 @@ export const setActiveOrganization = async (orgId: string, slug: string) => {
       };
     }
 
-    await Promise.all([
-      cacheDel(cacheKeys.issues.byUserAssigned(userId, previousOrgId)),
-      cacheDel(cacheKeys.issues.byUserCreated(userId, previousOrgId)),
-      cacheDel(cacheKeys.issues.orgList(previousOrgId)),
-      cacheDel(cacheKeys.members.list(previousOrgId)),
-    ]);
+    // await Promise.all([
+    //   cacheDel(cacheKeys.issues.byUserAssigned(userId, previousOrgId)),
+    //   cacheDel(cacheKeys.issues.byUserCreated(userId, previousOrgId)),
+    //   cacheDel(cacheKeys.issues.orgList(previousOrgId)),
+    //   cacheDel(cacheKeys.members.list(previousOrgId)),
+    // ]);
+    await cacheDel(
+      cacheKeys.organizations.detail(previousOrgId),
+      cacheKeys.organizations.list(userId),
+      cacheKeys.issues.byUserAssigned(userId, previousOrgId),
+      cacheKeys.issues.byUserCreated(userId, previousOrgId),
+      cacheKeys.issues.orgList(previousOrgId),
+      cacheKeys.teams.orgList(previousOrgId),
+      cacheKeys.projects.orgList(previousOrgId),
+      cacheKeys.members.list(previousOrgId),
+    );
 
     return {
       success: true,

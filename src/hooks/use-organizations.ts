@@ -1,3 +1,4 @@
+import { appCache } from "@/lib/cache";
 import { queryKeys } from "@/lib/query-keys";
 import {
   createOrganization,
@@ -97,10 +98,7 @@ export const useSetOrgActive = () => {
 
   return useMutation({
     mutationFn: async ({ id, slug }: { id: string; slug: string }) => {
-      // await authClient.organization.setActive({
-      //   organizationId: id,
-      //   organizationSlug: slug,
-      // });
+      // const result = await setActiveOrganization(id, slug);
       const result = await authClient.organization.setActive({
         organizationId: id,
         organizationSlug: slug,
@@ -109,14 +107,15 @@ export const useSetOrgActive = () => {
       if (result.error) throw new Error(result.error.message);
       return result.data;
     },
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
       queryClient.clear();
+      await appCache.clear();
 
       toast.success(`${data?.name} org set active`);
-      // router.replace(`/${data?.slug}`);
+      router.replace(`/${data?.slug}`);
 
-      // router.refresh();
-      window.location.href = `/${data?.slug}`;
+      router.refresh();
+      // window.location.href = `/${data?.slug}`;
     },
 
     onError: (error: Error) => {

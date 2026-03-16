@@ -48,7 +48,7 @@ export function AppSidebar({ slug, ...props }: ComponentProps<typeof Sidebar>) {
           </SidebarMenuItem>
         </SidebarMenu>
 
-        <WorkspaceSettings slug={`${slug}`} />
+        {/* <WorkspaceSettings slug={`${slug}`} /> */}
 
         <UserTeams />
 

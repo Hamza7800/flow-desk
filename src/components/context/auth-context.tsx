@@ -9,6 +9,7 @@ import { createContext, useContext } from "react";
 import type { ReactNode } from "react";
 import { LinkButton } from "@/components/link-button";
 import WorkspaceLayoutSkeleton from "@/components/skeletons/workspace-layout-skeleton";
+import { appCache } from "@/lib/cache";
 
 type AuthContextType = {
   logout: () => void;
@@ -42,6 +43,7 @@ const AuthProvider = ({ children }: { children: ReactNode }) => {
   const logout = async () => {
     await authClient.signOut();
     queryClient.resetQueries();
+    await appCache.clear();
     router.replace("/sign-in");
   };
 

@@ -50,7 +50,7 @@ export const createTeam = async (orgId: string, values: TeamSchemaType) => {
 
     await cacheDel(
       cacheKeys.organizations.detail(orgId),
-      cacheKeys.teams.userList(userId),
+      cacheKeys.teams.userList(orgId),
     );
 
     return {
@@ -94,7 +94,7 @@ export const updateTeam = async (teamId: string, values: TeamSchemaType) => {
 
     await cacheDel(
       cacheKeys.organizations.detail(orgId),
-      cacheKeys.teams.userList(userId),
+      cacheKeys.teams.userList(orgId),
     );
 
     return {
@@ -136,7 +136,7 @@ export const removeTeam = async (teamId: string, organizationId: string) => {
 
     await cacheDel(
       cacheKeys.organizations.detail(orgId),
-      cacheKeys.teams.userList(userId),
+      cacheKeys.teams.userList(orgId),
     );
 
     return {
@@ -244,7 +244,7 @@ export const getUserTeamsCurrentOrg = async () => {
   try {
     const { userId, orgId } = await getActiveOrgId();
     // const user = await getUser();
-    const data = await cacheWrap(cacheKeys.teams.userList(userId), async () => {
+    const data = await cacheWrap(cacheKeys.teams.userList(orgId), async () => {
       return await db
         .select({
           id: team.id,

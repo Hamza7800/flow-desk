@@ -5,6 +5,8 @@ import { useUserCreatedIssues } from "@/hooks/use-issues";
 import type { IssuesType } from "@/server-actions/issues";
 import { IssueBoard } from "@/app/(protected)/[slug]/(dashboard)/_components/issues/issue-board";
 import { ErrorState } from "@/components/error-state";
+import { EmptyState } from "@/components/empty-state";
+import { Ticket } from "lucide-react";
 
 const UserCreatedIssues = ({}: {}) => {
   const { data: issues, isError, error, refetch } = useUserCreatedIssues();
@@ -16,6 +18,17 @@ const UserCreatedIssues = ({}: {}) => {
         message={error?.message}
         onRetry={() => refetch()}
         homeHref="/"
+      />
+    );
+  }
+
+  if (!issues?.length) {
+    return (
+      <EmptyState
+        icon={Ticket}
+        title="No created issues"
+        description="You don't have any created issues."
+        // action={{ label: "Home", onClick: () => router.push(`/${slug}/`) }}
       />
     );
   }
