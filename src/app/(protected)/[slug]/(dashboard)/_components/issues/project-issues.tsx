@@ -2,10 +2,7 @@
 
 import { useProjectIssues } from "@/hooks/use-issues";
 
-import type { IssuesType } from "@/server-actions/issues";
 import { IssueBoard } from "@/app/(protected)/[slug]/(dashboard)/_components/issues/issue-board";
-import { DisplayControls } from "./issues-display-controls";
-import { Separator } from "@heroui/react";
 import { ErrorState } from "@/components/error-state";
 import { useParams } from "next/navigation";
 
@@ -31,7 +28,7 @@ const ProjectIssues = ({ projectId }: { projectId: string }) => {
 
   return (
     <div className="relative min-h-0 w-full flex-1">
-      <div className="absolute inset-0 flex flex-col py-2">
+      <div className="absolute inset-0 flex flex-col pt-2">
         <IssueBoard issues={issues ?? []} />
       </div>
     </div>

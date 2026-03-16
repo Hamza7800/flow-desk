@@ -11,7 +11,6 @@ import { format } from "date-fns";
 
 const BoardCard = ({
   issue,
-  isPlaceholder,
 }: {
   issue: NonNullable<IssuesType["data"]>[number];
   isPlaceholder?: boolean;

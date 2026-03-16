@@ -8,9 +8,7 @@ const InlineBlockNote = ({
   initialValue,
   onSave,
   schema,
-  placeholder,
   className,
-  label,
   debounceMs = 1000,
   num = 5,
 }: InputType) => {

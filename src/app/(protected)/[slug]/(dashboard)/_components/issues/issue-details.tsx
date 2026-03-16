@@ -1,7 +1,6 @@
 "use client";
 import InlineBlockNote from "../input-fields/block-note-input";
 import InlineInput from "../input-fields/input";
-import type { IssueType } from "@/server-actions/issues";
 import { useIssueDetails, useUpdateIssue } from "@/hooks/use-issues";
 import { issueSchema } from "@/zod-schema/issue-schema";
 import { IssueActivities } from "./issue-activities";

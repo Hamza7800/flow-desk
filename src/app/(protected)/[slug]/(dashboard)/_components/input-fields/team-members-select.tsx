@@ -4,7 +4,6 @@ import { getInitials } from "@/lib/utils";
 import {
   Avatar,
   AvatarFallback,
-  AvatarImage,
   ListBox,
   Select,
   type Key,

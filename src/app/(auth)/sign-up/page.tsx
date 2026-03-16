@@ -1,14 +1,7 @@
 "use client";
-// import PasswordStrength from "@/components/password-strength";
-
-import {
-  calculatePasswordStrength,
-  SignUpSchema,
-  type SignUpSchemaType,
-} from "@/zod-schema/auth-schema";
+import { SignUpSchema, type SignUpSchemaType } from "@/zod-schema/auth-schema";
 import { authClient } from "@/server/better-auth/client";
 import { zodResolver } from "@hookform/resolvers/zod";
-import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";

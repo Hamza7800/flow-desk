@@ -1,6 +1,6 @@
 "use client";
 
-import { Label, ListBox, Select, type Key } from "@heroui/react";
+import { ListBox, Select, type Key } from "@heroui/react";
 import { useUpdateMemberRole } from "@/hooks/use-member-role";
 import { usePermissions } from "@/hooks/use-permissions";
 import { Shield, User, Crown } from "lucide-react";

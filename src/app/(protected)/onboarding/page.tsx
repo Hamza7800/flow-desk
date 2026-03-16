@@ -5,7 +5,7 @@ import { Card } from "@heroui/react";
 import { headers } from "next/headers";
 import { redirect } from "next/navigation";
 
-const Content = () => {
+const Content = async () => {
   return (
     <div className="flex min-h-screen flex-col items-center justify-center bg-[#0c0c0e] px-4">
       <div
@@ -40,7 +40,12 @@ const Content = () => {
   );
 };
 
-export default async function OnboardingPage() {
+export default async function OnboardingPage({
+  params,
+}: {
+  params: Promise<{ slug: string }>;
+}) {
+  const { slug } = await params;
   const orgsRes = await getUserListOrganizations();
   if (orgsRes.success && orgsRes.data && orgsRes.data.length > 0) {
     await auth.api.setActiveOrganization({

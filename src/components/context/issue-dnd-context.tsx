@@ -14,6 +14,7 @@ import {
   type DragEndEvent,
   type DragCancelEvent,
   type UniqueIdentifier,
+  TouchSensor,
 } from "@dnd-kit/core";
 import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable";
 import {
@@ -75,6 +76,12 @@ export const IssueDndContext = ({ issues, renderCard, children }: Props) => {
     useSensor(PointerSensor, { activationConstraint: { distance: 8 } }),
     useSensor(KeyboardSensor, {
       coordinateGetter: sortableKeyboardCoordinates,
+    }),
+    useSensor(TouchSensor, {
+      activationConstraint: {
+        delay: 250,
+        tolerance: 5,
+      },
     }),
   );
 

@@ -11,7 +11,6 @@ import { PlusIcon } from "lucide-react";
 import { useParams } from "next/navigation";
 import { useState } from "react";
 import { CreateIssueModal } from "./create-issue";
-// import { seed } from "seed";
 
 const CreateIssueButton = ({ label }: { label: string }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -51,15 +50,6 @@ const CreateIssueButton = ({ label }: { label: string }) => {
 
   return (
     <>
-      {/* <Button
-        variant="outline"
-        className={"h-full"}
-        isIconOnly
-        onPress={() => seed()}
-      >
-        Create Issue
-      </Button> */}
-
       <Button
         variant="outline"
         className={"h-full"}

@@ -1,6 +1,6 @@
 "use client";
 
-import { Button, Calendar, DateField, DatePicker } from "@heroui/react";
+import { Calendar, DateField, DatePicker } from "@heroui/react";
 import type { DateValue } from "@heroui/react";
 import {
   parseDate,
@@ -52,7 +52,7 @@ const DateSelect = ({ value, onChange, placeholderText }: DateSelectProps) => {
 
   return (
     <DatePicker
-      value={toCalendarDate(value)}
+      value={calendarDate as DateValue | null}
       onChange={handleChange}
       aria-label="Date select"
     >

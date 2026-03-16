@@ -62,9 +62,9 @@ const OrganizationCard = ({
       {/* Text */}
       <div className="min-w-0 flex-1">
         <p className="truncate text-sm font-semibold text-white">{org.name}</p>
-        <div className="mt-0.5 flex items-center gap-2">
+        {/* <div className="mt-0.5 flex items-center gap-2">
           <span className="text-xs text-zinc-600">/{org.slug}</span>
-        </div>
+        </div> */}
       </div>
 
       <ArrowRight
