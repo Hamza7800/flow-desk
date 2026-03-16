@@ -27,7 +27,7 @@ const ListCard = ({
           <span className="w-[130px] shrink-0 text-sm text-white/70">
             {project.identifier}
           </span>
-          <span className="shrink-0 text-sm">{project.name}</span>
+          <span className="shrink-0 truncate text-sm">{project.name}</span>
         </div>
       </Card>
     );
@@ -40,9 +40,9 @@ const ListCard = ({
       className="group hover:bg-surface max-h-14 min-h-14 flex-row items-center rounded bg-[#101012] px-2"
     >
       <div className="grid grid-cols-2 gap-6">
-        <span className="w-[130px] shrink-0 text-sm text-white/70">
+        {/* <span className="w-[50px] shrink-0 text-sm text-white/70">
           {project.identifier}
-        </span>
+        </span> */}
         <span className="shrink-0 truncate text-sm">{project.name}</span>
       </div>
 

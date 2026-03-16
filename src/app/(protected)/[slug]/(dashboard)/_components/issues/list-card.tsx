@@ -5,12 +5,8 @@ import PrioritySelect from "../input-fields/priority-select";
 import StatusSelect from "../input-fields/status-select";
 import AssigneeSelect from "../input-fields/assignee-select";
 import type { Priority, Status } from "@/lib/contants";
-import { MoreHorizontal } from "lucide-react";
 import { Card } from "@heroui/react";
 import { useParams, useRouter } from "next/navigation";
-import ProjectSelect from "../input-fields/project-select";
-import InlineBlockNote from "../input-fields/block-note-input";
-import { issueSchema } from "@/zod-schema/issue-schema";
 import { format } from "date-fns";
 
 const ListCard = ({
@@ -77,41 +73,43 @@ const ListCard = ({
       }
       className="group hover:bg-surface max-h-14 min-h-14 flex-row items-center rounded bg-[#101012] px-2"
     >
-      {displayProperties.showPriority && (
-        <PrioritySelect
-          onChange={(value) =>
-            updateIssue.mutate({
-              values: {
-                priority: value as Priority,
-              },
-              teamId: issue.teamId ?? "",
-              issueId: issue.id,
-            })
-          }
-          value={issue.priority ?? ""}
-        />
-      )}
+      <div className="grid grid-cols-[40px_60px_40px_1fr] items-center gap-2">
+        {displayProperties.showPriority && (
+          <PrioritySelect
+            onChange={(value) =>
+              updateIssue.mutate({
+                values: {
+                  priority: value as Priority,
+                },
+                teamId: issue.teamId ?? "",
+                issueId: issue.id,
+              })
+            }
+            value={issue.priority ?? ""}
+          />
+        )}
 
-      <span className="shrink-0 truncate text-sm text-white/70">
-        {issue.identifier}
-      </span>
+        <span className="shrink-0 truncate text-sm text-white/70">
+          {issue.identifier}
+        </span>
 
-      {displayProperties.showStatus && (
-        <StatusSelect
-          onChange={(value) =>
-            updateIssue.mutate({
-              values: {
-                status: value as Status,
-              },
-              teamId: issue.teamId ?? "",
-              issueId: issue.id,
-            })
-          }
-          value={issue.status ?? ""}
-        />
-      )}
+        {displayProperties.showStatus && (
+          <StatusSelect
+            onChange={(value) =>
+              updateIssue.mutate({
+                values: {
+                  status: value as Status,
+                },
+                teamId: issue.teamId ?? "",
+                issueId: issue.id,
+              })
+            }
+            value={issue.status ?? ""}
+          />
+        )}
 
-      <span className="min-w-0 flex-1 truncate text-sm">{issue.title}</span>
+        <span className="min-w-0 flex-1 truncate text-sm">{issue.title}</span>
+      </div>
 
       <div className="ml-auto flex items-center justify-end gap-3">
         {displayProperties.showAssignee && (
