@@ -6,10 +6,8 @@ import {
   getOrganization,
   getUserListOrganizations,
   removeMemberFromOrg,
-  setActiveOrganization,
   updateOrganization,
   type OrgType,
-  type UserOrgType,
 } from "@/server-actions/organization";
 import { authClient } from "@/server/better-auth/client";
 import type { OrganizationSchemaType } from "@/zod-schema/organization-schema";

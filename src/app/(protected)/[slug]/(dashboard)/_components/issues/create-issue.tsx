@@ -7,16 +7,16 @@ import { useCreateIssue } from "@/hooks/use-issues";
 
 import { Button, Form, Spinner } from "@heroui/react";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import PopupModal from "@/components/modal";
 import { useOrganizationContext } from "@/components/context/organization-client-context";
 import StatusSelect from "../input-fields/status-select";
 import PrioritySelect from "../input-fields/priority-select";
-import AssigneeSelect from "../input-fields/assignee-select";
 import InlineInput from "../input-fields/input";
 import ProjectSelect from "../input-fields/project-select";
 import InlineBlockNote from "../input-fields/block-note-input";
 import TeamMembersSelect from "../input-fields/team-members-select";
+import LabelsSelect from "../input-fields/labels-selects";
 
 type Props = {
   teamId: string;
@@ -150,6 +150,17 @@ export function CreateIssueModal({
                 orgId={organization?.id ?? ""}
                 teamId={teamId}
                 value={field.value ?? ""}
+                onChange={field.onChange}
+              />
+            )}
+          />
+          <Controller
+            control={control}
+            name="labelIds"
+            render={({ field }) => (
+              <LabelsSelect
+                mode="create"
+                value={field.value ?? []}
                 onChange={field.onChange}
               />
             )}

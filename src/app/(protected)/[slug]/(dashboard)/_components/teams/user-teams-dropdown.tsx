@@ -36,16 +36,16 @@ export const UserTeamsDropdown = () => {
     <Accordion defaultExpandedKeys={["teams"]} className="py-0">
       <Accordion.Item id={"teams"}>
         <Accordion.Heading>
-          <Accordion.Trigger className="rounded-md px-4 py-2">
-            <span className="font-medium">Your Teams</span>
+          <Accordion.Trigger className="rounded-md">
+            <span>Your Teams</span>
             <Accordion.Indicator>
               <ChevronDown />
             </Accordion.Indicator>
           </Accordion.Trigger>
         </Accordion.Heading>
 
-        <Accordion.Panel className="mt-2">
-          <div className="ml-5 space-y-3 border-l border-white/50 pl-3">
+        <Accordion.Panel className="">
+          <div className="ml-5 border-l border-white/50 pl-3">
             {!teams?.length ? (
               <p className="px-4 py-2 text-sm text-slate-500">No teams</p>
             ) : (
@@ -57,7 +57,7 @@ export const UserTeamsDropdown = () => {
                 >
                   <Accordion.Item id={team.id}>
                     <Accordion.Heading>
-                      <Accordion.Trigger className="rounded-md px-2 py-1 text-sm">
+                      <Accordion.Trigger className="rounded-md py-2 text-sm">
                         <div className="flex items-center gap-2">
                           <UserSquare2 size={16} /> <span>{team.name}</span>
                         </div>

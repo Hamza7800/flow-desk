@@ -1,7 +1,7 @@
 "use client";
 import { getAuthenticatedUser } from "@/server-actions/users";
 import { authClient } from "@/server/better-auth/client";
-import { Button, Card } from "@heroui/react";
+import { Card } from "@heroui/react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import type { User } from "better-auth";
 import { useRouter } from "next/navigation";

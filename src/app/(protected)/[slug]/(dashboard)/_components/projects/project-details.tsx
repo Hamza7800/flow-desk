@@ -1,6 +1,5 @@
 "use client";
 import { useProjectDetails, useUpdateProjects } from "@/hooks/use-projects";
-import type { ProjectType } from "@/server-actions/projects";
 import InlineBlockNote from "../input-fields/block-note-input";
 import { projectSchema } from "@/zod-schema/project-schema";
 import InlineInput from "../input-fields/input";

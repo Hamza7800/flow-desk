@@ -1,7 +1,6 @@
 "use server";
 
 import {
-  canViewTeamData,
   checkPermission,
   isProjectMember,
   isTeamMemberCached,

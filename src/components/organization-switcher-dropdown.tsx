@@ -3,7 +3,6 @@
 import {
   Check,
   ChevronsUpDown,
-  GalleryVerticalEnd,
   LogOut,
   Plus,
   Settings,

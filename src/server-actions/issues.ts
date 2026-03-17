@@ -3,9 +3,7 @@
 import { cacheDel, cacheWrap } from "@/lib/cache";
 import {
   canDeleteIssue,
-  canViewTeamData,
   checkPermission,
-  isTeamMember,
   isTeamMemberCached,
 } from "@/lib/permissions-checks";
 import { cacheKeys } from "@/lib/query-keys";

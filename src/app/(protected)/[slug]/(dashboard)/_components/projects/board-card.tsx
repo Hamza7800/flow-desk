@@ -8,6 +8,8 @@ import StatusSelect from "../input-fields/status-select";
 import AssigneeSelect from "../input-fields/assignee-select";
 import { useParams, useRouter } from "next/navigation";
 import { format } from "date-fns";
+import ProjectMembersSelect from "../input-fields/project-members-select";
+import PermissionGate from "@/components/permission-gate";
 
 const BoardCard = ({
   project,
@@ -44,19 +46,22 @@ const BoardCard = ({
             )}
           </div>{" "}
           {displayProperties.showMembers && (
-            <AssigneeSelect
-              selection="multiple"
-              value={project.members?.map((a) => a.userId) ?? []}
-              onChange={(values) =>
-                updateProject.mutate({
-                  values: {
-                    members: values,
-                  },
-                  teamId: project.teamId ?? "",
-                  projectId: project.id,
-                })
-              }
-            />
+            <PermissionGate permission="canManageProjectMembers">
+              <ProjectMembersSelect
+                teamId={teamId}
+                selection="multiple"
+                value={project.members?.map((a) => a.userId) ?? []}
+                onChange={(values) =>
+                  updateProject.mutate({
+                    values: {
+                      members: values,
+                    },
+                    teamId: project.teamId ?? "",
+                    projectId: project.id,
+                  })
+                }
+              />
+            </PermissionGate>
           )}
         </div>
       </div>
@@ -93,7 +98,6 @@ const BoardCard = ({
             value={project.status ?? ""}
           />
         )}
-        {/* TODO: */}
         {/* {displayProperties.showLabels &&
           issue.labels?.map((l) => (
             <span

@@ -18,17 +18,6 @@ export const queryKeys = {
       [...queryKeys.invitations.all, "list", orgId] as const,
   },
 
-  // projects: {
-  //   all: ["projects"] as const,
-  //   list: (orgId: string) =>
-  //     [...queryKeys.projects.all, "list", orgId] as const,
-  // },
-
-  // issues: {
-  //   all: ["issues"] as const,
-  //   list: (orgId: string) => [...queryKeys.issues.all, "list", orgId] as const,
-  // },
-
   teams: {
     all: ["teams"] as const,
     orgList: (orgId: string) => [...queryKeys.teams.all, "org", orgId] as const,

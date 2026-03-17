@@ -59,7 +59,7 @@ const ProjectSelect = ({
             key={NO_PROJECT}
             id={NO_PROJECT}
             textValue="No Project"
-            className="text-zinc-500 italic"
+            className=""
           >
             <span className="flex items-center gap-2">
               <FolderOpen size={14} />

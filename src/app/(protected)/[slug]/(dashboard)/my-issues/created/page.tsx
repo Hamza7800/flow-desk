@@ -1,8 +1,5 @@
 import { getUserCreatedIssues } from "@/server-actions/issues";
-import { Suspense } from "react";
 import UserCreatedIssues from "@/app/(protected)/[slug]/(dashboard)/_components/issues/user-created-issues";
-import { ErrorState } from "@/components/error-state";
-import { LoadingState } from "@/components/loading-state";
 import {
   dehydrate,
   HydrationBoundary,

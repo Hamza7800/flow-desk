@@ -1,17 +1,10 @@
 "use client";
-import { format } from "date-fns";
-import { Lock, Archive, Calendar, Layers } from "lucide-react";
+import { Layers } from "lucide-react";
 import { useTeamProjects } from "@/hooks/use-projects";
-import { CreateProjectModal } from "./create-project";
-import type { ProjectsType } from "@/server-actions/projects";
-import { ProjectsCards } from "./project-cards";
-import { DisplayControls } from "./project-display-controls";
-import { Separator } from "@heroui/react";
 import { ProjectBoard } from "./project-board";
 import { ErrorState } from "@/components/error-state";
 import { useParams, useRouter } from "next/navigation";
 import { EmptyState } from "@/components/empty-state";
-import CreateProjectButton from "./create-project-button";
 
 const TeamProjects = ({ teamId }: { teamId: string }) => {
   const router = useRouter();

@@ -7,9 +7,9 @@ import { useOrganizationContext } from "@/components/context/organization-client
 import { ErrorState } from "@/components/error-state";
 import { LoadingState } from "@/components/loading-state";
 import PermissionGate from "@/components/permission-gate";
-import { useTeamMembers, useUserTeams } from "@/hooks/use-teams";
-import { Button, Card, Chip } from "@heroui/react";
-import { Mail, Users } from "lucide-react";
+import { useTeamMembers } from "@/hooks/use-teams";
+import { Card, Chip } from "@heroui/react";
+import { Mail } from "lucide-react";
 import { useParams } from "next/navigation";
 
 const TeamMembers = () => {

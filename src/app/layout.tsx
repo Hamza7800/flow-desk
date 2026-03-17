@@ -6,7 +6,7 @@ import Providers from "./providers";
 
 export const metadata: Metadata = {
   title: "Flow Desk",
-  description: "MINI Jira",
+  description: "MINI JIRA",
   icons: [{ rel: "icon", url: "/favicon.ico" }],
 };
 

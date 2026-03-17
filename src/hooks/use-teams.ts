@@ -5,7 +5,6 @@ import {
   getOrgTeams,
   getTeam,
   getTeamMembers,
-  getUserTeams,
   getUserTeamsCurrentOrg,
   removeMemberFromTeam,
   removeTeam,

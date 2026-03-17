@@ -1,20 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
-import { Loader2, ArrowRight } from "lucide-react";
+import { useEffect } from "react";
 import {
   Button,
-  Card,
   FieldError,
   Form,
   Input,
   Label,
-  Separator,
   Spinner,
-  Surface,
   TextField,
-  toast,
 } from "@heroui/react";
 import { authClient } from "@/server/better-auth/client";
 import { Controller, useForm } from "react-hook-form";
@@ -23,7 +17,6 @@ import {
   type OrganizationSchemaType,
 } from "@/zod-schema/organization-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useAuth } from "@/components/context/auth-context";
 import {
   useCreateOrganization,
   useUpdateOrganization,

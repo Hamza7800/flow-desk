@@ -8,6 +8,7 @@ import type { Priority, Status } from "@/lib/contants";
 import { Card } from "@heroui/react";
 import { useParams, useRouter } from "next/navigation";
 import { format } from "date-fns";
+import LabelsSelect from "../input-fields/labels-selects";
 
 const BoardCard = ({
   issue,
@@ -91,20 +92,20 @@ const BoardCard = ({
             value={issue.status ?? ""}
           />
         )}
-        {/* TODO: */}
-        {/* {displayProperties.showLabels &&
-          issue.labels?.map((l) => (
-            <span
-              key={l.label.id}
-              className="rounded-full px-1.5 py-0.5 text-xs"
-              style={{
-                backgroundColor: l.label.color + "30",
-                color: l.label.color,
-              }}
-            >
-              {l.label.name}
-            </span>
-          ))} */}
+        {displayProperties.showLabels && (
+          <LabelsSelect
+            value={issue.labels?.map((a) => a.labelId) ?? []}
+            onChange={(values) =>
+              updateIssue.mutate({
+                values: {
+                  labelIds: values,
+                },
+                teamId: issue.teamId ?? "",
+                issueId: issue.id,
+              })
+            }
+          />
+        )}
 
         {/* {displayProperties.showProject && (
               <ProjectSelect

@@ -3,7 +3,7 @@ import { Draggable, DroppableGroup } from "@/components/dnd-primitives";
 import IssueView from "./issue-view";
 
 import type { IssueContainer } from "@/components/context/issue-dnd-context";
-import { Button, Card } from "@heroui/react";
+import { Card } from "@heroui/react";
 import CreateIssueButton from "./create-issue-button";
 import { usePathname } from "next/navigation";
 

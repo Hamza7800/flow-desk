@@ -9,7 +9,7 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar";
 import { useOrgTeams } from "@/hooks/use-teams";
-import { ErrorMessage, Spinner } from "@heroui/react";
+import { ErrorMessage } from "@heroui/react";
 import { BoxIcon } from "lucide-react";
 
 const data = {

@@ -1,11 +1,8 @@
 import { AppSidebar } from "@/app/(protected)/[slug]/(dashboard)/_components/app-sidebar";
-import { SiteHeader } from "@/components/site-header";
 import { SidebarInset, SidebarProvider } from "@/components/ui/sidebar";
 import {
   getActiveOrg,
-  getOrganization,
   getOrganizationById,
-  setActiveOrganization,
 } from "@/server-actions/organization";
 import { redirect } from "next/navigation";
 import { type ReactNode } from "react";

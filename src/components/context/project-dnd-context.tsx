@@ -16,13 +16,7 @@ import {
   type UniqueIdentifier,
 } from "@dnd-kit/core";
 import { arrayMove, sortableKeyboardCoordinates } from "@dnd-kit/sortable";
-import {
-  useState,
-  useEffect,
-  useRef,
-  useCallback,
-  type ReactNode,
-} from "react";
+import { useState, useEffect, useRef, type ReactNode } from "react";
 import { useProjectViewStore, type GroupBy } from "@/store/project-view-store";
 import { GROUP_CONFIG, type Projects } from "@/lib/dnd-config/project-groups";
 import { useOrganizationContext } from "./organization-client-context";

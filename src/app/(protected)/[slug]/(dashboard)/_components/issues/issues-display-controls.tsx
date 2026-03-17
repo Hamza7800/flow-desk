@@ -2,7 +2,6 @@
 import { useIssueViewStore } from "@/store/issue-view-store";
 import { Dropdown, Button, Label, Checkbox } from "@heroui/react";
 import { LayoutList, LayoutGrid, Settings2 } from "lucide-react";
-import type { ReactNode } from "react";
 import ViewChangeButton from "../view-change-button";
 
 const DISPLAY_PROPERTY_LABELS = {
@@ -32,7 +31,6 @@ export const DisplayControls = () => {
 
   return (
     <div className="flex">
-      {/* Display options popover */}
       <Dropdown>
         <Button variant="ghost" size="sm">
           <Settings2 />
@@ -57,7 +55,6 @@ export const DisplayControls = () => {
               setMode={setViewMode}
             />
           </div>
-          {/* Grouping */}
           <div className="pt-2">
             <p className="mb-2 text-xs text-zinc-500">Grouping</p>
             <div className="flex">
@@ -74,7 +71,6 @@ export const DisplayControls = () => {
             </div>
           </div>
 
-          {/* Display properties */}
           <div>
             <p className="mb-2 py-2 text-xs text-zinc-500">Properties</p>
             <div className="">

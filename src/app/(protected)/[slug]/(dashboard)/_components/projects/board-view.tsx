@@ -4,7 +4,6 @@ import { Draggable, DroppableGroup } from "@/components/dnd-primitives";
 import ProjectView from "./project-view";
 import type { ProjectContainer } from "@/components/context/project-dnd-context";
 import { Card } from "@heroui/react";
-import CreateProjectButton from "./create-project-button";
 
 export const BoardView = ({
   containers,

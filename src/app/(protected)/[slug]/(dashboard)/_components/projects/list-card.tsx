@@ -6,7 +6,9 @@ import PrioritySelect from "../input-fields/priority-select";
 import StatusSelect from "../input-fields/status-select";
 import type { Projects } from "@/lib/dnd-config/project-groups";
 import type { Priority, Status } from "@/lib/contants";
-import AssigneeSelect from "../input-fields/assignee-select";
+import ProjectMembersSelect from "../input-fields/project-members-select";
+import PermissionGate from "@/components/permission-gate";
+import { format } from "date-fns";
 
 const ListCard = ({
   project,
@@ -24,9 +26,9 @@ const ListCard = ({
     return (
       <Card className="group ring-surface-secondary hover:bg-surface max-h-14 min-h-14 w-fit flex-row items-center rounded bg-[#101012] px-2 ring-1">
         <div className="grid grid-cols-2 gap-6">
-          <span className="w-[130px] shrink-0 text-sm text-white/70">
+          {/* <span className="w-[130px] shrink-0 text-sm text-white/70">
             {project.identifier}
-          </span>
+          </span> */}
           <span className="shrink-0 truncate text-sm">{project.name}</span>
         </div>
       </Card>
@@ -77,33 +79,39 @@ const ListCard = ({
           />
         )}
         {displayProperties.showMembers && (
-          // TODO: SELECT MULTIPLE MEMBERS
-          <AssigneeSelect
-            selection="multiple"
-            value={project.members?.map((a) => a.userId) ?? []}
-            onChange={(values) =>
-              updateProject.mutate({
-                values: {
-                  members: values,
-                },
-                teamId: project.teamId ?? "",
-                projectId: project.id,
-              })
-            }
-          />
+          <PermissionGate permission="canManageProjectMembers">
+            <ProjectMembersSelect
+              teamId={teamId}
+              selection="multiple"
+              value={project.members?.map((a) => a.userId) ?? []}
+              onChange={(values) =>
+                updateProject.mutate({
+                  values: {
+                    members: values,
+                  },
+                  teamId: project.teamId ?? "",
+                  projectId: project.id,
+                })
+              }
+            />
+          </PermissionGate>
         )}
 
-        {/* {displayProperties.showCreatedAt && (
+        {displayProperties.showCreatedAt && (
           <div>
-            <span>{format(new Date(project.createdAt), "MMM d")}</span>
+            <span className="opacity-60">
+              {format(new Date(project.createdAt), "MMM d")}
+            </span>
           </div>
         )}
 
         {displayProperties.showUpdatedAt && (
           <div>
-            <span>{format(new Date(project.updatedAt), "MMM d")}</span>
+            <span className="opacity-60">
+              {format(new Date(project.updatedAt), "MMM d")}
+            </span>
           </div>
-        )} */}
+        )}
       </div>
     </Card>
   );

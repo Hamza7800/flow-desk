@@ -1,7 +1,6 @@
 "use server";
 
 import { cacheDel, cacheWrap } from "@/lib/cache";
-import { checkPermission } from "@/lib/permissions-checks";
 import { cacheKeys } from "@/lib/query-keys";
 import { returnError } from "@/lib/utils";
 import { auth } from "@/server/better-auth";
@@ -15,7 +14,6 @@ import {
 import { eq } from "drizzle-orm";
 import { headers } from "next/headers";
 import { cache } from "react";
-import z from "zod";
 
 export const checkSlug = async (slug: string) => {
   const data = await auth.api.checkOrganizationSlug({
@@ -304,30 +302,6 @@ export const removeMemberFromOrg = async (
 ) => {
   try {
     const { orgId } = await getActiveOrgId();
-    // const { success: canLeave } = await checkPermission(
-    //   "organization",
-    //   "leave",
-    // );
-    // const { success: canRemove } = await checkPermission(
-    //   "organization",
-    //   "removeMember",
-    // );
-
-    // if (action === "leave" && !canLeave) {
-    //   return {
-    //     success: false,
-    //     data: null,
-    //     message: "You don't have permission to leave",
-    //   };
-    // }
-
-    // if (action === "remove" && !canRemove) {
-    //   return {
-    //     success: false,
-    //     data: null,
-    //     message: "You don't have permission to remove member",
-    //   };
-    // }
 
     const data = await auth.api.removeMember({
       body: {

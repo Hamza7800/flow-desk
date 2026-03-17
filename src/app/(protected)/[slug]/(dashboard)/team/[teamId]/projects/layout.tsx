@@ -8,7 +8,7 @@ export default function Layout({ children }: { children: ReactNode }) {
     <div className="flex h-full flex-col overflow-hidden">
       <SiteHeader heading="Team Projects">
         <div className="flex items-center gap-2 pr-2">
-          <CreateProjectButton text="New Project" />
+          <CreateProjectButton text="New" />
           <DisplayControls />
         </div>
       </SiteHeader>

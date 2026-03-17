@@ -5,8 +5,6 @@ import {
   getProject,
   getProjects,
   updateProject,
-  type ProjectsType,
-  type ProjectType,
 } from "@/server-actions/projects";
 import type { ProjectSchemaType } from "@/zod-schema/project-schema";
 import { toast } from "@heroui/react";

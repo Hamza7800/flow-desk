@@ -9,7 +9,7 @@ interface Props {
   userId: string;
   isCurrentUser: boolean;
 }
-// TODO: NEED TO ADD PERMISSION SO USER CAN LEAVE BUT CANT REMOVE
+
 export function RemoveMemberFromOrg({ userId, isCurrentUser }: Props) {
   const removeMutation = useRemoveMember(isCurrentUser ? "leave" : "remove");
 

@@ -1,4 +1,3 @@
-import { type ReactNode } from "react";
 import { Button, Card } from "@heroui/react";
 import { type LucideIcon, Inbox } from "lucide-react";
 import { cn } from "@/lib/utils";

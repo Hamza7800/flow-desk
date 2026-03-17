@@ -1,7 +1,5 @@
 import { queryKeys } from "@/lib/query-keys";
 import { getUserTeamsCurrentOrg } from "@/server-actions/teams";
-import { ChevronDown } from "@gravity-ui/icons";
-import { Accordion, ErrorMessage, Spinner } from "@heroui/react";
 import {
   dehydrate,
   HydrationBoundary,

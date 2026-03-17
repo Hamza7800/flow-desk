@@ -4,7 +4,7 @@ import { ErrorState } from "@/components/error-state";
 import OrganizationForm from "@/components/forms/organization-form";
 import { LoadingState } from "@/components/loading-state";
 import { useOrganization } from "@/hooks/use-organizations";
-import { Card, Spinner } from "@heroui/react";
+import { Card } from "@heroui/react";
 import { Box } from "lucide-react";
 import { useParams, useRouter } from "next/navigation";
 

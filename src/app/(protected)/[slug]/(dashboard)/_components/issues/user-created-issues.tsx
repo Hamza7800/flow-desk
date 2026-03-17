@@ -2,7 +2,6 @@
 
 import { useUserCreatedIssues } from "@/hooks/use-issues";
 
-import type { IssuesType } from "@/server-actions/issues";
 import { IssueBoard } from "@/app/(protected)/[slug]/(dashboard)/_components/issues/issue-board";
 import { ErrorState } from "@/components/error-state";
 import { EmptyState } from "@/components/empty-state";

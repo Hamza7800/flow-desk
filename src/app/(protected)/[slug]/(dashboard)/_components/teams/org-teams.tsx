@@ -2,12 +2,11 @@
 
 import { useOrganizationContext } from "@/components/context/organization-client-context";
 import { ErrorState } from "@/components/error-state";
-import { LinkButton } from "@/components/link-button";
 import { useCurrentMemberRole } from "@/hooks/use-member-role";
 import { useOrgTeams } from "@/hooks/use-teams";
 import type { TeamsType } from "@/server-actions/teams";
-import { Card, Chip } from "@heroui/react";
-import { ArrowRight, Box, UserSquare } from "lucide-react";
+import { Card } from "@heroui/react";
+import { ArrowRight, Box } from "lucide-react";
 import { useRouter } from "next/navigation";
 
 const OrgTeams = ({ initialData }: { initialData: TeamsType["data"] }) => {

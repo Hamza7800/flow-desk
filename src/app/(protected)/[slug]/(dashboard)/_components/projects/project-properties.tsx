@@ -7,9 +7,10 @@ import StatusSelect from "@/app/(protected)/[slug]/(dashboard)/_components/input
 import DateSelect from "@/app/(protected)/[slug]/(dashboard)/_components/input-fields/date-picker";
 import DeleteProject from "@/app/(protected)/[slug]/(dashboard)/_components/projects/delete-project";
 import PermissionGate from "@/components/permission-gate";
-import { ErrorMessage, Label, Separator } from "@heroui/react";
+import { Label, Separator } from "@heroui/react";
 import { useProjectLead } from "@/hooks/use-member-role";
 import { usePermissions } from "@/hooks/use-permissions";
+import ProjectMembersSelect from "../input-fields/project-members-select";
 
 const ProjectProperties = () => {
   const { projectId, teamId } = useParams<{
@@ -98,7 +99,8 @@ const ProjectProperties = () => {
       <div className="flex items-center gap-4">
         <Label className="w-[100px]">Members</Label>
         <div className="w-full">
-          <AssigneeSelect
+          <ProjectMembersSelect
+            teamId={teamId}
             isDisabled={!canManageProjectMembers}
             mode="create"
             selection="multiple"

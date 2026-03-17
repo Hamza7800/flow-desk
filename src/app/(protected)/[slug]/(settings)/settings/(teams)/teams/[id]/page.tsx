@@ -1,6 +1,6 @@
 "use client";
 import TeamForm from "@/app/(protected)/[slug]/(dashboard)/_components/teams/form";
-import { Card, Spinner } from "@heroui/react";
+import { Card } from "@heroui/react";
 import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { useTeam } from "@/hooks/use-teams";

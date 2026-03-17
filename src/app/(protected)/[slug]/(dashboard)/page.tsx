@@ -1,7 +1,3 @@
-import { LinkButton } from "@/components/link-button";
-
-import { getOrganization } from "@/server-actions/organization";
-import { Card } from "@heroui/react";
 import { redirect } from "next/navigation";
 import type { ReactNode } from "react";
 

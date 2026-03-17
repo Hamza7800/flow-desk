@@ -40,12 +40,7 @@ const Content = async () => {
   );
 };
 
-export default async function OnboardingPage({
-  params,
-}: {
-  params: Promise<{ slug: string }>;
-}) {
-  const { slug } = await params;
+export default async function OnboardingPage() {
   const orgsRes = await getUserListOrganizations();
   if (orgsRes.success && orgsRes.data && orgsRes.data.length > 0) {
     await auth.api.setActiveOrganization({

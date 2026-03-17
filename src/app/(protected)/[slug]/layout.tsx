@@ -1,11 +1,7 @@
 import OrganizationProvider from "@/components/context/organization-client-context";
 import { LinkButton } from "@/components/link-button";
 import WorkspaceLayoutSkeleton from "@/components/skeletons/workspace-layout-skeleton";
-import {
-  getOrganization,
-  getUserListOrganizations,
-} from "@/server-actions/organization";
-import { getUserTeamsCurrentOrg } from "@/server-actions/teams";
+import { getOrganization } from "@/server-actions/organization";
 import { Card } from "@heroui/react";
 import { Suspense, type ReactNode } from "react";
 

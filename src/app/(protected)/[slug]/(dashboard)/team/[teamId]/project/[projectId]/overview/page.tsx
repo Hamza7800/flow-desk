@@ -1,8 +1,5 @@
-import { Suspense } from "react";
 import { getProject } from "@/server-actions/projects";
 import ProjectDetails from "@/app/(protected)/[slug]/(dashboard)/_components/projects/project-details";
-import { LoadingState } from "@/components/loading-state";
-import { ErrorState } from "@/components/error-state";
 import {
   dehydrate,
   HydrationBoundary,

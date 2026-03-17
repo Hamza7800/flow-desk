@@ -31,7 +31,6 @@ export const DisplayControls = () => {
 
   return (
     <div className="flex">
-      {/* Display options popover */}
       <Dropdown>
         <Button variant="ghost" size="sm">
           <Settings2 />
@@ -56,7 +55,6 @@ export const DisplayControls = () => {
               setMode={setViewMode}
             />
           </div>
-          {/* Grouping */}
           <div className="pt-2">
             <p className="mb-2 text-xs text-zinc-500">Grouping</p>
             <div className="flex">
@@ -73,7 +71,6 @@ export const DisplayControls = () => {
             </div>
           </div>
 
-          {/* Display properties */}
           <div>
             <p className="mb-2 pt-2 text-xs text-zinc-500">Properties</p>
             <div className="">

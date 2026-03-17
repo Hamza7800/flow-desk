@@ -1,6 +1,6 @@
 "use client";
 import { useUserInvitations } from "@/hooks/use-invitations";
-import { Card, Chip, Spinner, Surface } from "@heroui/react";
+import { Card, Chip } from "@heroui/react";
 import { useParams, useRouter } from "next/navigation";
 import AcceptInvitation from "@/app/(protected)/[slug]/(dashboard)/_components/invitations/accept-invitation";
 import RejectInvitation from "@/app/(protected)/[slug]/(dashboard)/_components/invitations/reject-invitation";

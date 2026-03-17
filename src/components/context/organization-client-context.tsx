@@ -1,18 +1,11 @@
 "use client";
 
 import { useOrganization } from "@/hooks/use-organizations";
-import type { OrgType, UserOrgType } from "@/server-actions/organization";
+import type { OrgType } from "@/server-actions/organization";
 import { Card, Spinner } from "@heroui/react";
 import { useRouter } from "next/navigation";
-import {
-  createContext,
-  useContext,
-  useMemo,
-  useState,
-  type ReactNode,
-} from "react";
+import { createContext, useContext, useMemo, type ReactNode } from "react";
 import { LinkButton } from "../link-button";
-import type { TeamsType } from "@/server-actions/teams";
 
 const OrganizationContext = createContext<{
   org: OrgType["data"] | undefined;

@@ -8,6 +8,8 @@ import type { Priority, Status } from "@/lib/contants";
 import { Card } from "@heroui/react";
 import { useParams, useRouter } from "next/navigation";
 import { format } from "date-fns";
+import LabelsSelect from "../input-fields/labels-selects";
+import { issue } from "@/server/db/schema";
 
 const ListCard = ({
   issue,
@@ -112,6 +114,21 @@ const ListCard = ({
       </div>
 
       <div className="ml-auto flex items-center justify-end gap-3">
+        {displayProperties.showLabels && (
+          <LabelsSelect
+            value={issue.labels?.map((a) => a.labelId) ?? []}
+            onChange={(values) =>
+              updateIssue.mutate({
+                values: {
+                  labelIds: values,
+                },
+                teamId: issue.teamId ?? "",
+                issueId: issue.id,
+              })
+            }
+          />
+        )}
+
         {displayProperties.showAssignee && (
           <AssigneeSelect
             value={issue.assignees?.map((a) => a.userId) ?? []}

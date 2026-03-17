@@ -1,30 +1,19 @@
 "use client";
 
 import { useParams, useRouter } from "next/navigation";
-import {
-  Users,
-  Crown,
-  Shield,
-  User,
-  Mail,
-  MoreHorizontal,
-  UserPlus,
-} from "lucide-react";
-import { Button, Card, Chip, Separator, Surface } from "@heroui/react";
+import { Users, Crown, Shield, User, Mail, UserPlus } from "lucide-react";
+import { Button, Card, Chip } from "@heroui/react";
 import { useOrganization } from "@/hooks/use-organizations";
 import InviteMembers from "@/app/(protected)/[slug]/(settings)/_components/invite-members";
 import CancelInvitation from "@/app/(protected)/[slug]/(dashboard)/_components/invitations/cancel-invitation";
-import { authClient } from "@/server/better-auth/client";
 import { useState } from "react";
 import { useOrganizationContext } from "@/components/context/organization-client-context";
-import { RemoveMemberFromOrg } from "@/app/(protected)/[slug]/(dashboard)/_components/teams/remove-member-from-org";
 import { LoadingState } from "@/components/loading-state";
 import { ErrorState } from "@/components/error-state";
 import { EmptyState } from "@/components/empty-state";
 import PermissionGate from "@/components/permission-gate";
 import { Avatar } from "@/components/avatar";
 import { useAuth } from "@/components/context/auth-context";
-import RoleSelect from "./input-fields/role-select";
 
 const roleIcon = (role: string) => {
   switch (role) {

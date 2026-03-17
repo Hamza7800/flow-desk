@@ -9,6 +9,7 @@ import { usePermissions } from "@/hooks/use-permissions";
 import { Label, Separator } from "@heroui/react";
 import ProjectSelect from "../input-fields/project-select";
 import TeamMembersSelect from "../input-fields/team-members-select";
+import LabelsSelect from "../input-fields/labels-selects";
 
 const IssueProperties = () => {
   const { issueId, teamId } = useParams<{ issueId: string; teamId: string }>();
@@ -94,6 +95,24 @@ const IssueProperties = () => {
                 issueId: issue.id,
                 values: { projectId: value },
                 teamId: issue.teamId ?? "",
+              })
+            }
+          />
+        </div>
+      </div>
+      <div className="flex items-center gap-4">
+        <Label className="w-[100px]">Labels</Label>
+        <div className="w-full">
+          <LabelsSelect
+            mode="create"
+            value={issue.labels?.map((a) => a.labelId) ?? []}
+            onChange={(values) =>
+              updateIssue.mutate({
+                values: {
+                  labelIds: values,
+                },
+                teamId: issue.teamId ?? "",
+                issueId: issue.id,
               })
             }
           />

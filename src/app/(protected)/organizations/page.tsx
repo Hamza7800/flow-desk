@@ -10,14 +10,6 @@ export default async function UserOrganizations() {
   const organizations = result.success ? (result.data ?? []) : [];
   const session = await auth.api.getSession({ headers: await headers() });
 
-  const avatarColors = [
-    "from-blue-500 to-cyan-400",
-    "from-violet-500 to-purple-400",
-    "from-emerald-500 to-teal-400",
-    "from-rose-500 to-pink-400",
-    "from-amber-500 to-orange-400",
-  ];
-
   return (
     <div className="relative flex min-h-screen flex-col bg-[#0a0a0a]">
       {/* ── top bar ─────────────────────────────────────────────── */}

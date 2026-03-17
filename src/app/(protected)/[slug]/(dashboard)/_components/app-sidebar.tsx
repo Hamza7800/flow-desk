@@ -1,5 +1,3 @@
-// "use client";
-
 import {
   Sidebar,
   SidebarContent,
@@ -8,25 +6,13 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "@/components/ui/sidebar";
-import { Accordion } from "@heroui/react";
 import { OrganizationSwitcher } from "@/components/organization-switcher";
 import { LinkButton } from "@/components/link-button";
 import type { ComponentProps } from "react";
-import { ChevronDown } from "@gravity-ui/icons";
 import UserTeams from "./teams/user-teams";
-import {
-  Layers2Icon,
-  Mail,
-  Settings,
-  SettingsIcon,
-  UserSquare2,
-  UsersRoundIcon,
-} from "lucide-react";
-import WorkspaceSettings from "./workspace-settings";
+import { Layers2Icon, Mail } from "lucide-react";
 
 export function AppSidebar({ slug, ...props }: ComponentProps<typeof Sidebar>) {
-  // const { data: userRole, isPending } = useCurrentMemberRole();
-
   return (
     <Sidebar {...props}>
       <SidebarHeader>

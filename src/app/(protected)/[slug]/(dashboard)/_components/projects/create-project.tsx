@@ -12,11 +12,11 @@ import { useOrganizationContext } from "@/components/context/organization-client
 import { useCreateProject } from "@/hooks/use-projects";
 import StatusSelect from "../input-fields/status-select";
 import PrioritySelect from "../input-fields/priority-select";
-import AssigneeSelect from "../input-fields/assignee-select";
 import InlineInput from "../input-fields/input";
 import InlineBlockNote from "../input-fields/block-note-input";
 import DateSelect from "../input-fields/date-picker";
 import TeamMembersSelect from "../input-fields/team-members-select";
+import ProjectMembersSelect from "../input-fields/project-members-select";
 
 type Props = {
   teamId: string;
@@ -147,7 +147,8 @@ export function CreateProjectModal({ teamId, isOpen, onOpenChange }: Props) {
             name="members"
             render={({ field }) => {
               return (
-                <TeamMembersSelect
+                <ProjectMembersSelect
+                  selection="multiple"
                   teamId={teamId}
                   placeholderText="Members"
                   mode="create"

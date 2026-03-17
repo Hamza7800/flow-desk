@@ -23,7 +23,6 @@ import { toast } from "@heroui/react";
 import { queryKeys } from "@/lib/query-keys";
 import type { IssueSnapshot } from "@/lib/types";
 
-// TODO: FIX BUG FOR REFETCHING ISSUES ON UPDATE
 export const useCreateIssue = (organizationId: string, teamId: string) => {
   const queryClient = useQueryClient();
 

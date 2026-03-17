@@ -99,14 +99,6 @@ export const useCancelInvitation = (slug: string) => {
   });
 };
 
-// export const useOrganizationInvitations = (orgId: string) => {
-//   return useQuery({
-//     queryKey: invitationKeys.list(orgId),
-//     queryFn: () => getAllInvites(),
-//     enabled: !!orgId,
-//   });
-// };
-
 export const useUserInvitations = (orgId: string) => {
   return useQuery({
     queryKey: queryKeys.invitations.list(orgId),
