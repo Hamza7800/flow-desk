@@ -110,10 +110,10 @@ export const useSetOrgActive = () => {
       await appCache.clear();
 
       toast.success(`${data?.name} org set active`);
-      router.replace(`/${data?.slug}`);
+      // router.replace(`/${data?.slug}`);
 
-      router.refresh();
-      // window.location.href = `/${data?.slug}`;
+      // router.refresh();
+      window.location.href = `/${data?.slug}`;
     },
 
     onError: (error: Error) => {
