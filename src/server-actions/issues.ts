@@ -1,6 +1,6 @@
 "use server";
 
-import { cacheDel, cacheWrap } from "@/lib/cache";
+import { appCache, cacheDel, cacheWrap } from "@/lib/cache";
 import {
   canDeleteIssue,
   checkPermission,
@@ -65,14 +65,16 @@ export const createIssue = async (teamId: string, data: IssueSchemaType) => {
       return createdIssue;
     });
 
-    await cacheDel(
-      cacheKeys.issues.byUserAssigned(userId, organizationId),
-      cacheKeys.issues.byUserCreated(userId, organizationId),
-      cacheKeys.issues.byTeam(newIssue?.teamId!),
-      cacheKeys.issues.byProject(newIssue?.projectId!),
-      cacheKeys.issues.detail(newIssue?.id!),
-      cacheKeys.issues.orgList(organizationId),
-    );
+    // await cacheDel(
+    //   cacheKeys.issues.byUserAssigned(userId, organizationId),
+    //   cacheKeys.issues.byUserCreated(userId, organizationId),
+    //   cacheKeys.issues.byTeam(newIssue?.teamId!),
+    //   cacheKeys.issues.byProject(newIssue?.projectId!),
+    //   cacheKeys.issues.detail(newIssue?.id!),
+    //   cacheKeys.issues.orgList(organizationId),
+    // );
+
+    await appCache.clear();
 
     return { success: true, message: "Issue created", data: newIssue };
   } catch (error) {
@@ -356,14 +358,15 @@ export const updateIssue = async (
       },
     });
 
-    await cacheDel(
-      cacheKeys.issues.byUserAssigned(userId, orgId),
-      cacheKeys.issues.byUserCreated(userId, orgId),
-      cacheKeys.issues.byTeam(updated?.teamId!),
-      cacheKeys.issues.byProject(updated?.projectId!),
-      cacheKeys.issues.detail(issueId),
-      cacheKeys.issues.orgList(orgId),
-    );
+    // await cacheDel(
+    //   cacheKeys.issues.byUserAssigned(userId, orgId),
+    //   cacheKeys.issues.byUserCreated(userId, orgId),
+    //   cacheKeys.issues.byTeam(updated?.teamId!),
+    //   cacheKeys.issues.byProject(updated?.projectId!),
+    //   cacheKeys.issues.detail(issueId),
+    //   cacheKeys.issues.orgList(orgId),
+    // );
+    await appCache.clear();
 
     return { success: true, message: "Issue updated", data: updated };
   } catch (error) {

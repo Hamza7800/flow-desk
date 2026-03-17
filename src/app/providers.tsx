@@ -7,7 +7,7 @@ import type { ReactNode } from "react";
 const Providers = ({ children }: { children: ReactNode }) => {
   return (
     <ReactQueryProvider>
-      <>{children}</>
+      {children}
       <Toast.Provider />
     </ReactQueryProvider>
   );

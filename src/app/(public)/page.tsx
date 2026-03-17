@@ -4,7 +4,7 @@ import { LinkButton } from "@/components/link-button";
 
 export default function LandingPage() {
   return (
-    <div className="min-h-screen">
+    <div className="flex h-full flex-col overflow-y-auto">
       <nav className="sticky top-0 z-50 border-b backdrop-blur-sm">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
           <div className="text-xl font-bold text-white">Mini Jira</div>
@@ -33,7 +33,7 @@ export default function LandingPage() {
             organize projects, and collaborate seamlessly with your team.
           </p>
           <div className="flex flex-col justify-center gap-4 pt-8 sm:flex-row">
-            <LinkButton variant="danger" size="lg" href="/auth/sign-in">
+            <LinkButton variant="danger" size="lg" href="/sign-in">
               Get Started
             </LinkButton>
             <LinkButton variant="outline" href="/sign-in">
@@ -72,8 +72,7 @@ export default function LandingPage() {
               Team Collaboration
             </h3>
             <p className="text-slate-400">
-              Invite team members, assign tasks, and track progress with
-              real-time updates.
+              Invite team members, assign tasks, and track progress
             </p>
           </Card>
 
@@ -92,41 +91,6 @@ export default function LandingPage() {
           </Card>
         </div>
       </section>
-
-      {/* Benefits Section */}
-      <section className="mx-auto mb-20 max-w-7xl px-4 py-20 sm:px-6 lg:px-8">
-        <Card className="p-12">
-          <Card.Header>
-            <h2 className="mb-8 text-2xl font-bold text-white">
-              Why Choose Mini Jira?
-            </h2>
-          </Card.Header>
-          <Card.Content className="grid gap-6 md:grid-cols-2">
-            {[
-              "Simple and intuitive interface",
-              "Unlimited projects and tasks",
-              "Real-time collaboration",
-              "Powerful organization tools",
-              "Team member management",
-              "Clean, modern design",
-            ].map((benefit) => (
-              <div key={benefit} className="flex items-center gap-3">
-                <CheckCircle2 className="h-5 w-5 flex-shrink-0 text-green-400" />
-                <span className="text-slate-300">{benefit}</span>
-              </div>
-            ))}
-          </Card.Content>
-        </Card>
-      </section>
-
-      {/* Footer */}
-      <footer className="border-t">
-        <div className="mx-auto max-w-7xl px-4 py-8 text-center sm:px-6 lg:px-8">
-          <p className="text-slate-400">
-            © 2026 Mini Jira. All rights reserved.
-          </p>
-        </div>
-      </footer>
     </div>
   );
 }

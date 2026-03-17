@@ -25,8 +25,8 @@ const SignUser = () => {
   const form = useForm<SignInSchemaType>({
     resolver: zodResolver(SignInSchema),
     defaultValues: {
-      email: "",
-      password: "",
+      email: "alex@demo.com",
+      password: "demo1234",
     },
   });
 
@@ -64,13 +64,29 @@ const SignUser = () => {
   };
 
   return (
-    <div className="flex min-h-screen items-center justify-center p-6">
-      <Card className="w-full max-w-md">
-        <Card.Header>
-          <Card.Title>Sign in</Card.Title>
-        </Card.Header>
+    <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-[#080a0f] p-6">
+      <div
+        className="pointer-events-none absolute inset-0 opacity-[0.03]"
+        style={{
+          backgroundImage: `linear-gradient(rgba(255,255,255,1) 1px, transparent 1px),
+                        linear-gradient(90deg, rgba(255,255,255,1) 1px, transparent 1px)`,
+          backgroundSize: "48px 48px",
+        }}
+      />
 
-        <Card.Content>
+      <div className="relative w-full max-w-sm">
+        <div className="mb-8 flex flex-col items-center gap-2">
+          <h1
+            className="text-2xl font-semibold tracking-tight text-white"
+            style={{ fontFamily: "'DM Serif Display', Georgia, serif" }}
+          >
+            FlowDesk
+          </h1>
+          <p className="text-sm text-zinc-500">Welcome back</p>
+        </div>
+
+        {/* card */}
+        <div className="rounded-2xl border border-white/[0.06] bg-white/[0.03] p-6 shadow-2xl shadow-black/40 backdrop-blur-sm">
           <Form
             className="flex flex-col gap-4"
             onSubmit={handleSubmit(onSubmit)}
@@ -84,9 +100,13 @@ const SignUser = () => {
                   type="email"
                   isInvalid={fieldState.invalid}
                 >
-                  <Label>Email</Label>
+                  <Label className="mb-1.5 block text-xs font-medium text-zinc-400">
+                    Email
+                  </Label>
                   <Input variant="secondary" placeholder="john@example.com" />
-                  <FieldError>{fieldState.error?.message}</FieldError>
+                  <FieldError className="mt-1 text-xs text-red-400">
+                    {fieldState.error?.message}
+                  </FieldError>
                 </TextField>
               )}
             />
@@ -100,42 +120,46 @@ const SignUser = () => {
                   type="password"
                   isInvalid={fieldState.invalid}
                 >
-                  <Label>Password</Label>
-                  <Input variant="secondary" placeholder="password" />
-                  <FieldError>{fieldState.error?.message}</FieldError>
+                  <Label className="mb-1.5 block text-xs font-medium text-zinc-400">
+                    Password
+                  </Label>
+                  <Input variant="secondary" placeholder="••••••••" />
+                  <FieldError className="mt-1 text-xs text-red-400">
+                    {fieldState.error?.message}
+                  </FieldError>
                 </TextField>
               )}
             />
 
-            <Button isPending={isSubmitting} type="submit" className="w-full">
+            <Button isPending={isSubmitting} type="submit" fullWidth>
               {({ isPending }) => (
-                <>
-                  {isPending ? <Spinner color="current" size="sm" /> : null}
-                  Sign In
-                </>
+                <span className="flex items-center justify-center gap-2">
+                  {isPending && <Spinner color="current" size="sm" />}
+                  {isPending ? "Signing in..." : "Sign in"}
+                </span>
               )}
             </Button>
           </Form>
-        </Card.Content>
+        </div>
 
-        <Card.Footer className="flex flex-col justify-center gap-3 sm:flex-row">
-          Don't have an account?
-          <Button
-            variant={"ghost"}
-            onPress={() => router.push("/sign-up")}
-            className="w-full cursor-pointer sm:w-auto"
+        <div className="mt-5 flex flex-col items-center gap-3">
+          <p className="text-sm text-zinc-500">
+            Don't have an account?{" "}
+            <button
+              onClick={() => router.push("/sign-up")}
+              className="font-medium transition-colors hover:text-sky-300"
+            >
+              Sign up
+            </button>
+          </p>
+          <button
+            onClick={() => router.push("/")}
+            className="text-xs text-zinc-600 transition-colors hover:text-zinc-400"
           >
-            <ArrowRightToSquare className="mr-2 h-4 w-4" /> Sign up
-          </Button>
-        </Card.Footer>
-        <Button
-          onPress={() => router.push("/")}
-          variant="ghost"
-          className="w-full text-center"
-        >
-          Back Home
-        </Button>
-      </Card>
+            ← Back to home
+          </button>
+        </div>
+      </div>
     </div>
   );
 };

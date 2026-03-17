@@ -1,6 +1,6 @@
 "use server";
 
-import { cacheDel, cacheWrap } from "@/lib/cache";
+import { appCache, cacheDel, cacheWrap } from "@/lib/cache";
 import { cacheKeys } from "@/lib/query-keys";
 import { returnError } from "@/lib/utils";
 import { auth } from "@/server/better-auth";
@@ -55,7 +55,8 @@ export const createOrganization = async (values: OrganizationSchemaType) => {
       };
     }
 
-    await cacheDel(cacheKeys.organizations.list(user.id));
+    // await cacheDel(cacheKeys.organizations.list(user.id));
+    await appCache.clear();
 
     return {
       success: true,
@@ -281,10 +282,12 @@ export const updateOrganization = async (
       };
     }
 
-    await cacheDel(
-      cacheKeys.organizations.detail(orgId),
-      cacheKeys.organizations.list(userId),
-    );
+    // await cacheDel(
+    //   cacheKeys.organizations.detail(orgId),
+    //   cacheKeys.organizations.list(userId),
+    // );
+
+    await appCache.clear();
 
     return {
       success: true,

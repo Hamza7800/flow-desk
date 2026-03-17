@@ -22,9 +22,12 @@ export default function RootLayout({
     <html
       data-theme="dark"
       lang="en"
-      className={`dark text-white ${inter.variable}`}
+      className={`dark h-full text-white ${inter.variable}`}
     >
-      <body cz-shortcut-listen="true" className="overflow-hidden">
+      <body
+        cz-shortcut-listen="true"
+        className="flex h-full flex-col overflow-hidden"
+      >
         <Providers>{children}</Providers>
       </body>
     </html>
