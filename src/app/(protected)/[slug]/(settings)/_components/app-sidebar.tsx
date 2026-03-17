@@ -16,16 +16,16 @@ import { Box, Mail, Receipt, User, Users } from "lucide-react";
 
 const data = {
   navMain: [
-    {
-      title: "Personal",
-      items: [
-        {
-          title: "Account",
-          url: "account/profile",
-          icon: <User size={14} />,
-        },
-      ],
-    },
+    // {
+    //   title: "Personal",
+    //   items: [
+    //     {
+    //       title: "Account",
+    //       url: "account/profile",
+    //       icon: <User size={14} />,
+    //     },
+    //   ],
+    // },
     {
       title: "Administration",
       items: [
