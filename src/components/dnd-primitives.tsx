@@ -91,7 +91,7 @@ export const Draggable = ({
         transform: CSS.Transform.toString(transform),
         transition,
         opacity: isDragging ? 0.2 : 1,
-        touchAction: "none",
+        touchAction: isDragging ? "none" : "pan-y",
       }}
       {...attributes}
       {...listeners}

@@ -79,8 +79,8 @@ export const IssueDndContext = ({ issues, renderCard, children }: Props) => {
     }),
     useSensor(TouchSensor, {
       activationConstraint: {
-        delay: 250,
-        tolerance: 5,
+        delay: 500,
+        tolerance: 8,
       },
     }),
   );
