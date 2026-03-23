@@ -32,11 +32,11 @@ export default function LandingPage() {
             A lightweight project management tool built for teams. Track issues,
             organize projects, and collaborate seamlessly with your team.
           </p>
-          <div className="flex flex-col justify-center gap-4 pt-8 sm:flex-row">
-            <LinkButton variant="danger" size="lg" href="/sign-in">
+          <div className="mx-auto flex flex-col justify-center gap-4 pt-8 sm:flex-row md:max-w-sm">
+            <LinkButton fullWidth variant="danger" size="lg" href="/sign-in">
               Get Started
             </LinkButton>
-            <LinkButton variant="outline" href="/sign-in">
+            <LinkButton fullWidth variant="outline" href="/sign-in">
               Sign In
             </LinkButton>
           </div>

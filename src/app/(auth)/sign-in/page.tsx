@@ -25,8 +25,8 @@ const SignUser = () => {
   const form = useForm<SignInSchemaType>({
     resolver: zodResolver(SignInSchema),
     defaultValues: {
-      email: "alex@demo.com",
-      password: "demo1234",
+      // email: "alex@demo.com",
+      // password: "demo1234",
     },
   });
 
@@ -60,6 +60,24 @@ const SignUser = () => {
     } catch (error: any) {
       setIsSubmitting(false);
       toast.danger(error.message);
+    }
+  };
+
+  const handleDemoLogin = async () => {
+    setIsSubmitting(true);
+
+    try {
+      await loginAction({
+        email: "alex@demo.com",
+        password: "demo1234",
+      });
+
+      toast.success("Logged in as demo user");
+      router.push("/organizations");
+    } catch (error: any) {
+      toast.danger(error.message);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -136,6 +154,19 @@ const SignUser = () => {
                 <span className="flex items-center justify-center gap-2">
                   {isPending && <Spinner color="current" size="sm" />}
                   {isPending ? "Signing in..." : "Sign in"}
+                </span>
+              )}
+            </Button>
+            <Button
+              variant="outline"
+              isPending={isSubmitting}
+              onClick={handleDemoLogin}
+              fullWidth
+            >
+              {({ isPending }) => (
+                <span className="flex items-center justify-center gap-2">
+                  {isPending && <Spinner color="current" size="sm" />}
+                  {isPending ? "Signing in..." : "Demo Login"}
                 </span>
               )}
             </Button>
