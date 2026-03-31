@@ -16,7 +16,6 @@ import {
   TextField,
   toast,
 } from "@heroui/react";
-import { ArrowRightToSquare } from "@gravity-ui/icons";
 
 const SignUpUser = () => {
   const router = useRouter();

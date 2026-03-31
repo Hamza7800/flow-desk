@@ -25,6 +25,8 @@ const SignUser = () => {
   const form = useForm<SignInSchemaType>({
     resolver: zodResolver(SignInSchema),
     defaultValues: {
+      email: "",
+      password: "",
       // email: "alex@demo.com",
       // password: "demo1234",
     },
