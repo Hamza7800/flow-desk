@@ -1,13 +1,20 @@
 import { CheckCircle2, LayoutGrid, Users, Zap } from "lucide-react";
 import { Card } from "@heroui/react";
 import { LinkButton } from "@/components/link-button";
+import Image from "next/image";
+import Link from "next/link";
 
 export default function LandingPage() {
   return (
     <div className="flex h-full flex-col overflow-y-auto">
       <nav className="sticky top-0 z-50 border-b backdrop-blur-sm">
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-          <div className="text-xl font-bold text-white">Mini Jira</div>
+          {/* <div className="text-xl font-bold text-white"> */}
+          <Link href="/">
+            <Image width={120} height={120} alt="logo" src={"/flow-logo.png"} />
+            <span className="sr-only">Flow Desk</span>
+          </Link>
+          {/* </div> */}
           <div className="flex items-center gap-4">
             <LinkButton variant="ghost" href="/sign-in">
               Sign In

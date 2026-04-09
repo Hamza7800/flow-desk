@@ -16,6 +16,8 @@ import {
   TextField,
   toast,
 } from "@heroui/react";
+import Link from "next/link";
+import Image from "next/image";
 
 const SignUpUser = () => {
   const router = useRouter();
@@ -76,12 +78,15 @@ const SignUpUser = () => {
 
       <div className="relative w-full max-w-sm">
         <div className="mb-8 flex flex-col items-center gap-2">
-          <h1
+          <Link href={"/"} className="">
+            <Image width={120} height={120} alt="logo" src={"/flow-logo.png"} />
+          </Link>
+          {/* <h1
             className="text-2xl font-semibold tracking-tight text-white"
             style={{ fontFamily: "'DM Serif Display', Georgia, serif" }}
           >
             FlowDesk
-          </h1>
+          </h1> */}
           <p className="text-sm text-zinc-500">Create your account</p>
         </div>
 

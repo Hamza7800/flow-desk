@@ -18,6 +18,8 @@ import {
   toast,
 } from "@heroui/react";
 import { ArrowRightToSquare } from "@gravity-ui/icons";
+import Image from "next/image";
+import Link from "next/link";
 
 const SignUser = () => {
   const router = useRouter();
@@ -27,8 +29,6 @@ const SignUser = () => {
     defaultValues: {
       email: "",
       password: "",
-      // email: "alex@demo.com",
-      // password: "demo1234",
     },
   });
 
@@ -96,12 +96,15 @@ const SignUser = () => {
 
       <div className="relative w-full max-w-sm">
         <div className="mb-8 flex flex-col items-center gap-2">
-          <h1
+          <Link href={"/"} className="">
+            <Image width={120} height={120} alt="logo" src={"/flow-logo.png"} />
+          </Link>
+          {/* <h1
             className="text-2xl font-semibold tracking-tight text-white"
             style={{ fontFamily: "'DM Serif Display', Georgia, serif" }}
           >
             FlowDesk
-          </h1>
+          </h1> */}
           <p className="text-sm text-zinc-500">Welcome back</p>
         </div>
 
