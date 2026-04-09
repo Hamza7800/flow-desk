@@ -11,7 +11,7 @@ export default function LandingPage() {
         <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
           {/* <div className="text-xl font-bold text-white"> */}
           <Link href="/">
-            <Image width={120} height={120} alt="logo" src={"/flow-logo.png"} />
+            <Image width={50} height={50} alt="logo" src={"/flow-logo.png"} />
             <span className="sr-only">Flow Desk</span>
           </Link>
           {/* </div> */}
