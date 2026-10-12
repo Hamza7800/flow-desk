@@ -5,7 +5,7 @@ pipeline{
           description: 'Version bump type (webhook builds use patch)')
     }
     environment {
-      REGISTRY = 'localhost:8083' 
+      REGISTRY = 'localhost:8084' 
       IMAGE    = "${REGISTRY}/flow-desk-app"
       GITHUB_REPO = 'github.com/Hamza7800/flow-desk.git'
       NEXT_PUBLIC_BETTER_AUTH_URL = 'http://localhost:3000'
