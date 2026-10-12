@@ -42,7 +42,7 @@ pipeline{
                   --build-arg NEXT_PUBLIC_BETTER_AUTH_URL="$NEXT_PUBLIC_BETTER_AUTH_URL" \
                   --label org.opencontainers.image.version="$VERSION" \
                   --label org.opencontainers.image.revision="$(git rev-parse HEAD)" \
-                  -t "localhost:8080/$IMAGE:$VERSION" .
+                  -t "localhost:8081/$IMAGE:$VERSION" .
               '''
             }
           }
@@ -54,8 +54,8 @@ pipeline{
             echo "Logging into Nexus..."
             sh 'echo $PASS | docker login localhost:8082 -u $USER --password-stdin'
             echo "Pushing to Nexus..."
-            sh 'docker push localhost:8080/$IMAGE:$VERSION'
-            sh 'docker logout localhost:8080' 
+            sh 'docker push localhost:8081/$IMAGE:$VERSION'
+            sh 'docker logout localhost:8081' 
           }
         }
       }
