@@ -35,14 +35,30 @@ FROM node:${NODE_VERSION} AS builder
 # Set working directory
 WORKDIR /flow-desk-app
 
+# Declare build-time arguments
+ARG NEXT_PUBLIC_BETTER_AUTH_URL
+ARG NEXT_PUBLIC_TINY_MCE
+ARG SKIP_ENV_VALIDATION=true
+
+ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_BETTER_AUTH_URL}
+ENV NEXT_PUBLIC_TINY_MCE=${NEXT_PUBLIC_TINY_MCE}
+ENV SKIP_ENV_VALIDATION=${SKIP_ENV_VALIDATION}
+
 COPY --from=dependencies /flow-desk-app/node_modules ./node_modules
 
 COPY . .
 
 ENV NODE_ENV=production
 ENV NEXT_TELEMETRY_DISABLED=1
+ENV BETTER_AUTH_SECRET=build-time-placeholder-secret-0123456789abcdef
+ENV BETTER_AUTH_URL=http://localhost:3000
+ENV TURSO_CONNECTION_URL=libsql://placeholder.turso.io
+ENV TURSO_AUTH_TOKEN=placeholder
+ENV STRIPE_SECRET_KEY=sk_test_placeholder
+ENV STRIPE_WEBHOOK_SECRET=whsec_placeholder
+ENV UPLOADTHING_TOKEN=placeholder
 
-
+RUN test -n "$NEXT_PUBLIC_BETTER_AUTH_URL" && test -n "$NEXT_PUBLIC_TINY_MCE"
 RUN if [ -f package-lock.json ]; then \
     npm run build; \
   elif [ -f yarn.lock ]; then \

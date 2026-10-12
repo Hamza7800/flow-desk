@@ -21,7 +21,7 @@ export const env = createEnv({
 
     UPLOADTHING_TOKEN: z.string(),
 
-    DATABASE_URL: z.url(),
+    // DATABASE_URL: z.url(),
     NODE_ENV: z
       .enum([ "development", "test", "production" ])
       .default("development"),
@@ -49,7 +49,7 @@ export const env = createEnv({
     TURSO_CONNECTION_URL: process.env.TURSO_CONNECTION_URL,
     TURSO_AUTH_TOKEN: process.env.TURSO_AUTH_TOKEN,
 
-    DATABASE_URL: process.env.DATABASE_URL,
+    // DATABASE_URL: process.env.DATABASE_URL,
     NODE_ENV: process.env.NODE_ENV,
 
     UPLOADTHING_TOKEN: process.env.UPLOADTHING_TOKEN,
