@@ -37,11 +37,9 @@ WORKDIR /flow-desk-app
 
 # Declare build-time arguments
 ARG NEXT_PUBLIC_BETTER_AUTH_URL
-ARG NEXT_PUBLIC_TINY_MCE
 ARG SKIP_ENV_VALIDATION=true
 
 ENV NEXT_PUBLIC_API_URL=${NEXT_PUBLIC_BETTER_AUTH_URL}
-ENV NEXT_PUBLIC_TINY_MCE=${NEXT_PUBLIC_TINY_MCE}
 ENV SKIP_ENV_VALIDATION=${SKIP_ENV_VALIDATION}
 
 COPY --from=dependencies /flow-desk-app/node_modules ./node_modules
@@ -58,7 +56,7 @@ ENV STRIPE_SECRET_KEY=sk_test_placeholder
 ENV STRIPE_WEBHOOK_SECRET=whsec_placeholder
 ENV UPLOADTHING_TOKEN=placeholder
 
-RUN test -n "$NEXT_PUBLIC_BETTER_AUTH_URL" && test -n "$NEXT_PUBLIC_TINY_MCE"
+RUN test -n "$NEXT_PUBLIC_BETTER_AUTH_URL"
 RUN if [ -f package-lock.json ]; then \
     npm run build; \
   elif [ -f yarn.lock ]; then \

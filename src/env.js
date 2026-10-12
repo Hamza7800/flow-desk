@@ -33,7 +33,6 @@ export const env = createEnv({
    * `NEXT_PUBLIC_`.
    */
   client: {
-    NEXT_PUBLIC_TINY_MCE: z.string(),
     NEXT_PUBLIC_BETTER_AUTH_URL: z.url(),
     // NEXT_PUBLIC_CLIENTVAR: z.string(),
   },
@@ -58,7 +57,6 @@ export const env = createEnv({
     STRIPE_WEBHOOK_SECRET: process.env.STRIPE_WEBHOOK_SECRET,
 
     NEXT_PUBLIC_BETTER_AUTH_URL: process.env.NEXT_PUBLIC_BETTER_AUTH_URL,
-    NEXT_PUBLIC_TINY_MCE: process.env.NEXT_PUBLIC_TINY_MCE,
 
   },
   /**
