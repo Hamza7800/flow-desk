@@ -77,20 +77,21 @@ pipeline{
         }
       }
       stage('Commit version and tag') {
-      steps {
-        withCredentials([usernamePassword(credentialsId: 'github-credentials',
-          usernameVariable: 'GH_USER', passwordVariable: 'GH_TOKEN')]) {
-          sh '''
-            git config user.name "jenkins-bot"
-            git config user.email "jenkins-bot@users.noreply.github.com"
-            git add package.json
-            git commit -m "chore(release): v$VERSION [ci skip]"
-            git tag -a "v$VERSION" -m "Release v$VERSION"
-            git push "https://$GH_USER:$GH_TOKEN@github.com/Hamza7800/flow-desk.git" HEAD:main "refs/tags/v$VERSION"
-          '''
+        steps {
+          withCredentials([usernamePassword(credentialsId: 'github-credentials',
+              usernameVariable: 'GH_USER', passwordVariable: 'GH_TOKEN')]) {
+            sh '''
+              git config user.name "jenkins-bot"
+              git config user.email "jenkins-bot@users.noreply.github.com"
+              git add package.json
+              git commit -m "chore(release): v$VERSION [ci skip]"
+              git tag -d "v$VERSION" 2>/dev/null || true
+              git tag -a "v$VERSION" -m "Release v$VERSION"
+              git push "https://$GH_USER:$GH_TOKEN@github.com/Hamza7800/flow-desk.git" HEAD:main "refs/tags/v$VERSION"
+            '''
+          }
         }
       }
-    }
     }
     post {
     always  { sh 'docker image prune -f || true' }
